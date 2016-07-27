@@ -26,7 +26,7 @@ import java.util.Map;
  * @date 2015年12月3日
  *
  */
-public class AbstractInterfaceBeanBuilder
+public abstract class AbstractInterfaceBeanBuilder
 {
 	public AbstractInterfaceBeanBuilder()
 	{

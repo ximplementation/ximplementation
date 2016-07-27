@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
  * @date 2015年12月6日
  *
  */
-public class AbstractInterfaceBeanInvocationHandler
+public abstract class AbstractInterfaceBeanInvocationHandler
 {
 	private InterfaceMethodInvocationInfoEvaluator interfaceMethodInvocationInfoEvaluator;
 
