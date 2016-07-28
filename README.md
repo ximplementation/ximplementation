@@ -47,9 +47,9 @@ Finally, you can get a `Service` instance by:
 
 ```java
 
-	Map<Class<?>, Collection<?>> implementorBeansMap = new HashMap<Class<?>, Collection<?>>();
+	Map<Class<?>, Collection<?>> implementorBeans = new HashMap<Class<?>, Collection<?>>();
 	implementorBeans.put(ServiceImplPlus.class, Arrays.asList(new ServiceImplPlus()));
 	implementorBeans.put(ServiceImplMinus.class, Arrays.asList(new ServiceImplMinus()));
 	
-	Service service = new ProxyInterfaceBeanBuilder().build(Service.class, implementorBeansMap);
+	Service service = new ProxyInterfaceBeanBuilder().build(Service.class, implementorBeans);
 ```
