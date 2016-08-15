@@ -29,7 +29,7 @@ public class ImplementInfo implements Serializable
 	private static final long serialVersionUID = 1L;
 
 	/** 接口方法 */
-	private Method interfaceMethod;
+	private Method implementeeMethod;
 
 	private ImplementMethodInfo[] implementMethodInfos;
 
@@ -38,27 +38,27 @@ public class ImplementInfo implements Serializable
 		super();
 	}
 
-	public ImplementInfo(Method interfaceMethod)
+	public ImplementInfo(Method implementeeMethod)
 	{
 		super();
-		this.interfaceMethod = interfaceMethod;
+		this.implementeeMethod = implementeeMethod;
 	}
 
-	public ImplementInfo(Method interfaceMethod, ImplementMethodInfo[] implementMethodInfos)
+	public ImplementInfo(Method implementeeMethod, ImplementMethodInfo[] implementMethodInfos)
 	{
 		super();
-		this.interfaceMethod = interfaceMethod;
+		this.implementeeMethod = implementeeMethod;
 		this.implementMethodInfos = implementMethodInfos;
 	}
 
-	public Method getInterfaceMethod()
+	public Method getImplementeeMethod()
 	{
-		return interfaceMethod;
+		return implementeeMethod;
 	}
 
-	public void setInterfaceMethod(Method interfaceMethod)
+	public void setImplementeeMethod(Method implementeeMethod)
 	{
-		this.interfaceMethod = interfaceMethod;
+		this.implementeeMethod = implementeeMethod;
 	}
 
 	public ImplementMethodInfo[] getImplementMethodInfos()
@@ -74,7 +74,7 @@ public class ImplementInfo implements Serializable
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName() + " [interfaceMethod=" + interfaceMethod + ", implementMethodInfos="
+		return getClass().getSimpleName() + " [implementeeMethod=" + implementeeMethod + ", implementMethodInfos="
 				+ implementMethodInfos + "]";
 	}
 }

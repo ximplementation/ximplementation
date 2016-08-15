@@ -14,18 +14,25 @@
 
 package org.ximplementation.support;
 
+import java.util.Collection;
+
 /**
- * 代理接口标识。
- * <p>
- * {@linkplain ProxyInterfaceBeanBuilder}创建的<i>接口</i>实例
- * {@linkplain java.lang.reflect.Proxy Proxy}对象会实现此接口。
- * </p>
+ * 实现者Bean工厂。
  * 
  * @author earthangry@gmail.com
- * @date 2015年12月3日
+ * @date 2016年8月15日
  *
  */
-public interface ProxyInterface
+public interface ImplementorBeanFactory
 {
-
+	/**
+	 * 获取指定实现者的Bean集合。
+	 * <p>
+	 * 如果不存在，此方法应该返回{@code null}或者空集合。
+	 * </p>
+	 * 
+	 * @param implementor
+	 * @return
+	 */
+	Collection<?> getImplementorBeans(Class<?> implementor);
 }

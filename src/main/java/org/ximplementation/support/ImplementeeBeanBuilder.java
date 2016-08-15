@@ -14,29 +14,35 @@
 
 package org.ximplementation.support;
 
-import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Map;
 
 /**
- * 接口方法调用信息计算器。
- * @author zangzf
+ * 接口实例构建器。
+ * 
+ * @author earthangry@gmail.com
+ * @date 2015年12月3日
  *
  */
-public interface InterfaceMethodInvocationInfoEvaluator
+public interface ImplementeeBeanBuilder
 {
 	/**
-	 * 计算{@linkplain InterfaceMethodInvocationInfo}。
-	 * <p>
-	 * 如果无法计算，此方法应该返回{@code null}。
-	 * </p>
+	 * 构建接口实例。
 	 * 
-	 * @param interfacee
-	 * @param interfaceMethod
-	 * @param interfaceMethodParams
-	 * @param implementMethodBeanInfos
+	 * @param implementation
+	 * @param implementorBeansMap
 	 * @return
-	 * @throws Throwable
 	 */
-	InterfaceMethodInvocationInfo evaluate(Class<?> interfacee,
-			Method interfaceMethod, Object[] interfaceMethodParams, ImplementMethodBeanInfo[] implementMethodBeanInfos)
-			throws Throwable;
+	Object build(Implementation implementation,
+			Map<Class<?>, ? extends Collection<?>> implementorBeansMap);
+
+	/**
+	 * 构建接口实例。
+	 * 
+	 * @param implementation
+	 * @param implementorBeanFactory
+	 * @return
+	 */
+	Object build(Implementation implementation,
+			ImplementorBeanFactory implementorBeanFactory);
 }

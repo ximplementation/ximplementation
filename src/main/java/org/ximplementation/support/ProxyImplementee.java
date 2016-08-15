@@ -14,25 +14,18 @@
 
 package org.ximplementation.support;
 
-import java.util.Collection;
-import java.util.Map;
-
 /**
- * 接口实例构建器。
+ * 代理接口标识。
+ * <p>
+ * {@linkplain ProxyImplementeeBeanBuilder}创建的<i>接口</i>实例
+ * {@linkplain java.lang.reflect.Proxy Proxy}对象会实现此接口。
+ * </p>
  * 
  * @author earthangry@gmail.com
  * @date 2015年12月3日
  *
  */
-public interface InterfaceBeanBuilder
+public interface ProxyImplementee
 {
-	/**
-	 * 构建接口实例。
-	 * 
-	 * @param interfacee
-	 * @param implementorBeansMap
-	 * @return
-	 */
-	<T> T build(Class<T> interfacee,
-			Map<Class<?>, ? extends Collection<?>> implementorBeansMap);
+
 }

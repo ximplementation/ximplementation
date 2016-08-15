@@ -15,6 +15,7 @@
 package org.ximplementation.support;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * 接口实现信息。
@@ -27,6 +28,10 @@ public class Implementation implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
+	/** 接口 */
+	private Class<?> implementee;
+
+	/** 实现信息 */
 	private ImplementInfo[] implementInfos;
 
 	public Implementation()
@@ -34,10 +39,21 @@ public class Implementation implements Serializable
 		super();
 	}
 
-	public Implementation(ImplementInfo[] implementInfos)
+	public Implementation(Class<?> implementee, ImplementInfo[] implementInfos)
 	{
 		super();
+		this.implementee = implementee;
 		this.implementInfos = implementInfos;
+	}
+
+	public Class<?> getImplementee()
+	{
+		return implementee;
+	}
+
+	public void setImplementee(Class<?> implementee)
+	{
+		this.implementee = implementee;
 	}
 
 	public ImplementInfo[] getImplementInfos()
@@ -53,6 +69,7 @@ public class Implementation implements Serializable
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName() + " [implementInfos=" + implementInfos + "]";
+		return getClass().getSimpleName() + " [implementee=" + implementee
+				+ ", implementInfos=" + Arrays.toString(implementInfos) + "]";
 	}
 }

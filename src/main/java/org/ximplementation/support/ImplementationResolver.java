@@ -50,65 +50,65 @@ public class ImplementationResolver
 	/**
 	 * 解析接口者实现信息。
 	 * 
-	 * @param interfacee
+	 * @param implementee
 	 *            接口
 	 * @param implementors
 	 *            实现者数组
 	 * @return
 	 * @throws ImplementationResolveException
 	 */
-	public Implementation resolve(Class<?> interfacee, Class<?>... implementors)
+	public Implementation resolve(Class<?> implementee, Class<?>... implementors)
 			throws ImplementationResolveException
 	{
 		Set<Class<?>> simplementors = new HashSet<Class<?>>(
 				Arrays.asList(implementors));
 
-		return doResolve(interfacee, simplementors);
+		return doResolve(implementee, simplementors);
 	}
 
 	/**
 	 * 解析接口者实现信息。
 	 * 
-	 * @param interfacee
+	 * @param implementee
 	 *            接口
 	 * @param implementors
 	 *            实现者套集
 	 * @return
 	 * @throws ImplementationResolveException
 	 */
-	public Implementation resolve(Class<?> interfacee,
+	public Implementation resolve(Class<?> implementee,
 			Set<Class<?>> implementors) throws ImplementationResolveException
 	{
-		return doResolve(interfacee, implementors);
+		return doResolve(implementee, implementors);
 	}
 
 	/**
 	 * 解析接口者实现信息。
 	 * 
-	 * @param interfacee
+	 * @param implementee
 	 *            接口类
 	 * @param implementors
 	 *            实现者套集
 	 * @return
 	 * @throws ImplementationResolveException
 	 */
-	protected Implementation doResolve(Class<?> interfacee, Set<Class<?>> implementors)
+	protected Implementation doResolve(Class<?> implementee, Set<Class<?>> implementors)
 			throws ImplementationResolveException
 	{
 		Implementation implementation = new Implementation();
 
 		List<ImplementInfo> implementInfos = new ArrayList<ImplementInfo>();
 
-		Method[] interfaceMethods = interfacee.getMethods();
+		Method[] implementeeMethods = implementee.getMethods();
 
-		for (int i = 0; i < interfaceMethods.length; i++)
+		for (int i = 0; i < implementeeMethods.length; i++)
 		{
-			Method interfaceMethod = interfaceMethods[i];
+			Method implementeeMethod = implementeeMethods[i];
 
-			if (!isInterfaceMethod(interfacee, interfaceMethod))
+			if (!isImplementeeMethod(implementee, implementeeMethod))
 				continue;
 
-			ImplementInfo implementInfo = resolveImplementInfo(interfacee, interfaceMethods, interfaceMethod,
+			ImplementInfo implementInfo = resolveImplementInfo(implementee, implementeeMethods, implementeeMethod,
 					implementors);
 
 			implementInfos.add(implementInfo);
@@ -117,6 +117,7 @@ public class ImplementationResolver
 		ImplementInfo[] implementInfoArray = new ImplementInfo[implementInfos.size()];
 		implementInfos.toArray(implementInfoArray);
 
+		implementation.setImplementee(implementee);
 		implementation.setImplementInfos(implementInfoArray);
 
 		return implementation;
@@ -125,26 +126,26 @@ public class ImplementationResolver
 	/**
 	 * 解析{@linkplain ImplementInfo}。
 	 * 
-	 * @param interfacee
-	 * @param interfaceMethods
-	 * @param interfaceMethod
+	 * @param implementee
+	 * @param implementeeMethods
+	 * @param implementeeMethod
 	 * @param implementors
 	 * @return
 	 */
-	protected ImplementInfo resolveImplementInfo(Class<?> interfacee, Method[] interfaceMethods, Method interfaceMethod,
+	protected ImplementInfo resolveImplementInfo(Class<?> implementee, Method[] implementeeMethods, Method implementeeMethod,
 			Set<Class<?>> implementors)
 	{
-		ImplementInfo implementInfo = new ImplementInfo(interfaceMethod);
+		ImplementInfo implementInfo = new ImplementInfo(implementeeMethod);
 
 		List<ImplementMethodInfo> implementMethodInfos = new ArrayList<ImplementMethodInfo>();
 
 		for (Class<?> implementor : implementors)
 		{
-			if (!isImplementor(interfacee, implementor))
+			if (!isImplementor(implementee, implementor))
 				continue;
 
-			Collection<ImplementMethodInfo> myImplementMethodInfos = resolveImplementMethodInfo(interfacee,
-					interfaceMethods, interfaceMethod, implementor);
+			Collection<ImplementMethodInfo> myImplementMethodInfos = resolveImplementMethodInfo(implementee,
+					implementeeMethods, implementeeMethod, implementor);
 
 			if (myImplementMethodInfos != null && !myImplementMethodInfos.isEmpty())
 				implementMethodInfos.addAll(myImplementMethodInfos);
@@ -161,20 +162,20 @@ public class ImplementationResolver
 	/**
 	 * 解析{@linkplain ImplementMethodInfo}。
 	 * 
-	 * @param interfacee
-	 * @param interfaceMethods
-	 * @param interfaceMethod
+	 * @param implementee
+	 * @param implementeeMethods
+	 * @param implementeeMethod
 	 * @param implementor
 	 * @return
 	 */
-	protected Collection<ImplementMethodInfo> resolveImplementMethodInfo(Class<?> interfacee, Method[] interfaceMethods,
-			Method interfaceMethod, Class<?> implementor)
+	protected Collection<ImplementMethodInfo> resolveImplementMethodInfo(Class<?> implementee, Method[] implementeeMethods,
+			Method implementeeMethod, Class<?> implementor)
 	{
 		List<ImplementMethodInfo> implementMethodInfos = new ArrayList<ImplementMethodInfo>();
 
-		String interfaceMethodName = interfaceMethod.getName();
-		String interfaceMethodSignature = getMethodSignature(interfacee, interfaceMethod);
-		String interfaceMethodRefered = getRefered(interfaceMethod);
+		String implementeeMethodName = implementeeMethod.getName();
+		String implementeeMethodSignature = getMethodSignature(implementee, implementeeMethod);
+		String implementeeMethodRefered = getRefered(implementeeMethod);
 
 		Method[] implementMethods = implementor.getMethods();
 
@@ -182,10 +183,10 @@ public class ImplementationResolver
 		{
 			Method implementMethod = implementMethods[i];
 
-			if (isImplementMethod(interfacee, interfaceMethod, interfaceMethodName, interfaceMethodSignature,
-					interfaceMethodRefered, implementor, implementMethod))
+			if (isImplementMethod(implementee, implementeeMethod, implementeeMethodName, implementeeMethodSignature,
+					implementeeMethodRefered, implementor, implementMethod))
 			{
-				ImplementMethodInfo implementMethodInfo = buildImplementMethodInfo(interfacee, interfaceMethod,
+				ImplementMethodInfo implementMethodInfo = buildImplementMethodInfo(implementee, implementeeMethod,
 						implementor, implementMethod);
 
 				implementMethodInfos.add(implementMethodInfo);
@@ -198,18 +199,18 @@ public class ImplementationResolver
 	/**
 	 * 构建{@linkplain ImplementMethodInfo}。
 	 * 
-	 * @param interfacee
-	 * @param interfaceMethod
+	 * @param implementee
+	 * @param implementeeMethod
 	 * @param implementor
 	 * @param implementMethod
 	 * @return
 	 */
-	protected ImplementMethodInfo buildImplementMethodInfo(Class<?> interfacee, Method interfaceMethod,
+	protected ImplementMethodInfo buildImplementMethodInfo(Class<?> implementee, Method implementeeMethod,
 			Class<?> implementor, Method implementMethod)
 	{
 		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(implementor, implementMethod);
 
-		resolveImplementMethodInfoProperties(interfacee, interfaceMethod, implementMethodInfo);
+		resolveImplementMethodInfoProperties(implementee, implementeeMethod, implementMethodInfo);
 
 		return implementMethodInfo;
 	}
@@ -217,29 +218,29 @@ public class ImplementationResolver
 	/**
 	 * 解析{@linkplain ImplementMethodInfo}的属性。
 	 * 
-	 * @param interfacee
-	 * @param interfaceMethod
+	 * @param implementee
+	 * @param implementeeMethod
 	 * @param implementMethodInfo
 	 */
-	protected void resolveImplementMethodInfoProperties(Class<?> interfacee, Method interfaceMethod,
+	protected void resolveImplementMethodInfoProperties(Class<?> implementee, Method implementeeMethod,
 			ImplementMethodInfo implementMethodInfo)
 	{
-		resolveImplementMethodInfoParamTypes(interfacee, interfaceMethod, implementMethodInfo);
-		resolveImplementMethodInfoGenericParamTypes(interfacee, interfaceMethod, implementMethodInfo);
-		resolveImplementMethodInfoParamIndexes(interfacee, interfaceMethod, implementMethodInfo);
-		resolveImplementMethodInfoValidity(interfacee, interfaceMethod, implementMethodInfo);
-		resolveImplementMethodInfoPriority(interfacee, interfaceMethod, implementMethodInfo);
+		resolveImplementMethodInfoParamTypes(implementee, implementeeMethod, implementMethodInfo);
+		resolveImplementMethodInfoGenericParamTypes(implementee, implementeeMethod, implementMethodInfo);
+		resolveImplementMethodInfoParamIndexes(implementee, implementeeMethod, implementMethodInfo);
+		resolveImplementMethodInfoValidity(implementee, implementeeMethod, implementMethodInfo);
+		resolveImplementMethodInfoPriority(implementee, implementeeMethod, implementMethodInfo);
 	}
 
 	/**
 	 * 解析{@linkplain ImplementMethodInfo}的
 	 * {@linkplain ImplementMethodInfo#getParamTypes()} 属性。
 	 * 
-	 * @param interfacee
-	 * @param interfaceMethod
+	 * @param implementee
+	 * @param implementeeMethod
 	 * @param implementMethodInfo
 	 */
-	protected void resolveImplementMethodInfoParamTypes(Class<?> interfacee, Method interfaceMethod,
+	protected void resolveImplementMethodInfoParamTypes(Class<?> implementee, Method implementeeMethod,
 			ImplementMethodInfo implementMethodInfo)
 	{
 		Class<?>[] paramTypes = implementMethodInfo.getImplementMethod().getParameterTypes();
@@ -251,11 +252,11 @@ public class ImplementationResolver
 	 * 解析{@linkplain ImplementMethodInfo}的
 	 * {@linkplain ImplementMethodInfo#getGenericParamTypes()} 属性。
 	 * 
-	 * @param interfacee
-	 * @param interfaceMethod
+	 * @param implementee
+	 * @param implementeeMethod
 	 * @param implementMethodInfo
 	 */
-	protected void resolveImplementMethodInfoGenericParamTypes(Class<?> interfacee, Method interfaceMethod,
+	protected void resolveImplementMethodInfoGenericParamTypes(Class<?> implementee, Method implementeeMethod,
 			ImplementMethodInfo implementMethodInfo)
 	{
 		Type[] genericParamTypes = implementMethodInfo.getImplementMethod().getGenericParameterTypes();
@@ -267,11 +268,11 @@ public class ImplementationResolver
 	 * 解析{@linkplain ImplementMethodInfo}的
 	 * {@linkplain ImplementMethodInfo#getParamIndexes()}属性。
 	 * 
-	 * @param interfacee
-	 * @param interfaceMethod
+	 * @param implementee
+	 * @param implementeeMethod
 	 * @param implementMethodInfo
 	 */
-	protected void resolveImplementMethodInfoParamIndexes(Class<?> interfacee, Method interfaceMethod,
+	protected void resolveImplementMethodInfoParamIndexes(Class<?> implementee, Method implementeeMethod,
 			ImplementMethodInfo implementMethodInfo)
 	{
 		int[] paramIndexes = getMethodParamIndexes(implementMethodInfo.getImplementor(),
@@ -285,11 +286,11 @@ public class ImplementationResolver
 	 * {@linkplain ImplementMethodInfo#getValidityMethod()}、
 	 * {@linkplain ImplementMethodInfo#getValidityParamIndexes()}属性。
 	 * 
-	 * @param interfacee
-	 * @param interfaceMethod
+	 * @param implementee
+	 * @param implementeeMethod
 	 * @param implementMethodInfo
 	 */
-	protected void resolveImplementMethodInfoValidity(Class<?> interfacee, Method interfaceMethod,
+	protected void resolveImplementMethodInfoValidity(Class<?> implementee, Method implementeeMethod,
 			ImplementMethodInfo implementMethodInfo)
 	{
 		Class<?> implementor = implementMethodInfo.getImplementor();
@@ -320,11 +321,11 @@ public class ImplementationResolver
 	 * {@linkplain ImplementMethodInfo#getPriorityMethod()}、
 	 * {@linkplain ImplementMethodInfo#getPriorityParamIndexes()}属性。
 	 * 
-	 * @param interfacee
-	 * @param interfaceMethod
+	 * @param implementee
+	 * @param implementeeMethod
 	 * @param implementMethodInfo
 	 */
-	protected void resolveImplementMethodInfoPriority(Class<?> interfacee, Method interfaceMethod,
+	protected void resolveImplementMethodInfoPriority(Class<?> implementee, Method implementeeMethod,
 			ImplementMethodInfo implementMethodInfo)
 	{
 		Class<?> implementor = implementMethodInfo.getImplementor();
@@ -360,18 +361,18 @@ public class ImplementationResolver
 	/**
 	 * 判断给定方法是否是<i>接口方法</i>。
 	 * 
-	 * @param interfacee
-	 * @param interfaceMethod
+	 * @param implementee
+	 * @param implementeeMethod
 	 * @return
 	 */
-	protected boolean isInterfaceMethod(Class<?> interfacee, Method interfaceMethod)
+	protected boolean isImplementeeMethod(Class<?> implementee, Method implementeeMethod)
 	{
-		int modifier = interfaceMethod.getModifiers();
+		int modifier = implementeeMethod.getModifiers();
 
 		if (Modifier.isStatic(modifier) || !Modifier.isPublic(modifier))
 			return false;
 
-		Class<?> delcClass = interfaceMethod.getDeclaringClass();
+		Class<?> delcClass = implementeeMethod.getDeclaringClass();
 
 		if (Object.class.equals(delcClass))
 			return false;
@@ -380,15 +381,15 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 判断{@code implementor}是否是{@code interfacee}的<i>实现者</i>。
+	 * 判断{@code implementor}是否是{@code implementee}的<i>实现者</i>。
 	 * 
-	 * @param interfacee
+	 * @param implementee
 	 * @param implementor
 	 * @return
 	 */
-	protected boolean isImplementor(Class<?> interfacee, Class<?> implementor)
+	protected boolean isImplementor(Class<?> implementee, Class<?> implementor)
 	{
-		if (interfacee.isAssignableFrom(implementor))
+		if (implementee.isAssignableFrom(implementor))
 			return true;
 
 		Implementor implementorAno = getAnnotation(implementor, Implementor.class);
@@ -398,13 +399,13 @@ public class ImplementationResolver
 
 		Class<?> myInterface = implementorAno.value();
 
-		if (interfacee.isAssignableFrom(myInterface))
+		if (implementee.isAssignableFrom(myInterface))
 			return true;
 
 		Class<?>[] myInterfaces = implementorAno.interfaces();
 		for (Class<?> _myInterface : myInterfaces)
 		{
-			if (interfacee.isAssignableFrom(_myInterface))
+			if (implementee.isAssignableFrom(_myInterface))
 				return true;
 		}
 
@@ -436,17 +437,17 @@ public class ImplementationResolver
 	/**
 	 * 判断是否是实现方法。
 	 * 
-	 * @param interfacee
-	 * @param interfaceMethod
-	 * @param interfaceMethodName
-	 * @param interfaceMethodSignature
-	 * @param interfaceMethodRefered
+	 * @param implementee
+	 * @param implementeeMethod
+	 * @param implementeeMethodName
+	 * @param implementeeMethodSignature
+	 * @param implementeeMethodRefered
 	 * @param implementor
 	 * @param implementMethod
 	 * @return
 	 */
-	protected boolean isImplementMethod(Class<?> interfacee, Method interfaceMethod, String interfaceMethodName,
-			String interfaceMethodSignature, String interfaceMethodRefered, Class<?> implementor,
+	protected boolean isImplementMethod(Class<?> implementee, Method implementeeMethod, String implementeeMethodName,
+			String implementeeMethodSignature, String implementeeMethodRefered, Class<?> implementor,
 			Method implementMethod)
 	{
 		if (!maybeImplementMethod(implementor, implementMethod))
@@ -460,29 +461,29 @@ public class ImplementationResolver
 
 			if (implementAnoValue == null || implementAnoValue.isEmpty())
 			{
-				return isOverridenMethod(interfacee, interfaceMethod, implementor, implementMethod);
+				return isOverridenMethod(implementee, implementeeMethod, implementor, implementMethod);
 			}
 			else
 			{
-				if (implementAnoValue.equals(interfaceMethodRefered)
-						|| implementAnoValue.equals(interfaceMethodSignature))
+				if (implementAnoValue.equals(implementeeMethodRefered)
+						|| implementAnoValue.equals(implementeeMethodSignature))
 				{
-					if (!isInvokeFeasibleMethod(interfacee, interfaceMethod, implementor, implementMethod))
+					if (!isInvokeFeasibleMethod(implementee, implementeeMethod, implementor, implementMethod))
 						throw new ImplementationResolveException("Method [" + implementMethod
-								+ "] is not able to implement Method [" + interfaceMethod + "] ");
+								+ "] is not able to implement Method [" + implementeeMethod + "] ");
 
 					return true;
 				}
-				else if (implementAnoValue.equals(interfaceMethodName))
+				else if (implementAnoValue.equals(implementeeMethodName))
 				{
-					return isInvokeFeasibleMethod(interfacee, interfaceMethod, implementor, implementMethod);
+					return isInvokeFeasibleMethod(implementee, implementeeMethod, implementor, implementMethod);
 				}
 				else
 					return false;
 			}
 		}
 		else
-			return isOverridenMethod(interfacee, interfaceMethod, implementor, implementMethod);
+			return isOverridenMethod(implementee, implementeeMethod, implementor, implementMethod);
 	}
 
 	/**
@@ -499,35 +500,35 @@ public class ImplementationResolver
 		if (!superMethod.getName().equals(subMethod.getName()))
 			return false;
 
-		Class<?>[] interfaceParamTypes = superMethod.getParameterTypes();
-		Class<?>[] implementParamTypes = subMethod.getParameterTypes();
+		Class<?>[] superParamTypes = superMethod.getParameterTypes();
+		Class<?>[] subParamTypes = subMethod.getParameterTypes();
 
 		// 参数数目
-		if (interfaceParamTypes.length != implementParamTypes.length)
+		if (superParamTypes.length != subParamTypes.length)
 			return false;
 
 		// 参数类型
-		for (int i = 0; i < interfaceParamTypes.length; i++)
+		for (int i = 0; i < superParamTypes.length; i++)
 		{
-			Class<?> interfaceParamType = interfaceParamTypes[i];
-			Class<?> implementParamType = implementParamTypes[i];
+			Class<?> superParamType = superParamTypes[i];
+			Class<?> subParamType = subParamTypes[i];
 
-			if (!interfaceParamType.equals(implementParamType))
+			if (!superParamType.equals(subParamType))
 				return false;
 		}
 
 		// 返回值类型
-		Class<?> interfaceReturnType = superMethod.getReturnType();
-		Class<?> implementReturnType = subMethod.getReturnType();
+		Class<?> superReturnType = superMethod.getReturnType();
+		Class<?> subReturnType = subMethod.getReturnType();
 
-		if (!interfaceReturnType.isAssignableFrom(implementReturnType))
+		if (!superReturnType.isAssignableFrom(subReturnType))
 			return false;
 
 		return true;
 	}
 
 	/**
-	 * 判断{@code implementMethod}方法对于{@code interfaceMethod}方法是否调用可行。
+	 * 判断{@code implementMethod}方法对于{@code implementeeMethod}方法是否调用可行。
 	 * <p>
 	 * 如果方法{@code A}对于方法{@code B}调用可行，那么：
 	 * </p>
@@ -536,43 +537,44 @@ public class ImplementationResolver
 	 * <li>{@code A}方法的参数类型必须是对应{@code B}方法参数类型的父类或子类。</li>
 	 * </ul>
 	 * 
-	 * @param interfacee
-	 * @param interfaceMethod
+	 * @param implementee
+	 * @param implementeeMethod
 	 * @param implementor
 	 * @param implementMethod
 	 * @return
 	 */
-	protected boolean isInvokeFeasibleMethod(Class<?> interfacee, Method interfaceMethod, Class<?> implementor,
+	protected boolean isInvokeFeasibleMethod(Class<?> implementee, Method implementeeMethod, Class<?> implementor,
 			Method implementMethod)
 	{
 		// 返回值类型
-		Class<?> interfaceReturnType = interfaceMethod.getReturnType();
-		Class<?> implementReturnType = implementMethod.getReturnType();
+		Class<?> implementeeReturnType = implementeeMethod.getReturnType();
+		Class<?> implementorReturnType = implementMethod.getReturnType();
 
-		if (!interfaceReturnType.isAssignableFrom(implementReturnType))
+		if (!implementeeReturnType.isAssignableFrom(implementorReturnType))
 			return false;
 
 		// 参数类型
-		Class<?>[] implementParamTypes = implementMethod.getParameterTypes();
-		Class<?>[] interfaceParamTypes = interfaceMethod.getParameterTypes();
+		Class<?>[] implementorParamTypes = implementMethod.getParameterTypes();
+		Class<?>[] implementeeParamTypes = implementeeMethod
+				.getParameterTypes();
 
-		if (implementParamTypes.length > interfaceParamTypes.length)
+		if (implementorParamTypes.length > implementeeParamTypes.length)
 			return false;
 
 		int[] implementParamIndexes = getMethodParamIndexes(implementor, implementMethod);
 
-		for (int i = 0; i < implementParamTypes.length; i++)
+		for (int i = 0; i < implementorParamTypes.length; i++)
 		{
 			int myParamIndex = implementParamIndexes[i];
 
-			if (myParamIndex >= interfaceParamTypes.length)
+			if (myParamIndex >= implementeeParamTypes.length)
 				return false;
 
-			Class<?> implementParamType = implementParamTypes[i];
-			Class<?> interfaceParamType = interfaceParamTypes[myParamIndex];
+			Class<?> implementorParamType = implementorParamTypes[i];
+			Class<?> implementeeParamType = implementeeParamTypes[myParamIndex];
 
-			if (!interfaceParamType.isAssignableFrom(implementParamType)
-					&& !implementParamType.isAssignableFrom(interfaceParamType))
+			if (!implementeeParamType.isAssignableFrom(implementorParamType)
+					&& !implementorParamType.isAssignableFrom(implementeeParamType))
 				return false;
 		}
 

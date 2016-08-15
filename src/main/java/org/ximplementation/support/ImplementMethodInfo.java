@@ -180,4 +180,11 @@ public class ImplementMethodInfo implements Serializable
 	{
 		this.priorityParamIndexes = priorityParamIndexes;
 	}
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " [implementor=" + implementor
+				+ ", implementMethod=" + implementMethod + "]";
+	}
 }

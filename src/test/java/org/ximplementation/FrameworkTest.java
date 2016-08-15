@@ -23,8 +23,10 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.ximplementation.support.InterfaceBeanBuilder;
-import org.ximplementation.support.ProxyInterfaceBeanBuilder;
+import org.ximplementation.support.Implementation;
+import org.ximplementation.support.ImplementationResolver;
+import org.ximplementation.support.ImplementeeBeanBuilder;
+import org.ximplementation.support.ProxyImplementeeBeanBuilder;
 
 /**
  * 框架设计测试。
@@ -35,12 +37,14 @@ import org.ximplementation.support.ProxyInterfaceBeanBuilder;
  */
 public class FrameworkTest
 {
-	private InterfaceBeanBuilder interfaceBeanBuilder;
+	private ImplementationResolver implementationResolver;
+	private ImplementeeBeanBuilder implementeeBeanBuilder;
 
 	@Before
 	public void setUp() throws Exception
 	{
-		this.interfaceBeanBuilder = new ProxyInterfaceBeanBuilder();
+		this.implementationResolver = new ImplementationResolver();
+		this.implementeeBeanBuilder = new ProxyImplementeeBeanBuilder();
 	}
 
 	@After
@@ -51,6 +55,11 @@ public class FrameworkTest
 	@Test
 	public void test()
 	{
+		Implementation implementation = this.implementationResolver.resolve(
+				TService.class, TService0.class, TService1.class,
+				TService2.class,
+				TService3.class);
+
 		Map<Class<?>, Set<?>> implementorBeans = new HashMap<Class<?>, Set<?>>();
 
 		implementorBeans.put(TService0.class, Collections.singleton(new TService0()));
@@ -58,25 +67,27 @@ public class FrameworkTest
 		implementorBeans.put(TService2.class, Collections.singleton(new TService2()));
 		implementorBeans.put(TService3.class, Collections.singleton(new TService3()));
 
-		TService tinterface = this.interfaceBeanBuilder.build(TService.class, implementorBeans);
+		TService tservice = (TService) this.implementeeBeanBuilder
+				.build(implementation,
+				implementorBeans);
 
 		{
-			String concat = tinterface.concat("a", "b");
+			String concat = tservice.concat("a", "b");
 			Assert.assertEquals("ab", concat);
 		}
 
 		{
-			String concat = tinterface.concat("a", TService1.B);
+			String concat = tservice.concat("a", TService1.B);
 			Assert.assertEquals(TService1.MY_PREFIX + "a" + TService1.B, concat);
 		}
 
 		{
-			String concat = tinterface.concat("a", TService2.B);
+			String concat = tservice.concat("a", TService2.B);
 			Assert.assertEquals(TService2.MY_PREFIX + "a" + TService2.B, concat);
 		}
 
 		{
-			String concat = tinterface.concat("a", TService3.B);
+			String concat = tservice.concat("a", TService3.B);
 			Assert.assertEquals(TService3.MY_PREFIX + "a" + TService3.B, concat);
 		}
 	}

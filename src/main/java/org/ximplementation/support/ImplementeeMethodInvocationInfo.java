@@ -14,36 +14,31 @@
 
 package org.ximplementation.support;
 
-import java.util.Collection;
-
 /**
- * 实现方法Bean信息。
- * <p>
- * 它封装实现方法与其对应的实现者Bean集合信息。
- * </p>
- *
+ * 接口方法调用信息。
+ * 
  * @author earthangry@gmail.com
  * @date 2015年12月6日
  *
  */
-public class ImplementMethodBeanInfo
+public class ImplementeeMethodInvocationInfo
 {
 	/** 实现方法信息 */
 	private ImplementMethodInfo implementMethodInfo;
 
-	/** 实现者Bean集合 */
-	private Collection<?> implementorBeans;
+	/** 实现Bean */
+	private Object implementorBean;
 
-	public ImplementMethodBeanInfo()
+	public ImplementeeMethodInvocationInfo()
 	{
 		super();
 	}
 
-	public ImplementMethodBeanInfo(ImplementMethodInfo implementMethodInfo, Collection<?> implementorBeans)
+	public ImplementeeMethodInvocationInfo(ImplementMethodInfo implementMethodInfo, Object implementorBean)
 	{
 		super();
 		this.implementMethodInfo = implementMethodInfo;
-		this.implementorBeans = implementorBeans;
+		this.implementorBean = implementorBean;
 	}
 
 	public ImplementMethodInfo getImplementMethodInfo()
@@ -56,13 +51,13 @@ public class ImplementMethodBeanInfo
 		this.implementMethodInfo = implementMethodInfo;
 	}
 
-	public Collection<?> getImplementorBeans()
+	public Object getImplementorBean()
 	{
-		return implementorBeans;
+		return implementorBean;
 	}
 
-	public void setImplementorBeans(Collection<?> implementorBeans)
+	public void setImplementorBean(Object implementorBean)
 	{
-		this.implementorBeans = implementorBeans;
+		this.implementorBean = implementorBean;
 	}
 }

@@ -23,49 +23,52 @@ import java.util.Collection;
  * @author zangzf
  *
  */
-public class DefaultInterfaceMethodInvocationInfoEvaluator
-		implements InterfaceMethodInvocationInfoEvaluator
+public class DefaultImplementeeMethodInvocationInfoEvaluator
+		implements ImplementeeMethodInvocationInfoEvaluator
 {
-	public DefaultInterfaceMethodInvocationInfoEvaluator()
+	public DefaultImplementeeMethodInvocationInfoEvaluator()
 	{
 		super();
 	}
 
 	@Override
-	public InterfaceMethodInvocationInfo evaluate(Class<?> interfacee,
-			Method interfaceMethod, Object[] interfaceMethodParams,
-			ImplementMethodBeanInfo[] implementMethodBeanInfos) throws Throwable
+	public ImplementeeMethodInvocationInfo evaluate(
+			Implementation implementation, Method implementeeMethod,
+			Object[] implementeeMethodParams,
+			ImplementorBeanFactory implementorBeanFactory) throws Throwable
 	{
-		if (implementMethodBeanInfos == null)
-			return null;
-
 		ImplementMethodInfo implementMethodInfo = null;
 		Object implementorBean = null;
 		int priority = 0;
 
-		for (ImplementMethodBeanInfo implementMethodBeanInfo : implementMethodBeanInfos)
-		{
-			ImplementMethodInfo myImplementMethodInfo = implementMethodBeanInfo
-					.getImplementMethodInfo();
+		ImplementInfo implementInfo = findImplementInfo(implementation,
+				implementeeMethod);
 
+		for (ImplementMethodInfo myImplementMethodInfo : implementInfo
+				.getImplementMethodInfos())
+		{
 			if (!isImplementMethodParamValid(myImplementMethodInfo,
-					interfaceMethodParams))
+					implementeeMethodParams))
+				continue;
+
+			Collection<?> implementorBeans = implementorBeanFactory
+					.getImplementorBeans(
+							myImplementMethodInfo.getImplementor());
+
+			if (implementorBeans == null || implementorBeans.isEmpty())
 				continue;
 
 			Object[] validityMethodParams = (myImplementMethodInfo
 					.hasValidityMethod()
 							? extractValidityMethodParams(myImplementMethodInfo,
-									interfaceMethodParams)
+									implementeeMethodParams)
 							: null);
 
 			Object[] priorityMethodParams = (myImplementMethodInfo
 					.hasPriorityMethod()
 							? extractPriorityMethodParams(myImplementMethodInfo,
-									interfaceMethodParams)
+									implementeeMethodParams)
 							: null);
-
-			Collection<?> implementorBeans = implementMethodBeanInfo
-					.getImplementorBeans();
 
 			for (Object myImplementorBean : implementorBeans)
 			{
@@ -97,8 +100,9 @@ public class DefaultInterfaceMethodInvocationInfoEvaluator
 				{
 					if (myPriority == priority)
 					{
-						int methodInfoPriority = compareImplementMethodInfoPriority(interfacee,
-								interfaceMethod, interfaceMethodParams,
+						int methodInfoPriority = compareImplementMethodInfoPriority(
+								implementation,
+								implementeeMethod, implementeeMethodParams,
 								implementMethodInfo, myImplementMethodInfo);
 
 						replace = (methodInfoPriority <= 0);
@@ -117,8 +121,27 @@ public class DefaultInterfaceMethodInvocationInfoEvaluator
 		}
 
 		return (implementMethodInfo == null ? null
-				: new InterfaceMethodInvocationInfo(implementMethodInfo,
+				: new ImplementeeMethodInvocationInfo(implementMethodInfo,
 						implementorBean));
+	}
+
+	/**
+	 * 查找{@linkplain ImplementInfo}。
+	 * 
+	 * @param implementation
+	 * @param implementeeMethod
+	 * @return
+	 */
+	protected ImplementInfo findImplementInfo(Implementation implementation,
+			Method implementeeMethod)
+	{
+		for (ImplementInfo implementInfo : implementation.getImplementInfos())
+		{
+			if (implementInfo.getImplementeeMethod().equals(implementeeMethod))
+				return implementInfo;
+		}
+
+		return null;
 	}
 
 	/**
@@ -195,26 +218,27 @@ public class DefaultInterfaceMethodInvocationInfoEvaluator
 	}
 
 	/**
-	 * 比较两个对{@code interfaceMethodParams}都有效的{@linkplain ImplementMethodInfo}
+	 * 比较两个对{@code implementeeMethodParams}都有效的{@linkplain ImplementMethodInfo}
 	 * 的优先级。
 	 * <p>
 	 * 如果是{@code first}的优先级高，返回{@code >0}；如果是{@code second}的优先级高，返回{@code <0}
 	 * ；如果二者相同，返回{@code 0}。
 	 * </p>
 	 * 
-	 * @param interfacee
-	 * @param interfaceMethod
-	 * @param interfaceMethodParams
+	 * @param implementation
+	 * @param implementeeMethod
+	 * @param implementeeMethodParams
 	 * @param first
 	 * @param second
 	 * @return
 	 */
-	protected int compareImplementMethodInfoPriority(Class<?> interfacee,
-			Method interfaceMethod, Object[] interfaceMethodParams,
+	protected int compareImplementMethodInfoPriority(
+			Implementation implementation,
+			Method implementeeMethod, Object[] implementeeMethodParams,
 			ImplementMethodInfo first, ImplementMethodInfo second)
 	{
-		int priority = compareImplementMethodParamTypePriority(interfacee,
-				interfaceMethod, interfaceMethodParams, first, second);
+		int priority = compareImplementMethodParamTypePriority(implementation,
+				implementeeMethod, implementeeMethodParams, first, second);
 	
 		// 定义了validity方法的要优于未定义validity方法的
 		if (priority == 0)
@@ -230,7 +254,7 @@ public class DefaultInterfaceMethodInvocationInfoEvaluator
 	
 		if (priority == 0)
 		{
-			priority = compareImplementorPriority(interfacee,
+			priority = compareImplementorPriority(implementation,
 					first.getImplementor(), second.getImplementor());
 		}
 	
@@ -244,18 +268,19 @@ public class DefaultInterfaceMethodInvocationInfoEvaluator
 	 * ；如果二者相同，返回{@code 0}。
 	 * </p>
 	 * 
-	 * @param interfacee
-	 * @param interfaceMethod
-	 * @param interfaceMethodParams
+	 * @param implementation
+	 * @param implementeeMethod
+	 * @param implementeeMethodParams
 	 * @param first
 	 * @param second
 	 * @return
 	 */
-	protected int compareImplementMethodParamTypePriority(Class<?> interfacee,
-			Method interfaceMethod, Object[] interfaceMethodParams,
+	protected int compareImplementMethodParamTypePriority(
+			Implementation implementation,
+			Method implementeeMethod, Object[] implementeeMethodParams,
 			ImplementMethodInfo first, ImplementMethodInfo second)
 	{
-		// 比较二者的参数类型哪一个与interfaceMethodParams更贴近
+		// 比较二者的参数类型哪一个与implementeeMethodParams更贴近
 		int firstCloserCount = 0;
 		int secondCloserCount = 0;
 	
@@ -310,23 +335,24 @@ public class DefaultInterfaceMethodInvocationInfoEvaluator
 	 * {@code secondImplementor} 的优先级高，返回{@code <0}；如果二者相同，返回{@code 0}。
 	 * </p>
 	 * 
-	 * @param interfacee
+	 * @param implementation
 	 * @param firstImplementor
 	 * @param secondImplementor
 	 * @return
 	 */
-	protected int compareImplementorPriority(Class<?> interfacee,
+	protected int compareImplementorPriority(Implementation implementation,
 			Class<?> firstImplementor, Class<?> secondImplementor)
 	{
-		String interfacePkg = interfacee.getPackage().getName();
+		String implementeePkg = implementation.getImplementee().getPackage()
+				.getName();
 	
 		boolean firstSamePkg = firstImplementor.getPackage().getName()
-				.startsWith(interfacePkg);
+				.startsWith(implementeePkg);
 	
 		boolean secondSamePkg = secondImplementor.getPackage().getName()
-				.startsWith(interfacePkg);
+				.startsWith(implementeePkg);
 	
-		// 如果都跟或都不跟interfacee在同一个包下，则认为相同，否则，不跟interfacee在同一个包下的优先级高
+		// 如果都跟或都不跟implementee在同一个包下，则认为相同，否则，不跟implementee在同一个包下的优先级高
 		if (firstSamePkg)
 		{
 			return (secondSamePkg ? 0 : -1);
