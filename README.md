@@ -51,5 +51,5 @@ Finally, you can get a `Service` instance by:
 	implementorBeans.put(ServiceImplPlus.class, Arrays.asList(new ServiceImplPlus()));
 	implementorBeans.put(ServiceImplMinus.class, Arrays.asList(new ServiceImplMinus()));
 	
-	Service service = new ProxyInterfaceBeanBuilder().build(Service.class, implementorBeans);
+	Service service = new ProxyImplementeeBeanBuilder().build(Service.class, implementorBeans);
 ```
