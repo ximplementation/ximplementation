@@ -45,5 +45,5 @@ public @interface Implementor
 	 * 
 	 * @return
 	 */
-	Class<?>[] interfaces() default Object.class;
+	Class<?>[] implementees() default Object.class;
 }

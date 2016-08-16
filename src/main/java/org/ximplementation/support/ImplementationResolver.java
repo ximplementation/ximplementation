@@ -397,15 +397,15 @@ public class ImplementationResolver
 		if (implementorAno == null)
 			return false;
 
-		Class<?> myInterface = implementorAno.value();
+		Class<?> myImplementee = implementorAno.value();
 
-		if (implementee.isAssignableFrom(myInterface))
+		if (implementee.isAssignableFrom(myImplementee))
 			return true;
 
-		Class<?>[] myInterfaces = implementorAno.interfaces();
-		for (Class<?> _myInterface : myInterfaces)
+		Class<?>[] myImplementees = implementorAno.implementees();
+		for (Class<?> _myImplementee : myImplementees)
 		{
-			if (implementee.isAssignableFrom(_myInterface))
+			if (implementee.isAssignableFrom(_myImplementee))
 				return true;
 		}
 
