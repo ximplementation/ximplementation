@@ -56,120 +56,82 @@ public class FrameworkTest
 	public void test()
 	{
 		Implementation implementation = this.implementationResolver.resolve(
-				TService.class, TService0.class, TService1.class,
-				TService2.class,
-				TService3.class);
+				TService.class, TServiceImplDefault.class, TServiceImplSpecial.class,
+				TServiceImplInteger.class);
 
 		Map<Class<?>, Set<?>> implementorBeans = new HashMap<Class<?>, Set<?>>();
 
-		implementorBeans.put(TService0.class, Collections.singleton(new TService0()));
-		implementorBeans.put(TService1.class, Collections.singleton(new TService1()));
-		implementorBeans.put(TService2.class, Collections.singleton(new TService2()));
-		implementorBeans.put(TService3.class, Collections.singleton(new TService3()));
+		implementorBeans.put(TServiceImplDefault.class, Collections.singleton(new TServiceImplDefault()));
+		implementorBeans.put(TServiceImplSpecial.class, Collections.singleton(new TServiceImplSpecial()));
+		implementorBeans.put(TServiceImplInteger.class, Collections.singleton(new TServiceImplInteger()));
 
 		TService tservice = (TService) this.implementeeBeanBuilder
 				.build(implementation,
 				implementorBeans);
 
 		{
-			String concat = tservice.concat("a", "b");
-			Assert.assertEquals("ab", concat);
+			String re = tservice.handle(1.0F, 2.0F);
+			Assert.assertEquals(TServiceImplDefault.MY_RE, re);
 		}
 
 		{
-			String concat = tservice.concat("a", TService1.B);
-			Assert.assertEquals(TService1.MY_PREFIX + "a" + TService1.B, concat);
+			String re = tservice.handle(1.0F, TServiceImplSpecial.B);
+			Assert.assertEquals(TServiceImplSpecial.MY_RE, re);
 		}
 
 		{
-			String concat = tservice.concat("a", TService2.B);
-			Assert.assertEquals(TService2.MY_PREFIX + "a" + TService2.B, concat);
-		}
-
-		{
-			String concat = tservice.concat("a", TService3.B);
-			Assert.assertEquals(TService3.MY_PREFIX + "a" + TService3.B, concat);
+			String re = tservice.handle(1, 2);
+			Assert.assertEquals(TServiceImplInteger.MY_RE, re);
 		}
 	}
 
 	public static interface TService
 	{
-		String concat(String a, String b);
+		String handle(Number a, Number b);
 	}
 
-	@Implementor
-	public static class TService0 implements TService
+	public static class TServiceImplDefault implements TService
 	{
+		public static final String MY_RE = TServiceImplDefault.class
+				.getSimpleName();
+
 		@Override
-		public String concat(String a, String b)
+		public String handle(Number a, Number b)
 		{
-			return a + b;
+			return MY_RE;
 		}
 	}
 
-	@Implementor
-	public static class TService1 implements TService
+	public static class TServiceImplSpecial implements TService
 	{
-		public static final String MY_PREFIX = "TService1_";
+		public static final String MY_RE = TServiceImplSpecial.class
+				.getSimpleName();
 
-		public static final String B = "b-TService1";
+		public static final Number B = new Integer(1111111);
 
-		@Validity("plusValid")
+		@Validity("isValid")
 		@Override
-		public String concat(String a, String b)
+		public String handle(Number a, Number b)
 		{
-			return MY_PREFIX + a + b;
+			return MY_RE;
 		}
 
-		public boolean plusValid(@ParamIndex(1) String b)
+		public boolean isValid(@ParamIndex(1) Number b)
 		{
 			return B.equals(b);
 		}
 	}
 
 	@Implementor(TService.class)
-	public static class TService2
+	public static class TServiceImplInteger
 	{
-		public static final String MY_PREFIX = "TService2_";
+		public static final String MY_RE = TServiceImplInteger.class
+				.getSimpleName();
 
-		public static final String B = "b-TService2";
-
-		@Validity("plusValid")
-		@Priority(1)
-		public String concat(String a, String b)
+		@Implement("handle")
+		public String handle(Integer a, Integer b)
 		{
-			return MY_PREFIX + a + b;
-		}
-
-		public boolean plusValid(@ParamIndex(1) String b)
-		{
-			return B.equals(b);
-		}
-	}
-
-	@Implementor(TService.class)
-	public static class TService3
-	{
-		public static final String MY_PREFIX = "TService3_";
-
-		public static final String B = "b-TService3";
-
-		@Validity("plusValid")
-		@Priority(method = "Plus-Priority")
-		public String concat(String a, String b)
-		{
-			return MY_PREFIX + a + b;
-		}
-
-		public boolean plusValid(@ParamIndex(1) String b)
-		{
-			return B.equals(b);
-		}
-
-		@Refered("Plus-Priority")
-		public int plusPriority(@ParamIndex(1) String b)
-		{
-			return b.length();
+			return MY_RE;
 		}
 	}
 }
