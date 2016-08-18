@@ -57,13 +57,15 @@ public class FrameworkTest
 	{
 		Implementation implementation = this.implementationResolver.resolve(
 				TService.class, TServiceImplDefault.class, TServiceImplSpecial.class,
-				TServiceImplInteger.class);
+				TServiceImplInteger.class, TServiceImplDouble.class);
 
 		Map<Class<?>, Set<?>> implementorBeans = new HashMap<Class<?>, Set<?>>();
 
 		implementorBeans.put(TServiceImplDefault.class, Collections.singleton(new TServiceImplDefault()));
 		implementorBeans.put(TServiceImplSpecial.class, Collections.singleton(new TServiceImplSpecial()));
 		implementorBeans.put(TServiceImplInteger.class, Collections.singleton(new TServiceImplInteger()));
+		implementorBeans.put(TServiceImplDouble.class,
+				Collections.singleton(new TServiceImplDouble()));
 
 		TService tservice = (TService) this.implementeeBeanBuilder
 				.build(implementation,
@@ -82,6 +84,11 @@ public class FrameworkTest
 		{
 			String re = tservice.handle(1, 2);
 			Assert.assertEquals(TServiceImplInteger.MY_RE, re);
+		}
+
+		{
+			String re = tservice.handle(1.0D, 2.0D);
+			Assert.assertEquals(TServiceImplDouble.MY_RE, re);
 		}
 	}
 
@@ -107,7 +114,7 @@ public class FrameworkTest
 		public static final String MY_RE = TServiceImplSpecial.class
 				.getSimpleName();
 
-		public static final Number B = new Integer(1111111);
+		public static final Number B = new Float(11.1F);
 
 		@Validity("isValid")
 		@Override
@@ -130,6 +137,19 @@ public class FrameworkTest
 
 		@Implement("handle")
 		public String handle(Integer a, Integer b)
+		{
+			return MY_RE;
+		}
+	}
+
+	@Implementor(TService.class)
+	public static class TServiceImplDouble
+	{
+		public static final String MY_RE = TServiceImplDouble.class
+				.getSimpleName();
+
+		@Implement("handle")
+		public String handle(@ParamIndex(1) Double b)
 		{
 			return MY_RE;
 		}
