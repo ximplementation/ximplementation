@@ -18,7 +18,9 @@ import java.lang.reflect.Method;
 
 /**
  * 接口方法调用信息计算器。
- * @author zangzf
+ * 
+ * @author earthangry@gmail.com
+ * @date 2016年8月15日
  *
  */
 public interface ImplementeeMethodInvocationInfoEvaluator

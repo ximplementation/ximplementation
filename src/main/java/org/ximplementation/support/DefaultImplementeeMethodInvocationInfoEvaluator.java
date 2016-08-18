@@ -17,10 +17,24 @@ package org.ximplementation.support;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
+import org.ximplementation.Priority;
+import org.ximplementation.Validity;
+
 /**
  * 默认接口方法调用信息计算器。
+ * <p>
+ * 此类先筛除参数类型不匹配和{@linkplain Validity @Validaty}不通过的实现方法，之后按照如下规则依次计算：
+ * </p>
+ * <ol>
+ * <li>计算所有实现方法的{@linkplain Priority @Priority}优先级值，并返回优先级值最高的那个；</li>
+ * <li>否则，返回参数类型最接近的那个；</li>
+ * <li>否则，返回声明了{@linkplain Validity @Validaty}的那个；</li>
+ * <li>否则，返回实现者类与接口类不在同一个包内的那个；</li>
+ * <li>否则，随机返回一个。</li>
+ * </ol>
  * 
- * @author zangzf
+ * @author earthangry@gmail.com
+ * @date 2016年8月15日
  *
  */
 public class DefaultImplementeeMethodInvocationInfoEvaluator
@@ -39,7 +53,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 	{
 		ImplementMethodInfo implementMethodInfo = null;
 		Object implementorBean = null;
-		int priority = 0;
+		int priority = Integer.MIN_VALUE;
 
 		ImplementInfo implementInfo = findImplementInfo(implementation,
 				implementeeMethod);
