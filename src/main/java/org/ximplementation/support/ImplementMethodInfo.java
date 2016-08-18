@@ -27,6 +27,8 @@ import java.lang.reflect.Type;
  */
 public class ImplementMethodInfo implements Serializable
 {
+	protected static final Object[] EMPTY_PARAMS = {};
+
 	private static final long serialVersionUID = 1L;
 
 	/** 实现者 */
@@ -121,6 +123,17 @@ public class ImplementMethodInfo implements Serializable
 		this.paramIndexes = paramIndexes;
 	}
 
+	/**
+	 * 获取实现方法参数数组。
+	 * 
+	 * @param implementeeMethodParams
+	 * @return
+	 */
+	public Object[] getParams(Object[] implementeeMethodParams)
+	{
+		return copyArrayByIndex(implementeeMethodParams, this.paramIndexes);
+	}
+
 	public boolean hasValidityMethod()
 	{
 		return (this.validityMethod != null);
@@ -144,6 +157,21 @@ public class ImplementMethodInfo implements Serializable
 	public void setValidityParamIndexes(int[] validityParamIndexes)
 	{
 		this.validityParamIndexes = validityParamIndexes;
+	}
+
+	/**
+	 * 获取有效性方法参数数组。
+	 * <p>
+	 * 如果无有效性方法，此方法将返回一个空数组。
+	 * </p>
+	 * 
+	 * @param implementeeMethodParams
+	 * @return
+	 */
+	public Object[] getValidityParams(Object[] implementeeMethodParams)
+	{
+		return copyArrayByIndex(implementeeMethodParams,
+				this.validityParamIndexes);
 	}
 
 	public int getPriorityValue()
@@ -179,6 +207,46 @@ public class ImplementMethodInfo implements Serializable
 	public void setPriorityParamIndexes(int[] priorityParamIndexes)
 	{
 		this.priorityParamIndexes = priorityParamIndexes;
+	}
+
+	/**
+	 * 获取优先级方法参数数组。
+	 * <p>
+	 * 如果无优先级方法，此方法将返回一个空数组。
+	 * </p>
+	 * 
+	 * @param implementeeMethodParams
+	 * @return
+	 */
+	public Object[] getPriorityParams(Object[] implementeeMethodParams)
+	{
+		return this.copyArrayByIndex(implementeeMethodParams,
+				this.priorityParamIndexes);
+	}
+
+	/**
+	 * 根据索引拷贝数组。
+	 * <P>
+	 * 如果{@code indexes}为{@code null}或空数组，此方法将返回一个空数组。
+	 * </P>
+	 * 
+	 * @param source
+	 * @param indexes
+	 * @return
+	 */
+	protected Object[] copyArrayByIndex(Object[] source, int[] indexes)
+	{
+		if (indexes == null || indexes.length == 0)
+			return EMPTY_PARAMS;
+
+		Object[] copied = new Object[indexes.length];
+
+		for (int i = 0; i < indexes.length; i++)
+		{
+			copied[i] = source[indexes[i]];
+		}
+
+		return copied;
 	}
 
 	@Override

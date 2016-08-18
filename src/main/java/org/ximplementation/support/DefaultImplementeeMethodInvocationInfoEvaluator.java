@@ -72,17 +72,10 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 			if (implementorBeans == null || implementorBeans.isEmpty())
 				continue;
 
-			Object[] validityMethodParams = (myImplementMethodInfo
-					.hasValidityMethod()
-							? extractValidityMethodParams(myImplementMethodInfo,
-									implementeeMethodParams)
-							: null);
-
-			Object[] priorityMethodParams = (myImplementMethodInfo
-					.hasPriorityMethod()
-							? extractPriorityMethodParams(myImplementMethodInfo,
-									implementeeMethodParams)
-							: null);
+			Object[] validityMethodParams = myImplementMethodInfo
+					.getValidityParams(implementeeMethodParams);
+			Object[] priorityMethodParams = myImplementMethodInfo
+					.getPriorityParams(implementeeMethodParams);
 
 			for (Object myImplementorBean : implementorBeans)
 			{
@@ -162,73 +155,31 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 	 * 判断对象数组是否能作为{@linkplain ImplementMethodInfo#getImplementMethod()}方法的参数数组。
 	 * 
 	 * @param implementMethodInfo
-	 * @param params
+	 * @param implementeeMethodParams
 	 * @return
 	 */
 	protected boolean isImplementMethodParamValid(
-			ImplementMethodInfo implementMethodInfo, Object[] params)
+			ImplementMethodInfo implementMethodInfo,
+			Object[] implementeeMethodParams)
 	{
-		Class<?>[] paramTypes = implementMethodInfo.getParamTypes();
+		Class<?>[] myParamTypes = implementMethodInfo.getParamTypes();
 
-		if (paramTypes.length > params.length)
+		if (myParamTypes == null)
+			return true;
+
+		if (myParamTypes.length > implementeeMethodParams.length)
 			return false;
 
-		int[] paramIndexes = implementMethodInfo.getParamIndexes();
+		Object[] myParams = implementMethodInfo
+				.getParams(implementeeMethodParams);
 
-		for (int i = 0; i < paramTypes.length; i++)
+		for (int i = 0; i < myParamTypes.length; i++)
 		{
-			Class<?> myParamType = paramTypes[i];
-			Object myParam = params[paramIndexes[i]];
-
-			if (!myParamType.isInstance(myParam))
+			if (!myParamTypes[i].isInstance(myParams[i]))
 				return false;
 		}
 
 		return true;
-	}
-
-	/**
-	 * 提取{@linkplain ImplementMethodInfo#getValidityMethod()}方法的参数数组。
-	 * <p>
-	 * 如果{@linkplain ImplementMethodInfo#hasValidityMethod()}为{@code false}
-	 * ，此方法将返回{@code null}。
-	 * </p>
-	 * 
-	 * @param implementMethodInfo
-	 * @param implementMethodParams
-	 * @return
-	 */
-	protected Object[] extractValidityMethodParams(
-			ImplementMethodInfo implementMethodInfo,
-			Object[] implementMethodParams)
-	{
-		if (!implementMethodInfo.hasValidityMethod())
-			return null;
-
-		return subArrayByIndex(implementMethodParams,
-				implementMethodInfo.getValidityParamIndexes());
-	}
-
-	/**
-	 * 提取{@linkplain ImplementMethodInfo#getPriorityMethod()}方法的参数数组。
-	 * <p>
-	 * 如果{@linkplain ImplementMethodInfo#hasPriorityMethod()}为{@code false}
-	 * ，此方法将返回{@code null}。
-	 * </p>
-	 * 
-	 * @param implementMethodInfo
-	 * @param implementMethodParams
-	 * @return
-	 */
-	protected Object[] extractPriorityMethodParams(
-			ImplementMethodInfo implementMethodInfo,
-			Object[] implementMethodParams)
-	{
-		if (!implementMethodInfo.hasPriorityMethod())
-			return null;
-
-		return subArrayByIndex(implementMethodParams,
-				implementMethodInfo.getPriorityParamIndexes());
 	}
 
 	/**
@@ -373,24 +324,5 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 		}
 		else
 			return (secondSamePkg ? 1 : 0);
-	}
-
-	/**
-	 * 根据索引数组提取子对象数组。
-	 * 
-	 * @param source
-	 * @param indexes
-	 * @return
-	 */
-	protected Object[] subArrayByIndex(Object[] source, int[] indexes)
-	{
-		Object[] subObjs = new Object[indexes.length];
-
-		for (int i = 0; i < indexes.length; i++)
-		{
-			subObjs[i] = source[indexes[i]];
-		}
-
-		return subObjs;
 	}
 }

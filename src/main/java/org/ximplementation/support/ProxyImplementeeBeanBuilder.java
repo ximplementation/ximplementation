@@ -141,10 +141,15 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 			if (invocationInfo == null)
 				throw new UnsupportedOperationException("No valid implement is found for [" + method + "]");
 
-			Method implementMethod = invocationInfo.getImplementMethodInfo().getImplementMethod();
-			Object implementBean = invocationInfo.getImplementorBean();
+			ImplementMethodInfo implementMethodInfo = invocationInfo
+					.getImplementMethodInfo();
 
-			return implementMethod.invoke(implementBean, args);
+			Object implementBean = invocationInfo.getImplementorBean();
+			Method implementMethod = implementMethodInfo.getImplementMethod();
+			Object[] implementMethodParams = implementMethodInfo
+					.getParams(args);
+
+			return implementMethod.invoke(implementBean, implementMethodParams);
 		}
 
 		@Override
