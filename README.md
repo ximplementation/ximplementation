@@ -65,4 +65,4 @@ Then, you can get a `Service` instance by:
 	Service service = new ProxyImplementeeBeanBuilder().build(implementation, implementorBeans);
 ```
 
-The `serivce`'s `plus` method invocation will be delegated to `ServiceImplPlusInteger.plus` method while the parameter type is `Integer`, to `ServiceImplPlus.plus` method otherwise; and the `minus` method will be delegated to `ServiceImplMinus.minus` method.
+The `serivce.plus` method invocation will be delegated to `ServiceImplPlusInteger.plus` method while the parameter type is `Integer`, to `ServiceImplPlus.plus` method otherwise; and the `serivce.minus` method will be delegated to `ServiceImplMinus.minus` method.
