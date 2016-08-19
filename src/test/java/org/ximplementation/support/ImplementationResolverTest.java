@@ -14,7 +14,9 @@
 
 package org.ximplementation.support;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -321,6 +323,116 @@ public class ImplementationResolverTest
 			@Override
 			public void handle()
 			{
+			}
+		}
+	}
+
+	@Test
+	public void resolveImplementMethodInfoPropertiesTest()
+	{
+		Class<?> implementee = ResolveImplementMethodInfoPropertiesTest.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "handle");
+		Class<?> implementor = ResolveImplementMethodInfoPropertiesTest.Implementor.class;
+		Method implementMethod = getMethodByName(implementor, "handle");
+
+		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
+				implementor, implementMethod);
+
+		this.implementationResolver.resolveImplementMethodInfoProperties(
+				implementee, implementeeMethod, implementMethodInfo);
+
+		assertNotNull(implementMethodInfo.getParamTypes());
+		assertNotNull(implementMethodInfo.getGenericParamTypes());
+		assertNotNull(implementMethodInfo.getParamIndexes());
+		assertNotNull(implementMethodInfo.getValidityMethod());
+		assertNotNull(implementMethodInfo.getValidityParamIndexes());
+		assertNotNull(implementMethodInfo.getPriorityMethod());
+		assertNotNull(implementMethodInfo.getPriorityValue());
+		assertNotNull(implementMethodInfo.getPriorityParamIndexes());
+	}
+
+	@Test
+	public void resolveImplementMethodInfoParamTypesTest()
+	{
+		Class<?> implementee = ResolveImplementMethodInfoPropertiesTest.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "handle");
+		Class<?> implementor = ResolveImplementMethodInfoPropertiesTest.Implementor.class;
+		Method implementMethod = getMethodByName(implementor, "handle");
+
+		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
+				implementor, implementMethod);
+
+		this.implementationResolver.resolveImplementMethodInfoParamTypes(
+				implementee, implementeeMethod, implementMethodInfo);
+
+		assertArrayEquals(implementeeMethod.getParameterTypes(),
+				implementMethodInfo.getParamTypes());
+	}
+
+	@Test
+	public void resolveImplementMethodInfoGenericParamTypesTest()
+	{
+		Class<?> implementee = ResolveImplementMethodInfoPropertiesTest.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "handle");
+		Class<?> implementor = ResolveImplementMethodInfoPropertiesTest.Implementor.class;
+		Method implementMethod = getMethodByName(implementor, "handle");
+
+		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
+				implementor, implementMethod);
+
+		this.implementationResolver.resolveImplementMethodInfoGenericParamTypes(
+				implementee, implementeeMethod, implementMethodInfo);
+
+		assertArrayEquals(implementeeMethod.getGenericParameterTypes(),
+				implementMethodInfo.getGenericParamTypes());
+
+	}
+
+	@Test
+	public void resolveImplementMethodInfoParamIndexesTest()
+	{
+		Class<?> implementee = ResolveImplementMethodInfoPropertiesTest.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "handle");
+		Class<?> implementor = ResolveImplementMethodInfoPropertiesTest.Implementor.class;
+		Method implementMethod = getMethodByName(implementor, "handle");
+
+		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
+				implementor, implementMethod);
+
+		this.implementationResolver.resolveImplementMethodInfoParamIndexes(
+				implementee, implementeeMethod, implementMethodInfo);
+
+		assertArrayEquals(new int[] { 0 },
+				implementMethodInfo.getParamIndexes());
+
+	}
+
+	public static class ResolveImplementMethodInfoPropertiesTest
+	{
+		public static class Implementee
+		{
+			public void handle(int a)
+			{
+			}
+		}
+
+		public static class Implementor extends Implementee
+		{
+			@Override
+			@Validity("isValid")
+			@Priority(method = "getPriority")
+			public void handle(int a)
+			{
+			}
+
+			public boolean isValid(int a)
+			{
+				return true;
+			}
+
+			public int getPriority(int a)
+			{
+				return 1;
 			}
 		}
 	}
