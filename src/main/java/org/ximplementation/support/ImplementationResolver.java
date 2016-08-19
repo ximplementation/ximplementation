@@ -621,10 +621,17 @@ public class ImplementationResolver
 					{
 						Class<?> returnType = m.getReturnType();
 
+						if (returnType.isPrimitive())
+							returnType = toWrapperType(returnType);
+
 						boolean returnValid = false;
 
 						for (Class<?> validReturnType : validReturnTypes)
 						{
+							if (validReturnType.isPrimitive())
+								validReturnType = toWrapperType(
+										validReturnType);
+
 							if (validReturnType.isAssignableFrom(returnType))
 							{
 								returnValid = true;
@@ -642,9 +649,17 @@ public class ImplementationResolver
 		{
 			if (named.size() == 1)
 				method = named.get(0);
+			else if (named.size() == 0)
+				throw new ImplementationResolveException(
+						"Class [" + clazz.getName()
+								+ "] : No method is found for '"
+								+ methodRef + "' reference");
 			else
-				throw new ImplementationResolveException("Class [" + clazz.getName() + "] : More than one '" + methodRef
-						+ "' named method is found for '" + methodRef + "' reference");
+				throw new ImplementationResolveException(
+						"Class [" + clazz.getName() + "] : More than one '"
+								+ methodRef
+								+ "' named method is found for '" + methodRef
+								+ "' reference");
 		}
 
 		return method;
@@ -738,5 +753,33 @@ public class ImplementationResolver
 	protected <T extends Annotation> T getAnnotation(AnnotatedElement element, Class<T> clazz)
 	{
 		return element.getAnnotation(clazz);
+	}
+
+	/**
+	 * 将基本类型转换为对应的包装类型。
+	 * 
+	 * @param primitiveType
+	 * @return
+	 */
+	protected Class<?> toWrapperType(Class<?> primitiveType)
+	{
+		if (boolean.class.equals(Boolean.class))
+			return Boolean.class;
+		else if(byte.class.equals(primitiveType))
+			return Byte.class;
+		else if (char.class.equals(primitiveType))
+			return Character.class;
+		else if (double.class.equals(primitiveType))
+			return Double.class;
+		else if (float.class.equals(primitiveType))
+			return Float.class;
+		else if (int.class.equals(primitiveType))
+			return Integer.class;
+		else if (long.class.equals(primitiveType))
+			return Long.class;
+		else if (short.class.equals(primitiveType))
+			return Short.class;
+		else
+			return primitiveType;
 	}
 }
