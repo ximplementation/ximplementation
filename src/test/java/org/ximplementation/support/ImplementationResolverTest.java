@@ -15,7 +15,6 @@
 package org.ximplementation.support;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -55,18 +54,82 @@ public class ImplementationResolverTest
 	}
 
 	@Test
-	public void test()
+	public void resolveTestArray()
 	{
-		Set<Class<?>> implementors = new HashSet<Class<?>>();
-		implementors.add(TService0.class);
-		implementors.add(TService1.class);
-		implementors.add(TService2.class);
-		implementors.add(TService3.class);
+		Class<?> implementee = ResolveTestArray.Implementee.class;
 
 		Implementation implementation = this.implementationResolver
-				.resolve(TService.class, implementors);
+				.resolve(implementee, ResolveTestArray.Implementor0.class,
+						ResolveTestArray.Implementor1.class);
 
-		assertNotNull(implementation);
+		assertEquals(ResolveTestArray.Implementee.class,
+				implementation.getImplementee());
+		assertEquals(1, implementation.getImplementInfos().length);
+
+		Set<Class<?>> expectedImplementors = new HashSet<Class<?>>();
+		expectedImplementors.add(ResolveTestArray.Implementor0.class);
+		expectedImplementors.add(ResolveTestArray.Implementor1.class);
+
+		Set<Class<?>> actualImplementors = new HashSet<Class<?>>();
+		for (ImplementMethodInfo implementMethodInfo : implementation
+				.getImplementInfos()[0].getImplementMethodInfos())
+		{
+			actualImplementors.add(implementMethodInfo.getImplementor());
+		}
+
+		assertEquals(expectedImplementors, actualImplementors);
+	}
+
+	@Test
+	public void resolveTestSet()
+	{
+		Class<?> implementee = ResolveTestArray.Implementee.class;
+
+		Set<Class<?>> implementors = new HashSet<Class<?>>();
+		implementors.add(ResolveTestArray.Implementor0.class);
+		implementors.add(ResolveTestArray.Implementor1.class);
+
+		Implementation implementation = this.implementationResolver.resolve(
+				implementee, implementors);
+
+		assertEquals(ResolveTestArray.Implementee.class,
+				implementation.getImplementee());
+		assertEquals(1, implementation.getImplementInfos().length);
+
+		Set<Class<?>> actualImplementors = new HashSet<Class<?>>();
+		for (ImplementMethodInfo implementMethodInfo : implementation
+				.getImplementInfos()[0].getImplementMethodInfos())
+		{
+			actualImplementors.add(implementMethodInfo.getImplementor());
+		}
+
+		assertEquals(implementors, actualImplementors);
+	}
+
+	public static class ResolveTestArray
+	{
+		public static class Implementee
+		{
+			public void handle()
+			{
+			}
+		}
+
+		public static class Implementor0 extends Implementee
+		{
+			@Override
+			public void handle()
+			{
+			}
+		}
+
+		public static class Implementor1 extends Implementee
+		{
+			@Override
+			public void handle()
+			{
+			}
+		}
 	}
 
 	@Test
@@ -221,6 +284,42 @@ public class ImplementationResolverTest
 			}
 
 			public void notImplementHandle()
+			{
+			}
+		}
+	}
+
+	@Test
+	public void buildImplementMethodInfoTest()
+	{
+		Class<?> implementee = BuildImplementMethodInfoTest.Implementee.class;
+		Method[] implementeeMethods = implementee.getMethods();
+		Method implementeeMethod = getMethodByName(implementeeMethods,
+				"handle");
+		Class<?> implementor = BuildImplementMethodInfoTest.Implementor.class;
+		Method implementMethod = getMethodByName(implementor, "handle");
+
+		ImplementMethodInfo implementMethodInfo = this.implementationResolver
+				.buildImplementMethodInfo(implementee, implementeeMethod,
+						implementor, implementMethod);
+
+		assertEquals(implementor, implementMethodInfo.getImplementor());
+		assertEquals(implementMethod, implementMethodInfo.getImplementMethod());
+	}
+
+	public static class BuildImplementMethodInfoTest
+	{
+		public static class Implementee
+		{
+			public void handle()
+			{
+			}
+		}
+
+		public static class Implementor extends Implementee
+		{
+			@Override
+			public void handle()
 			{
 			}
 		}
