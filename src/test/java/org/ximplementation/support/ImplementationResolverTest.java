@@ -349,8 +349,38 @@ public class ImplementationResolverTest
 		assertNotNull(implementMethodInfo.getValidityMethod());
 		assertNotNull(implementMethodInfo.getValidityParamIndexes());
 		assertNotNull(implementMethodInfo.getPriorityMethod());
-		assertNotNull(implementMethodInfo.getPriorityValue());
+		assertEquals(1, implementMethodInfo.getPriorityValue());
 		assertNotNull(implementMethodInfo.getPriorityParamIndexes());
+	}
+
+	public static class ResolveImplementMethodInfoPropertiesTest
+	{
+		public static class Implementee
+		{
+			public void handle(int a)
+			{
+			}
+		}
+
+		public static class Implementor extends Implementee
+		{
+			@Override
+			@Validity("isValid")
+			@Priority(value = 1, method = "getPriority")
+			public void handle(int a)
+			{
+			}
+
+			public boolean isValid(int a)
+			{
+				return true;
+			}
+
+			public int getPriority(int a)
+			{
+				return 1;
+			}
+		}
 	}
 
 	@Test
@@ -427,38 +457,8 @@ public class ImplementationResolverTest
 		assertNotNull(implementMethodInfo.getValidityParamIndexes());
 	}
 
-	public static class ResolveImplementMethodInfoPropertiesTest
-	{
-		public static class Implementee
-		{
-			public void handle(int a)
-			{
-			}
-		}
-
-		public static class Implementor extends Implementee
-		{
-			@Override
-			@Validity("isValid")
-			@Priority(method = "getPriority")
-			public void handle(int a)
-			{
-			}
-
-			public boolean isValid(int a)
-			{
-				return true;
-			}
-
-			public int getPriority(int a)
-			{
-				return 1;
-			}
-		}
-	}
-
 	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
+	public ExpectedException resolveImplementMethodInfoValidityExpectedException = ExpectedException.none();
 
 	@Test
 	public void resolveImplementMethodInfoValidityTestThrow()
@@ -471,7 +471,7 @@ public class ImplementationResolverTest
 		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
 				implementor, implementMethod);
 
-		expectedException.expect(ImplementationResolveException.class);
+		resolveImplementMethodInfoValidityExpectedException.expect(ImplementationResolveException.class);
 
 		this.implementationResolver.resolveImplementMethodInfoValidity(
 				implementee, implementeeMethod, implementMethodInfo);
@@ -490,6 +490,67 @@ public class ImplementationResolverTest
 		{
 			@Override
 			@Validity("isValid")
+			public void handle(int a)
+			{
+			}
+		}
+	}
+
+	@Test
+	public void resolveImplementMethodInfoPriorityTest()
+	{
+		Class<?> implementee = ResolveImplementMethodInfoPropertiesTest.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "handle");
+		Class<?> implementor = ResolveImplementMethodInfoPropertiesTest.Implementor.class;
+		Method implementMethod = getMethodByName(implementor, "handle");
+
+		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
+				implementor, implementMethod);
+
+		this.implementationResolver.resolveImplementMethodInfoPriority(
+				implementee, implementeeMethod, implementMethodInfo);
+
+		assertEquals(getMethodByName(implementor, "getPriority"),
+				implementMethodInfo.getPriorityMethod());
+		assertEquals(1, implementMethodInfo.getPriorityValue());
+		assertNotNull(implementMethodInfo.getPriorityParamIndexes());
+	}
+
+	@Rule
+	public ExpectedException resolveImplementMethodInfoPriorityExpectedException = ExpectedException
+			.none();
+
+	@Test
+	public void resolveImplementMethodInfoPriorityTestThrow()
+	{
+		Class<?> implementee = ResolveImplementMethodInfoPriorityThrow.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "handle");
+		Class<?> implementor = ResolveImplementMethodInfoPriorityThrow.Implementor.class;
+		Method implementMethod = getMethodByName(implementor, "handle");
+
+		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
+				implementor, implementMethod);
+
+		resolveImplementMethodInfoPriorityExpectedException
+				.expect(ImplementationResolveException.class);
+
+		this.implementationResolver.resolveImplementMethodInfoPriority(
+				implementee, implementeeMethod, implementMethodInfo);
+	}
+
+	public static class ResolveImplementMethodInfoPriorityThrow
+	{
+		public static class Implementee
+		{
+			public void handle(int a)
+			{
+			}
+		}
+
+		public static class Implementor extends Implementee
+		{
+			@Override
+			@Priority(method = "getPriority")
 			public void handle(int a)
 			{
 			}
