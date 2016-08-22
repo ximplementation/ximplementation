@@ -16,7 +16,9 @@ package org.ximplementation.support;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -29,10 +31,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.ximplementation.Implement;
-import org.ximplementation.Implementor;
-import org.ximplementation.ParamIndex;
 import org.ximplementation.Priority;
-import org.ximplementation.Refered;
 import org.ximplementation.Validity;
 
 /**
@@ -557,11 +556,63 @@ public class ImplementationResolverTest
 		}
 	}
 
+	@Test
+	public void isImplementeeMethodTest()
+	{
+		Class<?> implementee = IsImplementeeMethodTest.class;
+
+		assertFalse(this.implementationResolver.isImplementeeMethod(implementee,
+				getMethodByName(implementee, "notImplementeeMethodStatic")));
+
+		assertTrue(this.implementationResolver.isImplementeeMethod(implementee,
+				getMethodByName(implementee, "implementeeMethod")));
+
+		assertFalse(this.implementationResolver.isImplementeeMethod(implementee,
+				getMethodByName(implementee, "notImplementeeMethodProtected")));
+
+		assertFalse(this.implementationResolver.isImplementeeMethod(implementee,
+				getMethodByName(implementee, "notImplementeeMethodPrivate")));
+
+		assertFalse(this.implementationResolver.isImplementeeMethod(implementee,
+				getMethodByName(implementee, "notImplementeeMethodDefault")));
+
+		assertFalse(this.implementationResolver.isImplementeeMethod(implementee,
+				getMethodByName(implementee, "hashCode")));
+	}
+
+	public static class IsImplementeeMethodTest
+	{
+		public static void notImplementeeMethodStatic()
+		{
+		}
+
+		public void implementeeMethod()
+		{
+		}
+
+		protected void notImplementeeMethodProtected()
+		{
+		}
+
+		@SuppressWarnings("unused")
+		private void notImplementeeMethodPrivate()
+		{
+		}
+
+		void notImplementeeMethodDefault()
+		{
+		}
+	}
+
 	protected static Method getMethodByName(Class<?> clazz, String name)
 	{
-		Method[] methods = clazz.getMethods();
+		for (Method method : clazz.getMethods())
+		{
+			if (method.getName().equals(name))
+				return method;
+		}
 
-		for (Method method : methods)
+		for (Method method : clazz.getDeclaredMethods())
 		{
 			if (method.getName().equals(name))
 				return method;
@@ -579,86 +630,5 @@ public class ImplementationResolverTest
 		}
 
 		return null;
-	}
-
-	public static interface TService
-	{
-		String concat(String a, String b);
-	}
-
-	@Implementor
-	public static class TService0 implements TService
-	{
-		@Override
-		public String concat(String a, String b)
-		{
-			return a + b;
-		}
-	}
-
-	@Implementor
-	public static class TService1 implements TService
-	{
-		public static final String MY_PREFIX = "TService1_";
-
-		public static final String B = "b-TService1";
-
-		@Validity("plusValid")
-		@Override
-		public String concat(String a, String b)
-		{
-			return MY_PREFIX + a + b;
-		}
-
-		public boolean plusValid(@ParamIndex(1) String b)
-		{
-			return B.equals(b);
-		}
-	}
-
-	@Implementor(TService.class)
-	public static class TService2
-	{
-		public static final String MY_PREFIX = "TService2_";
-
-		public static final String B = "b-TService2";
-
-		@Validity("plusValid")
-		@Priority(1)
-		public String concat(String a, String b)
-		{
-			return MY_PREFIX + a + b;
-		}
-
-		public boolean plusValid(@ParamIndex(1) String b)
-		{
-			return B.equals(b);
-		}
-	}
-
-	@Implementor(TService.class)
-	public static class TService3
-	{
-		public static final String MY_PREFIX = "TService3_";
-
-		public static final String B = "b-TService3";
-
-		@Validity("plusValid")
-		@Priority(method = "Plus-Priority")
-		public String concat(String a, String b)
-		{
-			return MY_PREFIX + a + b;
-		}
-
-		public boolean plusValid(@ParamIndex(1) String b)
-		{
-			return B.equals(b);
-		}
-
-		@Refered("Plus-Priority")
-		public int plusPriority(@ParamIndex(1) String b)
-		{
-			return b.length();
-		}
 	}
 }
