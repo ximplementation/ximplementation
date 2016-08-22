@@ -25,7 +25,9 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.ximplementation.Implement;
 import org.ximplementation.Implementor;
 import org.ximplementation.ParamIndex;
@@ -404,7 +406,25 @@ public class ImplementationResolverTest
 
 		assertArrayEquals(new int[] { 0 },
 				implementMethodInfo.getParamIndexes());
+	}
 
+	@Test
+	public void resolveImplementMethodInfoValidityTest()
+	{
+		Class<?> implementee = ResolveImplementMethodInfoPropertiesTest.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "handle");
+		Class<?> implementor = ResolveImplementMethodInfoPropertiesTest.Implementor.class;
+		Method implementMethod = getMethodByName(implementor, "handle");
+
+		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
+				implementor, implementMethod);
+
+		this.implementationResolver.resolveImplementMethodInfoValidity(
+				implementee, implementeeMethod, implementMethodInfo);
+
+		assertEquals(getMethodByName(implementor, "isValid"),
+				implementMethodInfo.getValidityMethod());
+		assertNotNull(implementMethodInfo.getValidityParamIndexes());
 	}
 
 	public static class ResolveImplementMethodInfoPropertiesTest
@@ -433,6 +453,45 @@ public class ImplementationResolverTest
 			public int getPriority(int a)
 			{
 				return 1;
+			}
+		}
+	}
+
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
+
+	@Test
+	public void resolveImplementMethodInfoValidityTestThrow()
+	{
+		Class<?> implementee = ResolveImplementMethodInfoValidityThrow.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "handle");
+		Class<?> implementor = ResolveImplementMethodInfoValidityThrow.Implementor.class;
+		Method implementMethod = getMethodByName(implementor, "handle");
+
+		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
+				implementor, implementMethod);
+
+		expectedException.expect(ImplementationResolveException.class);
+
+		this.implementationResolver.resolveImplementMethodInfoValidity(
+				implementee, implementeeMethod, implementMethodInfo);
+	}
+
+	public static class ResolveImplementMethodInfoValidityThrow
+	{
+		public static class Implementee
+		{
+			public void handle(int a)
+			{
+			}
+		}
+
+		public static class Implementor extends Implementee
+		{
+			@Override
+			@Validity("isValid")
+			public void handle(int a)
+			{
 			}
 		}
 	}
