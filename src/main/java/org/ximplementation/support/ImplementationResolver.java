@@ -463,7 +463,11 @@ public class ImplementationResolver
 
 			if (implementAnoValue == null || implementAnoValue.isEmpty())
 			{
-				return isOverridenMethod(implementee, implementeeMethod, implementor, implementMethod);
+				// 方法名相同且调用可行
+				return implementeeMethodName.equals(implementMethod.getName())
+						&& isInvokeFeasibleMethod(implementee,
+								implementeeMethod, implementor,
+								implementMethod);
 			}
 			else
 			{

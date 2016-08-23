@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,7 +32,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.ximplementation.Implement;
+import org.ximplementation.Implementor;
+import org.ximplementation.NotImplement;
 import org.ximplementation.Priority;
+import org.ximplementation.Refered;
 import org.ximplementation.Validity;
 
 /**
@@ -557,6 +561,52 @@ public class ImplementationResolverTest
 	}
 
 	@Test
+	public void getCandicateImplementeeMethodsTest()
+	{
+		Class<?> implementee = GetCandicateImplementeeMethodsTest.class;
+
+		Method[] methods = this.implementationResolver
+				.getCandicateImplementeeMethods(implementee);
+
+		assertEquals(implementee.getMethods().length, methods.length);
+
+		Set<Method> expected = new HashSet<Method>(
+				Arrays.asList(implementee.getMethods()));
+		Set<Method> actual = new HashSet<Method>(Arrays.asList(methods));
+		assertEquals(expected, actual);
+	}
+
+	public static class GetCandicateImplementeeMethodsTest
+	{
+		public void implementeeMethod()
+		{
+		}
+	}
+
+	@Test
+	public void getCandicateImplementMethodsTest()
+	{
+		Class<?> implementor = GetCandicateImplementMethodsTest.class;
+
+		Method[] methods = this.implementationResolver
+				.getCandicateImplementMethods(implementor);
+
+		assertEquals(implementor.getMethods().length, methods.length);
+
+		Set<Method> expected = new HashSet<Method>(
+				Arrays.asList(implementor.getMethods()));
+		Set<Method> actual = new HashSet<Method>(Arrays.asList(methods));
+		assertEquals(expected, actual);
+	}
+
+	public static class GetCandicateImplementMethodsTest
+	{
+		public void implementMethod()
+		{
+		}
+	}
+
+	@Test
 	public void isImplementeeMethodTest()
 	{
 		Class<?> implementee = IsImplementeeMethodTest.class;
@@ -600,6 +650,258 @@ public class ImplementationResolverTest
 		}
 
 		void notImplementeeMethodDefault()
+		{
+		}
+	}
+
+	@Test
+	public void isImplementorTest()
+	{
+		Class<?> implementee = IsImplementorTest.Implementee.class;
+
+		assertTrue(this.implementationResolver.isImplementor(implementee,
+				IsImplementorTest.Implementee0.class));
+		assertTrue(this.implementationResolver.isImplementor(implementee,
+				IsImplementorTest.Implementor1.class));
+		assertTrue(this.implementationResolver.isImplementor(implementee,
+				IsImplementorTest.Implementor2.class));
+		assertFalse(this.implementationResolver.isImplementor(implementee,
+				IsImplementorTest.NotImplementor.class));
+	}
+
+	public static class IsImplementorTest
+	{
+		public interface Implementee
+		{
+		}
+
+		public interface Implementee0 extends Implementee
+		{
+		}
+
+		public static class Implementor0 implements Implementee
+		{
+		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor1
+		{
+		}
+
+		@Implementor(implementees = { Implementee0.class })
+		public static class Implementor2
+		{
+		}
+
+		public static class NotImplementor
+		{
+		}
+	}
+
+	@Rule
+	public ExpectedException isImplementMethodTestExpectedException = ExpectedException
+			.none();
+
+	@Test
+	public void isImplementMethodTest()
+	{
+		Class<?> implementee = IsImplementMethod.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "plus");
+		String implementeeMethodName = implementeeMethod.getName();
+		String implementeeMethodSignature = implementeeMethod.toString();
+		String implementeeMethodRefered = "plus-ref";
+
+		assertFalse(this.implementationResolver.isImplementMethod(implementee,
+				implementeeMethod, implementeeMethodName,
+				implementeeMethodSignature, implementeeMethodRefered,
+				IsImplementMethod.Implementor0.class, getMethodByName(
+						IsImplementMethod.Implementor0.class, "plusStatic")));
+
+		assertTrue(this.implementationResolver.isImplementMethod(implementee,
+				implementeeMethod, implementeeMethodName,
+				implementeeMethodSignature, implementeeMethodRefered,
+				IsImplementMethod.Implementor1.class,
+				getMethodByName(IsImplementMethod.Implementor1.class, "plus")));
+
+		assertTrue(this.implementationResolver.isImplementMethod(implementee,
+				implementeeMethod, implementeeMethodName,
+				implementeeMethodSignature, implementeeMethodRefered,
+				IsImplementMethod.Implementor2.class, getMethodByName(
+						IsImplementMethod.Implementor2.class, "myPlus")));
+
+		isImplementMethodTestExpectedException
+				.expect(ImplementationResolveException.class);
+		isImplementMethodTestExpectedException
+				.expectMessage("is not able to implement Method");
+		
+		this.implementationResolver.isImplementMethod(implementee,
+				implementeeMethod, implementeeMethodName,
+				implementeeMethodSignature, implementeeMethodRefered,
+				IsImplementMethod.Implementor3.class, getMethodByName(
+						IsImplementMethod.Implementor3.class, "myPlus"));
+
+		assertTrue(this.implementationResolver.isImplementMethod(implementee,
+				implementeeMethod, implementeeMethodName,
+				implementeeMethodSignature, implementeeMethodRefered,
+				IsImplementMethod.Implementor4.class, getMethodByName(
+						IsImplementMethod.Implementor4.class, "myPlus")));
+
+		isImplementMethodTestExpectedException
+				.expect(ImplementationResolveException.class);
+		isImplementMethodTestExpectedException
+				.expectMessage("is not able to implement Method");
+
+		this.implementationResolver.isImplementMethod(implementee,
+				implementeeMethod, implementeeMethodName,
+				implementeeMethodSignature, implementeeMethodRefered,
+				IsImplementMethod.Implementor5.class, getMethodByName(
+						IsImplementMethod.Implementor5.class, "myPlus"));
+
+		assertTrue(this.implementationResolver.isImplementMethod(implementee,
+				implementeeMethod, implementeeMethodName,
+				implementeeMethodSignature, implementeeMethodRefered,
+				IsImplementMethod.Implementor6.class,
+				getMethodByName(IsImplementMethod.Implementor6.class, "plus")));
+
+		assertTrue(this.implementationResolver.isImplementMethod(implementee,
+				implementeeMethod, implementeeMethodName,
+				implementeeMethodSignature, implementeeMethodRefered,
+				IsImplementMethod.Implementor7.class,
+				getMethodByName(IsImplementMethod.Implementor7.class, "plus")));
+	}
+
+	public static class IsImplementMethod
+	{
+		public static interface Implementee
+		{
+			@Refered("plus-ref")
+			Number plus(Number a, Number b);
+		}
+
+		public static class Implementor0
+		{
+			public static Number plusStatic(Number a, Number b)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor1
+		{
+			@Implement
+			public Number plus(Number a, Number b)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor2
+		{
+			@Implement("plus-ref")
+			public Number myPlus(Number a, Number b)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor3
+		{
+			@Implement("plus-ref")
+			public Number myPlus(String a, String b)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor4
+		{
+			@Implement("org.ximplementation.support.ImplementationResolverTest.IsImplementMethod.Implementee.plus(java.lang.Number, java.lang.Number)")
+			public Number myPlus(Number a, Number b)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor5
+		{
+			@Implement("org.ximplementation.support.ImplementationResolverTest.IsImplementMethod.Implementee.plus(java.lang.Number, java.lang.Number)")
+			public Number myPlus(String a, String b)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor6
+		{
+			@Implement("plus")
+			public Number plus(Number a, Number b)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor7 implements Implementee
+		{
+			@Override
+			public Number plus(Number a, Number b)
+			{
+				return null;
+			}
+		}
+	}
+
+	@Test
+	public void maybeImplementMethodTest()
+	{
+		Class<?> implement = MaybeImplementMethodTest.class;
+
+		assertFalse(this.implementationResolver.maybeImplementMethod(implement,
+				getMethodByName(implement, "notImplementMethodStatic")));
+
+		assertTrue(this.implementationResolver.maybeImplementMethod(implement,
+				getMethodByName(implement, "implementMethod")));
+
+		assertFalse(this.implementationResolver.maybeImplementMethod(implement,
+				getMethodByName(implement, "notImplementMethodProtected")));
+
+		assertFalse(this.implementationResolver.maybeImplementMethod(implement,
+				getMethodByName(implement, "notImplementMethodPrivate")));
+
+		assertFalse(this.implementationResolver.maybeImplementMethod(implement,
+				getMethodByName(implement, "notImplementMethodDefault")));
+
+		assertFalse(this.implementationResolver.maybeImplementMethod(implement,
+				getMethodByName(implement, "notImplementAnno")));
+
+		assertFalse(this.implementationResolver.maybeImplementMethod(implement,
+				getMethodByName(implement, "hashCode")));
+	}
+
+	public static class MaybeImplementMethodTest
+	{
+		public static void notImplementMethodStatic()
+		{
+		}
+
+		public void implementMethod()
+		{
+		}
+
+		protected void notImplementMethodProtected()
+		{
+		}
+
+		@SuppressWarnings("unused")
+		private void notImplementMethodPrivate()
+		{
+		}
+
+		void notImplementMethodDefault()
+		{
+		}
+
+		@NotImplement
+		public void notImplementAnno()
 		{
 		}
 	}
