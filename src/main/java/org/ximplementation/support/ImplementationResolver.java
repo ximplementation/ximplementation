@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.ximplementation.Implement;
 import org.ximplementation.Implementor;
+import org.ximplementation.NotImplement;
 import org.ximplementation.ParamIndex;
 import org.ximplementation.Priority;
 import org.ximplementation.Refered;
@@ -99,7 +100,8 @@ public class ImplementationResolver
 
 		List<ImplementInfo> implementInfos = new ArrayList<ImplementInfo>();
 
-		Method[] implementeeMethods = implementee.getMethods();
+		Method[] implementeeMethods = getCandicateImplementeeMethods(
+				implementee);
 
 		for (int i = 0; i < implementeeMethods.length; i++)
 		{
@@ -177,7 +179,7 @@ public class ImplementationResolver
 		String implementeeMethodSignature = getMethodSignature(implementee, implementeeMethod);
 		String implementeeMethodRefered = getRefered(implementeeMethod);
 
-		Method[] implementMethods = implementor.getMethods();
+		Method[] implementMethods = getCandicateImplementMethods(implementor);
 
 		for (int i = 0; i < implementMethods.length; i++)
 		{
@@ -359,6 +361,28 @@ public class ImplementationResolver
 	}
 
 	/**
+	 * 获取候选接口方法数组。
+	 * 
+	 * @param implementee
+	 * @return
+	 */
+	protected Method[] getCandicateImplementeeMethods(Class<?> implementee)
+	{
+		return implementee.getMethods();
+	}
+
+	/**
+	 * 获取候选实现方法数组。
+	 * 
+	 * @param implementor
+	 * @return
+	 */
+	protected Method[] getCandicateImplementMethods(Class<?> implementor)
+	{
+		return implementor.getMethods();
+	}
+
+	/**
 	 * 判断给定方法是否是<i>接口方法</i>。
 	 * 
 	 * @param implementee
@@ -413,28 +437,6 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 判断给定方法是否可能是<i>实现方法</i>。
-	 * 
-	 * @param implementor
-	 * @param implementMethod
-	 * @return
-	 */
-	protected boolean maybeImplementMethod(Class<?> implementor, Method implementMethod)
-	{
-		int modifier = implementMethod.getModifiers();
-
-		if (Modifier.isStatic(modifier) || !Modifier.isPublic(modifier))
-			return false;
-
-		Class<?> delcClass = implementMethod.getDeclaringClass();
-
-		if (Object.class.equals(delcClass))
-			return false;
-
-		return true;
-	}
-
-	/**
 	 * 判断是否是实现方法。
 	 * 
 	 * @param implementee
@@ -484,6 +486,29 @@ public class ImplementationResolver
 		}
 		else
 			return isOverridenMethod(implementee, implementeeMethod, implementor, implementMethod);
+	}
+
+	/**
+	 * 判断给定方法是否可能是<i>实现方法</i>。
+	 * 
+	 * @param implementor
+	 * @param implementMethod
+	 * @return
+	 */
+	protected boolean maybeImplementMethod(Class<?> implementor, Method implementMethod)
+	{
+		int modifier = implementMethod.getModifiers();
+	
+		if (Modifier.isStatic(modifier) || !Modifier.isPublic(modifier))
+			return false;
+	
+		if (Object.class.equals(implementMethod.getDeclaringClass()))
+			return false;
+
+		if (getAnnotation(implementMethod, NotImplement.class) != null)
+			return false;
+	
+		return true;
 	}
 
 	/**
