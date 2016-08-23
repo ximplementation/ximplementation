@@ -563,7 +563,7 @@ public class ImplementationResolver
 	 * </p>
 	 * <ul>
 	 * <li>{@code A}方法的返回值类型必须是{@code B}方法返回值类型的子类；</li>
-	 * <li>{@code A}方法的参数类型必须是对应{@code B}方法参数类型的父类或子类。</li>
+	 * <li>{@code A}方法的参数类型必须是对应{@code B}方法参数类型的子类。</li>
 	 * </ul>
 	 * 
 	 * @param implementee
@@ -579,13 +579,14 @@ public class ImplementationResolver
 		Class<?> implementeeReturnType = implementeeMethod.getReturnType();
 		Class<?> implementorReturnType = implementMethod.getReturnType();
 
-		if (!implementeeReturnType.isAssignableFrom(implementorReturnType))
+		if (!implementeeReturnType
+				.isAssignableFrom(toWrapperType(implementorReturnType)))
 			return false;
 
 		// 参数类型
-		Class<?>[] implementorParamTypes = implementMethod.getParameterTypes();
 		Class<?>[] implementeeParamTypes = implementeeMethod
 				.getParameterTypes();
+		Class<?>[] implementorParamTypes = implementMethod.getParameterTypes();
 
 		if (implementorParamTypes.length > implementeeParamTypes.length)
 			return false;
@@ -599,11 +600,11 @@ public class ImplementationResolver
 			if (myParamIndex >= implementeeParamTypes.length)
 				return false;
 
-			Class<?> implementorParamType = implementorParamTypes[i];
 			Class<?> implementeeParamType = implementeeParamTypes[myParamIndex];
+			Class<?> implementorParamType = implementorParamTypes[i];
 
-			if (!implementeeParamType.isAssignableFrom(implementorParamType)
-					&& !implementorParamType.isAssignableFrom(implementeeParamType))
+			if (!implementeeParamType
+					.isAssignableFrom(toWrapperType(implementorParamType)))
 				return false;
 		}
 
