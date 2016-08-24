@@ -34,6 +34,7 @@ import org.junit.rules.ExpectedException;
 import org.ximplementation.Implement;
 import org.ximplementation.Implementor;
 import org.ximplementation.NotImplement;
+import org.ximplementation.ParamIndex;
 import org.ximplementation.Priority;
 import org.ximplementation.Refered;
 import org.ximplementation.Validity;
@@ -903,6 +904,272 @@ public class ImplementationResolverTest
 		@NotImplement
 		public void notImplementAnno()
 		{
+		}
+	}
+
+	@Test
+	public void isOverridenMethodTest()
+	{
+		Class<?> implementee = IsOverridenMethodTest.Implementee.class;
+
+		assertFalse(this.implementationResolver.isOverridenMethod(implementee,
+				getMethodByName(implementee, "plus"),
+				IsOverridenMethodTest.Implementor0.class, getMethodByName(
+						IsOverridenMethodTest.Implementor0.class, "myPlus")));
+
+		assertFalse(this.implementationResolver.isOverridenMethod(implementee,
+				getMethodByName(implementee, "plus"),
+				IsOverridenMethodTest.Implementor1.class, getMethodByName(
+						IsOverridenMethodTest.Implementor1.class, "plus")));
+
+		assertFalse(this.implementationResolver.isOverridenMethod(implementee,
+				getMethodByName(implementee, "plus"),
+				IsOverridenMethodTest.Implementor2.class, getMethodByName(
+						IsOverridenMethodTest.Implementor2.class, "plus")));
+
+		assertFalse(this.implementationResolver.isOverridenMethod(implementee,
+				getMethodByName(implementee, "plus"),
+				IsOverridenMethodTest.Implementor3.class, getMethodByName(
+						IsOverridenMethodTest.Implementor3.class, "plus")));
+
+		assertTrue(this.implementationResolver.isOverridenMethod(implementee,
+				getMethodByName(implementee, "plus"),
+				IsOverridenMethodTest.Implementor4.class, getMethodByName(
+						IsOverridenMethodTest.Implementor4.class, "plus")));
+
+		assertTrue(this.implementationResolver.isOverridenMethod(implementee,
+				getMethodByName(implementee, "plus"),
+				IsOverridenMethodTest.Implementor5.class, getMethodByName(
+						IsOverridenMethodTest.Implementor5.class, "plus")));
+	}
+
+	public static class IsOverridenMethodTest
+	{
+		public static interface Implementee
+		{
+			Integer plus(Integer a, Integer b);
+		}
+
+		public static class Implementor0
+		{
+			public Integer myPlus(Integer a, Integer b)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor1
+		{
+			public Integer plus(Integer a)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor2
+		{
+			public Integer plus(Integer a, Number b)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor3
+		{
+			public String plus(Integer a, Integer b)
+			{
+				return null;
+			}
+		}
+		
+		public static class Implementor4 implements Implementee
+		{
+			@Override
+			public Integer plus(Integer a, Integer b)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor5
+		{
+			public Integer plus(Integer a, Integer b)
+			{
+				return null;
+			}
+		}
+	}
+
+	@Test
+	public void isInvokeFeasibleMethodTest()
+	{
+		Class<?> implementee = IsInvokeFeasibleMethodTest.Implementee.class;
+
+		assertFalse(
+				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+						getMethodByName(implementee, "plus"),
+						IsInvokeFeasibleMethodTest.Implementor0.class,
+						getMethodByName(
+								IsInvokeFeasibleMethodTest.Implementor0.class,
+								"plus")));
+
+		assertFalse(
+				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+						getMethodByName(implementee, "plus"),
+						IsInvokeFeasibleMethodTest.Implementor1.class,
+						getMethodByName(
+								IsInvokeFeasibleMethodTest.Implementor1.class,
+								"plus")));
+
+		assertFalse(
+				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+						getMethodByName(implementee, "plus"),
+						IsInvokeFeasibleMethodTest.Implementor2.class,
+						getMethodByName(
+								IsInvokeFeasibleMethodTest.Implementor2.class,
+								"plus")));
+
+		assertFalse(
+				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+						getMethodByName(implementee, "plus"),
+						IsInvokeFeasibleMethodTest.Implementor3.class,
+						getMethodByName(
+								IsInvokeFeasibleMethodTest.Implementor3.class,
+								"plus")));
+
+		assertTrue(
+				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+						getMethodByName(implementee, "plus"),
+						IsInvokeFeasibleMethodTest.Implementor4.class,
+						getMethodByName(
+								IsInvokeFeasibleMethodTest.Implementor4.class,
+								"plus")));
+
+		assertTrue(
+				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+						getMethodByName(implementee, "plus"),
+						IsInvokeFeasibleMethodTest.Implementor5.class,
+						getMethodByName(
+								IsInvokeFeasibleMethodTest.Implementor5.class,
+								"plus")));
+
+		assertTrue(this.implementationResolver.isInvokeFeasibleMethod(
+				implementee, getMethodByName(implementee, "plus"),
+				IsInvokeFeasibleMethodTest.Implementor6.class,
+						getMethodByName(
+						IsInvokeFeasibleMethodTest.Implementor6.class,
+								"plus")));
+
+		assertTrue(
+				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+						getMethodByName(implementee, "plus"),
+						IsInvokeFeasibleMethodTest.Implementor7.class,
+						getMethodByName(
+								IsInvokeFeasibleMethodTest.Implementor7.class,
+								"plus")));
+
+		assertTrue(
+				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+						getMethodByName(implementee, "plus"),
+						IsInvokeFeasibleMethodTest.Implementor8.class,
+						getMethodByName(
+								IsInvokeFeasibleMethodTest.Implementor8.class,
+								"plus")));
+
+		assertTrue(
+				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+						getMethodByName(implementee, "plus"),
+						IsInvokeFeasibleMethodTest.Implementor9.class,
+						getMethodByName(
+								IsInvokeFeasibleMethodTest.Implementor9.class,
+								"plus")));
+	}
+
+	public static class IsInvokeFeasibleMethodTest
+	{
+		public static interface Implementee
+		{
+			Integer plus(Integer a, Integer b);
+		}
+
+		public static class Implementor0
+		{
+			public Float plus(Integer a, Integer b)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor1
+		{
+			public Integer plus(Integer a, Integer b, Integer c)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor2
+		{
+			public Integer plus(@ParamIndex(2) Integer a, Integer b)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor3
+		{
+			public Integer plus(Integer a, Float b)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor4
+		{
+			public Integer plus(Integer a, Number b)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor5
+		{
+			public int plus(Integer a, Number b)
+			{
+				return 0;
+			}
+		}
+
+		public static class Implementor6
+		{
+			public Integer plus(Integer a, int b)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor7
+		{
+			public Integer plus(Integer a, Number b)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor8
+		{
+			public Integer plus(Integer a)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor9
+		{
+			public Integer plus(@ParamIndex(1) Integer b)
+			{
+				return null;
+			}
 		}
 	}
 

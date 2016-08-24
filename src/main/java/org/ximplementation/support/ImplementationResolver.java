@@ -604,7 +604,9 @@ public class ImplementationResolver
 			Class<?> implementorParamType = implementorParamTypes[i];
 
 			if (!implementeeParamType
-					.isAssignableFrom(toWrapperType(implementorParamType)))
+					.isAssignableFrom(toWrapperType(implementorParamType))
+					&& !implementorParamType.isAssignableFrom(
+							toWrapperType(implementeeParamType)))
 				return false;
 		}
 
