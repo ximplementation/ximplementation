@@ -18,6 +18,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
@@ -462,7 +463,7 @@ public class ImplementationResolverTest
 	}
 
 	@Rule
-	public ExpectedException resolveImplementMethodInfoValidityExpectedException = ExpectedException.none();
+	public ExpectedException expectedException = ExpectedException.none();
 
 	@Test
 	public void resolveImplementMethodInfoValidityTestThrow()
@@ -475,7 +476,7 @@ public class ImplementationResolverTest
 		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
 				implementor, implementMethod);
 
-		resolveImplementMethodInfoValidityExpectedException.expect(ImplementationResolveException.class);
+		expectedException.expect(ImplementationResolveException.class);
 
 		this.implementationResolver.resolveImplementMethodInfoValidity(
 				implementee, implementeeMethod, implementMethodInfo);
@@ -520,10 +521,6 @@ public class ImplementationResolverTest
 		assertNotNull(implementMethodInfo.getPriorityParamIndexes());
 	}
 
-	@Rule
-	public ExpectedException resolveImplementMethodInfoPriorityExpectedException = ExpectedException
-			.none();
-
 	@Test
 	public void resolveImplementMethodInfoPriorityTestThrow()
 	{
@@ -535,7 +532,7 @@ public class ImplementationResolverTest
 		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
 				implementor, implementMethod);
 
-		resolveImplementMethodInfoPriorityExpectedException
+		expectedException
 				.expect(ImplementationResolveException.class);
 
 		this.implementationResolver.resolveImplementMethodInfoPriority(
@@ -699,10 +696,6 @@ public class ImplementationResolverTest
 		}
 	}
 
-	@Rule
-	public ExpectedException isImplementMethodTestExpectedException = ExpectedException
-			.none();
-
 	@Test
 	public void isImplementMethodTest()
 	{
@@ -730,9 +723,9 @@ public class ImplementationResolverTest
 				IsImplementMethod.Implementor2.class, getMethodByName(
 						IsImplementMethod.Implementor2.class, "myPlus")));
 
-		isImplementMethodTestExpectedException
+		expectedException
 				.expect(ImplementationResolveException.class);
-		isImplementMethodTestExpectedException
+		expectedException
 				.expectMessage("is not able to implement Method");
 		
 		this.implementationResolver.isImplementMethod(implementee,
@@ -747,9 +740,9 @@ public class ImplementationResolverTest
 				IsImplementMethod.Implementor4.class, getMethodByName(
 						IsImplementMethod.Implementor4.class, "myPlus")));
 
-		isImplementMethodTestExpectedException
+		expectedException
 				.expect(ImplementationResolveException.class);
-		isImplementMethodTestExpectedException
+		expectedException
 				.expectMessage("is not able to implement Method");
 
 		this.implementationResolver.isImplementMethod(implementee,
@@ -1173,6 +1166,129 @@ public class ImplementationResolverTest
 		}
 	}
 
+	@Test
+	public void findReferedMethodTest()
+	{
+		assertEquals(getMethodByName(FindReferedMethodTest.Test0.class, "test"), this.implementationResolver.findReferedMethod(
+						FindReferedMethodTest.Test0.class, "my-ref",
+						Void.class));
+
+		assertEquals(
+				getMethodByNameAndType(FindReferedMethodTest.Test1.class,
+						"test", int.class),
+				this.implementationResolver.findReferedMethod(
+						FindReferedMethodTest.Test1.class, "test",
+						int.class));
+
+		assertEquals(
+				getMethodByNameAndType(FindReferedMethodTest.Test1.class,
+						"test", int.class),
+				this.implementationResolver.findReferedMethod(
+						FindReferedMethodTest.Test1.class, "test",
+						Number.class));
+
+		assertEquals(
+				getMethodByNameAndType(FindReferedMethodTest.Test2.class,
+						"test", int.class),
+				this.implementationResolver.findReferedMethod(
+						FindReferedMethodTest.Test2.class, "test", int.class));
+
+		assertEquals(
+				getMethodByNameAndType(FindReferedMethodTest.Test2.class,
+						"test", int.class),
+				this.implementationResolver.findReferedMethod(
+						FindReferedMethodTest.Test2.class, "test",
+						Number.class));
+
+		expectedException
+				.expect(ImplementationResolveException.class);
+		expectedException
+				.expectMessage("No method is found for");
+
+		this.implementationResolver.findReferedMethod(
+				FindReferedMethodTest.Test3.class, "test", Number.class);
+
+		expectedException.expect(ImplementationResolveException.class);
+		expectedException.expectMessage("More than one");
+
+		this.implementationResolver.findReferedMethod(
+				FindReferedMethodTest.Test4.class, "test", int.class);
+	}
+
+	public static class FindReferedMethodTest
+	{
+		public static class Test0
+		{
+			public void test0()
+			{
+			}
+
+			@Refered("my-ref")
+			public void test()
+			{
+			}
+		}
+
+		public static class Test1
+		{
+			public void test()
+			{
+			}
+
+			public int test(int a)
+			{
+				return 0;
+			}
+		}
+
+		public static class Test2
+		{
+			public void test()
+			{
+			}
+
+			public Integer test(int a)
+			{
+				return 0;
+			}
+		}
+
+		public static class Test3
+		{
+		}
+
+		public static class Test4
+		{
+			public int test()
+			{
+				return 0;
+			}
+
+			public Integer test(int a)
+			{
+				return 0;
+			}
+		}
+	}
+
+	@Test
+	public void getMethodSignatureTest()
+	{
+		Method method = getMethodByName(GetMethodSignatureTest.class, "test");
+		
+		assertEquals(method.toString(),
+				this.implementationResolver.getMethodSignature(
+				GetMethodSignatureTest.class,
+						method));
+	}
+
+	public static class GetMethodSignatureTest
+	{
+		public void test(Integer a, Integer b)
+		{
+		}
+	}
+
 	protected static Method getMethodByName(Class<?> clazz, String name)
 	{
 		for (Method method : clazz.getMethods())
@@ -1190,11 +1306,143 @@ public class ImplementationResolverTest
 		return null;
 	}
 
+	@Test
+	public void getReferedTest()
+	{
+		assertEquals("test", this.implementationResolver
+				.getRefered(getMethodByName(GetReferedTest.class, "test0")));
+
+		assertNull(this.implementationResolver
+				.getRefered(getMethodByName(GetReferedTest.class, "test1")));
+	}
+
+	public static class GetReferedTest
+	{
+		@Refered("test")
+		public void test0()
+		{
+		}
+
+		public void test1()
+		{
+		}
+	}
+
+	@Test
+	public void getMethodParamIndexesTest()
+	{
+		assertArrayEquals(new int[] { 0, 1, 2 },
+				this.implementationResolver.getMethodParamIndexes(
+						GetMethodParamIndexesTest.class, getMethodByName(
+								GetMethodParamIndexesTest.class, "test0")));
+
+		assertArrayEquals(new int[] { 1, 0, 2 },
+				this.implementationResolver.getMethodParamIndexes(
+						GetMethodParamIndexesTest.class, getMethodByName(
+								GetMethodParamIndexesTest.class, "test1")));
+
+		expectedException.expect(ImplementationResolveException.class);
+		expectedException
+				.expectMessage("parameter index should not be duplicate with");
+
+		this.implementationResolver.getMethodParamIndexes(
+				GetMethodParamIndexesTest.class,
+				getMethodByName(GetMethodParamIndexesTest.class, "test2"));
+	}
+
+	public static class GetMethodParamIndexesTest
+	{
+		public void test0(int a, int b, int c)
+		{
+			
+		}
+
+		public void test1(@ParamIndex(1) int a, @ParamIndex(0) int b, int c)
+		{
+
+		}
+
+		public void test2(@ParamIndex(1) int a, int b, int c)
+		{
+
+		}
+	}
+
+	@Test
+	public void getAnnotationTest()
+	{
+		assertEquals(GetAnnotationTest.class.getAnnotation(Implementor.class),
+				this.implementationResolver.getAnnotation(
+						GetAnnotationTest.class, Implementor.class));
+	}
+
+	@Implementor(Object.class)
+	public static class GetAnnotationTest
+	{
+
+	}
+
+	@Test
+	public void toWrapperTypeTest()
+	{
+		assertEquals(Boolean.class,
+				this.implementationResolver.toWrapperType(boolean.class));
+		assertEquals(Byte.class,
+				this.implementationResolver.toWrapperType(byte.class));
+		assertEquals(Character.class,
+				this.implementationResolver.toWrapperType(char.class));
+		assertEquals(Double.class,
+				this.implementationResolver.toWrapperType(double.class));
+		assertEquals(Float.class,
+				this.implementationResolver.toWrapperType(float.class));
+		assertEquals(Integer.class,
+				this.implementationResolver.toWrapperType(int.class));
+		assertEquals(Long.class,
+				this.implementationResolver.toWrapperType(long.class));
+		assertEquals(Short.class,
+				this.implementationResolver.toWrapperType(short.class));
+		assertEquals(Number.class,
+				this.implementationResolver.toWrapperType(Number.class));
+	}
+
 	protected static Method getMethodByName(Method[] methods, String name)
 	{
 		for (Method method : methods)
 		{
 			if (method.getName().equals(name))
+				return method;
+		}
+
+		return null;
+	}
+
+	protected static Method getMethodByNameAndType(Class<?> clazz,
+			String name, Class<?>... paramTypes)
+	{
+		for (Method method : clazz.getMethods())
+		{
+			if (method.getName().equals(name)
+					&& Arrays.equals(method.getParameterTypes(), paramTypes))
+				return method;
+		}
+
+		for (Method method : clazz.getDeclaredMethods())
+		{
+			if (method.getName().equals(name)
+					&& Arrays.equals(method.getParameterTypes(), paramTypes))
+				return method;
+		}
+
+		return null;
+	}
+
+	protected static Method getMethodByNameAndType(Method[] methods,
+			String name, Class<?>... paramTypes)
+	{
+		for (Method method : methods)
+		{
+			if (method.getName().equals(name)
+					&& Arrays.equals(method.getParameterTypes(), paramTypes))
 				return method;
 		}
 

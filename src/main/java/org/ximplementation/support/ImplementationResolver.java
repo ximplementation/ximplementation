@@ -698,19 +698,6 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 将类集合转换为类数组。
-	 * 
-	 * @param classes
-	 * @return
-	 */
-	protected Class<?>[] toClassArray(Collection<? extends Class<?>> classes)
-	{
-		Class<?>[] classArray = new Class<?>[classes.size()];
-
-		return classes.toArray(classArray);
-	}
-
-	/**
 	 * 获取方法签名。
 	 * 
 	 * @param clazz
@@ -770,6 +757,18 @@ public class ImplementationResolver
 			}
 
 			paramIndexes[i] = (paramIndexAnno == null ? i : paramIndexAnno.value());
+
+			for (int j = 0; j < i; j++)
+			{
+				if (paramIndexes[j] == paramIndexes[i])
+					throw new ImplementationResolveException(
+							"Class [" + clazz.getName() + "] : Method ["
+									+ method.toString()
+									+ "] : The " + i
+									+ "-th parameter index should not be duplicate with the "
+									+ j + "-th parameter index of value ["
+									+ paramIndexes[i] + "]");
+			}
 		}
 
 		return paramIndexes;
@@ -795,7 +794,7 @@ public class ImplementationResolver
 	 */
 	protected Class<?> toWrapperType(Class<?> primitiveType)
 	{
-		if (boolean.class.equals(Boolean.class))
+		if (boolean.class.equals(primitiveType))
 			return Boolean.class;
 		else if(byte.class.equals(primitiveType))
 			return Byte.class;
