@@ -563,7 +563,7 @@ public class ImplementationResolver
 	 * </p>
 	 * <ul>
 	 * <li>{@code A}方法的返回值类型必须是{@code B}方法返回值类型的子类；</li>
-	 * <li>{@code A}方法的参数类型必须是对应{@code B}方法参数类型的子类。</li>
+	 * <li>{@code A}方法的参数类型必须是对应{@code B}方法参数类型的子类或者父类。</li>
 	 * </ul>
 	 * 
 	 * @param implementee
