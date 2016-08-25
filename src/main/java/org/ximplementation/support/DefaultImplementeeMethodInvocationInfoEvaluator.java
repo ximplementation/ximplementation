@@ -142,13 +142,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 	protected ImplementInfo findImplementInfo(Implementation implementation,
 			Method implementeeMethod)
 	{
-		for (ImplementInfo implementInfo : implementation.getImplementInfos())
-		{
-			if (implementInfo.getImplementeeMethod().equals(implementeeMethod))
-				return implementInfo;
-		}
-
-		return null;
+		return implementation.getImplementInfo(implementeeMethod);
 	}
 
 	/**

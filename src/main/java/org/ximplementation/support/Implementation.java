@@ -15,6 +15,7 @@
 package org.ximplementation.support;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 
 /**
@@ -64,6 +65,29 @@ public class Implementation implements Serializable
 	public void setImplementInfos(ImplementInfo[] implementInfos)
 	{
 		this.implementInfos = implementInfos;
+	}
+
+	/**
+	 * 获取指定接口方法的实现信息。
+	 * <p>
+	 * 如果没有实现信息，此方法将返回{@code null}。
+	 * </p>
+	 * 
+	 * @param implementeeMethod
+	 * @return
+	 */
+	public ImplementInfo getImplementInfo(Method implementeeMethod)
+	{
+		if (this.implementInfos == null)
+			return null;
+
+		for (ImplementInfo implementInfo : this.implementInfos)
+		{
+			if (implementInfo.getImplementeeMethod().equals(implementeeMethod))
+				return implementInfo;
+		}
+
+		return null;
 	}
 
 	@Override
