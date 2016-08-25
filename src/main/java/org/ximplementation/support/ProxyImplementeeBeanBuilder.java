@@ -80,13 +80,12 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 		Object proxy = Proxy.newProxyInstance(implementee.getClassLoader(),
 				new Class<?>[] { implementee, ProxyImplementee.class },
 				new ProxyImplementeeInvocationHandler(implementation,
-						implementorBeanFactory,
-						this.implementeeMethodInvocationInfoEvaluator));
+						implementorBeanFactory));
 
 		return proxy;
 	}
 
-	protected static class ProxyImplementeeInvocationHandler extends AbstractImplementeeBeanInvocationHandler
+	protected class ProxyImplementeeInvocationHandler
 			implements InvocationHandler
 	{
 		private Implementation implementation;
@@ -99,10 +98,9 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 		}
 
 		public ProxyImplementeeInvocationHandler(Implementation implementation,
-				ImplementorBeanFactory implementorBeanFactory,
-				ImplementeeMethodInvocationInfoEvaluator implementeeMethodInvocationInfoEvaluator)
+				ImplementorBeanFactory implementorBeanFactory)
 		{
-			super(implementeeMethodInvocationInfoEvaluator);
+			super();
 			this.implementation = implementation;
 			this.implementorBeanFactory = implementorBeanFactory;
 		}
@@ -134,7 +132,8 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 			if (Object.class.equals(method.getDeclaringClass()))
 				return method.invoke(this, args);
 
-			ImplementeeMethodInvocationInfo invocationInfo = evaluateImplementeeMethodInvocationInfo(
+			ImplementeeMethodInvocationInfo invocationInfo = ProxyImplementeeBeanBuilder.this.implementeeMethodInvocationInfoEvaluator
+					.evaluate(
 					this.implementation, method, args,
 					this.implementorBeanFactory);
 
