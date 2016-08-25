@@ -47,7 +47,7 @@ import org.ximplementation.Validity;
  * @date 2015年12月5日
  *
  */
-public class ImplementationResolverTest
+public class ImplementationResolverTest extends AbstractTestSupport
 {
 	private ImplementationResolver implementationResolver;
 
@@ -1289,23 +1289,6 @@ public class ImplementationResolverTest
 		}
 	}
 
-	protected static Method getMethodByName(Class<?> clazz, String name)
-	{
-		for (Method method : clazz.getMethods())
-		{
-			if (method.getName().equals(name))
-				return method;
-		}
-
-		for (Method method : clazz.getDeclaredMethods())
-		{
-			if (method.getName().equals(name))
-				return method;
-		}
-
-		return null;
-	}
-
 	@Test
 	public void getReferedTest()
 	{
@@ -1403,49 +1386,5 @@ public class ImplementationResolverTest
 				this.implementationResolver.toWrapperType(short.class));
 		assertEquals(Number.class,
 				this.implementationResolver.toWrapperType(Number.class));
-	}
-
-	protected static Method getMethodByName(Method[] methods, String name)
-	{
-		for (Method method : methods)
-		{
-			if (method.getName().equals(name))
-				return method;
-		}
-
-		return null;
-	}
-
-	protected static Method getMethodByNameAndType(Class<?> clazz,
-			String name, Class<?>... paramTypes)
-	{
-		for (Method method : clazz.getMethods())
-		{
-			if (method.getName().equals(name)
-					&& Arrays.equals(method.getParameterTypes(), paramTypes))
-				return method;
-		}
-
-		for (Method method : clazz.getDeclaredMethods())
-		{
-			if (method.getName().equals(name)
-					&& Arrays.equals(method.getParameterTypes(), paramTypes))
-				return method;
-		}
-
-		return null;
-	}
-
-	protected static Method getMethodByNameAndType(Method[] methods,
-			String name, Class<?>... paramTypes)
-	{
-		for (Method method : methods)
-		{
-			if (method.getName().equals(name)
-					&& Arrays.equals(method.getParameterTypes(), paramTypes))
-				return method;
-		}
-
-		return null;
 	}
 }
