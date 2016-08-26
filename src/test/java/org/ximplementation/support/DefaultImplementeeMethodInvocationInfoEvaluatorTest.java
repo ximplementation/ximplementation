@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.ximplementation.Implement;
 import org.ximplementation.Implementor;
+import org.ximplementation.ParamIndex;
 import org.ximplementation.Priority;
 import org.ximplementation.Validity;
 
@@ -387,6 +388,18 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 					.isImplementMethodParamValid(implementMethodInfo,
 							new Object[] { 1, 2.0D }));
 		}
+
+		{
+			ImplementMethodInfo implementMethodInfo = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							IsImplementMethodParamValidTest.Implementor1.class,
+							"plus"));
+
+			assertTrue(this.defaultImplementeeMethodInvocationInfoEvaluator
+					.isImplementMethodParamValid(implementMethodInfo,
+							new Object[] { 1, 2 }));
+		}
 	}
 
 	public static class IsImplementMethodParamValidTest
@@ -415,5 +428,323 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 				return 0;
 			}
 		}
+	}
+
+	@Test
+	public void compareImplementMethodInfoPriorityTest()
+	{
+		Class<?> implementee = CompareImplementMethodInfoPriorityTest.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "plus");
+
+		Implementation implementation = this.implementationResolver.resolve(
+				implementee,
+				CompareImplementMethodInfoPriorityTest.Implementor0.class,
+				CompareImplementMethodInfoPriorityTest.Implementor1.class,
+				CompareImplementMethodInfoPriorityTest.Implementor2.class,
+				CompareImplementMethodInfoPriorityTest.Implementor3.class);
+
+		// firstHasValidity || secondHasValidity
+		{
+			ImplementMethodInfo implementMethodInfo0 = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							CompareImplementMethodInfoPriorityTest.Implementor0.class,
+							"plus"));
+
+			ImplementMethodInfo implementMethodInfo2 = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							CompareImplementMethodInfoPriorityTest.Implementor2.class,
+							"plus"));
+
+			assertEquals(-1,
+					this.defaultImplementeeMethodInvocationInfoEvaluator
+							.compareImplementMethodInfoPriority(implementation,
+									implementeeMethod, new Object[] { 1, 2 },
+									implementMethodInfo0,
+									implementMethodInfo2));
+
+			assertEquals(1, this.defaultImplementeeMethodInvocationInfoEvaluator
+					.compareImplementMethodInfoPriority(implementation,
+							implementeeMethod, new Object[] { 1, 2 },
+							implementMethodInfo2, implementMethodInfo0));
+		}
+
+		// !firstHasValidity && !secondHasValidity
+		{
+			ImplementMethodInfo implementMethodInfo0 = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							CompareImplementMethodInfoPriorityTest.Implementor0.class,
+							"plus"));
+
+			ImplementMethodInfo implementMethodInfo1 = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							CompareImplementMethodInfoPriorityTest.Implementor1.class,
+							"plus"));
+
+			assertEquals(0, this.defaultImplementeeMethodInvocationInfoEvaluator
+					.compareImplementMethodInfoPriority(implementation,
+							implementeeMethod, new Object[] { 1, 2 },
+							implementMethodInfo0, implementMethodInfo1));
+
+		}
+	}
+
+	public static class CompareImplementMethodInfoPriorityTest
+	{
+		public static interface Implementee
+		{
+			Number plus(Number a, Number b);
+		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor0
+		{
+			@Implement
+			public Number plus(Number a, Number b)
+			{
+				return null;
+			}
+		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor1
+		{
+			@Implement
+			public Number plus(Number a, Number b)
+			{
+				return null;
+			}
+		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor2
+		{
+			@Implement
+			@Validity("isValid")
+			public Number plus(Number a, Number b)
+			{
+				return null;
+			}
+
+			public boolean isValid()
+			{
+				return true;
+			}
+		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor3
+		{
+			@Implement
+			@Validity("isValid")
+			public Number plus(Number a, Number b)
+			{
+				return null;
+			}
+
+			public boolean isValid()
+			{
+				return true;
+			}
+		}
+	}
+
+	@Test
+	public void compareImplementMethodParamTypePriorityTest()
+	{
+		Class<?> implementee = CompareImplementMethodParamTypePriorityTest.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "plus");
+
+		Implementation implementation = this.implementationResolver.resolve(
+				implementee,
+				CompareImplementMethodParamTypePriorityTest.Implementor0.class,
+				CompareImplementMethodParamTypePriorityTest.Implementor1.class,
+				CompareImplementMethodParamTypePriorityTest.Implementor2.class,
+				CompareImplementMethodParamTypePriorityTest.Implementor3.class,
+				CompareImplementMethodParamTypePriorityTest.Implementor4.class);
+
+		// firstCloserCount = secondCloserCount
+		{
+			ImplementMethodInfo implementMethodInfo0 = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							CompareImplementMethodParamTypePriorityTest.Implementor0.class,
+							"plus"));
+
+			ImplementMethodInfo implementMethodInfo1 = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							CompareImplementMethodParamTypePriorityTest.Implementor1.class,
+							"plus"));
+
+			assertEquals(0, this.defaultImplementeeMethodInvocationInfoEvaluator
+					.compareImplementMethodParamTypePriority(implementation,
+							implementeeMethod, new Object[] { 0, 1, 2 },
+							implementMethodInfo0, implementMethodInfo1));
+		}
+
+		// firstCloserCount < secondCloserCount
+		{
+			ImplementMethodInfo implementMethodInfo0 = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							CompareImplementMethodParamTypePriorityTest.Implementor0.class,
+							"plus"));
+
+			ImplementMethodInfo implementMethodInfo1 = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							CompareImplementMethodParamTypePriorityTest.Implementor2.class,
+							"plus"));
+
+			assertEquals(-1,
+					this.defaultImplementeeMethodInvocationInfoEvaluator
+							.compareImplementMethodParamTypePriority(
+									implementation, implementeeMethod,
+									new Object[] { 0, 1, 2 },
+									implementMethodInfo0,
+									implementMethodInfo1));
+		}
+
+		// firstCloserCount - secondCloserCount = 2;
+		{
+			ImplementMethodInfo implementMethodInfo0 = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							CompareImplementMethodParamTypePriorityTest.Implementor3.class,
+							"plus"));
+
+			ImplementMethodInfo implementMethodInfo1 = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							CompareImplementMethodParamTypePriorityTest.Implementor0.class,
+							"plus"));
+
+			assertEquals(2,
+					this.defaultImplementeeMethodInvocationInfoEvaluator
+							.compareImplementMethodParamTypePriority(
+									implementation, implementeeMethod,
+									new Object[] { 0, 1, 2 },
+									implementMethodInfo0,
+									implementMethodInfo1));
+		}
+
+		// firstCloserCount - secondCloserCount = 2;
+		{
+			ImplementMethodInfo implementMethodInfo0 = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							CompareImplementMethodParamTypePriorityTest.Implementor3.class,
+							"plus"));
+
+			ImplementMethodInfo implementMethodInfo1 = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							CompareImplementMethodParamTypePriorityTest.Implementor4.class,
+							"plus"));
+
+			assertEquals(0, this.defaultImplementeeMethodInvocationInfoEvaluator
+					.compareImplementMethodParamTypePriority(implementation,
+							implementeeMethod, new Object[] { 0, 1, 2 },
+							implementMethodInfo0, implementMethodInfo1));
+		}
+	}
+
+	public static class CompareImplementMethodParamTypePriorityTest
+	{
+		public static interface Implementee
+		{
+			Number plus(Number a, Number b, Number c);
+		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor0
+		{
+			@Implement
+			public Number plus(Number a, Number b, Number c)
+			{
+				return null;
+			}
+		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor1
+		{
+			@Implement
+			public Number plus(Number a, Number b, Number c)
+			{
+				return null;
+			}
+		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor2
+		{
+			@Implement
+			public Number plus(Integer a, Number b, Number c)
+			{
+				return null;
+			}
+		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor3
+		{
+			@Implement
+			public Number plus(Integer a, Integer b, Number c)
+			{
+				return null;
+			}
+		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor4
+		{
+			@Implement
+			public Number plus(@ParamIndex(1) Integer b)
+			{
+				return null;
+			}
+		}
+	}
+
+	@Test
+	public void compareImplementorPriorityTest()
+	{
+		Class<?> implementee = org.ximplementation.support.testpkg.ipkg.TImplementee.class;
+
+		Implementation implementation = this.implementationResolver.resolve(
+				implementee,
+				org.ximplementation.support.testpkg.ipkg.TImplementorSamePkg0.class,
+				org.ximplementation.support.testpkg.ipkg.TImplementorSamePkg1.class,
+				org.ximplementation.support.testpkg.TImplementorDiffPkg0.class,
+				org.ximplementation.support.testpkg.TImplementorDiffPkg1.class);
+
+		// firstSamePkg && secondSamePkg
+		assertEquals(0, this.defaultImplementeeMethodInvocationInfoEvaluator
+				.compareImplementorPriority(implementation,
+						org.ximplementation.support.testpkg.ipkg.TImplementorSamePkg0.class,
+						org.ximplementation.support.testpkg.ipkg.TImplementorSamePkg1.class));
+
+		// firstSamePkg && !secondSamePkg
+		assertEquals(-1, this.defaultImplementeeMethodInvocationInfoEvaluator
+				.compareImplementorPriority(implementation,
+						org.ximplementation.support.testpkg.ipkg.TImplementorSamePkg0.class,
+						org.ximplementation.support.testpkg.TImplementorDiffPkg0.class));
+
+		// !firstSamePkg && secondSamePkg
+		assertEquals(1, this.defaultImplementeeMethodInvocationInfoEvaluator
+				.compareImplementorPriority(implementation,
+						org.ximplementation.support.testpkg.TImplementorDiffPkg0.class,
+						org.ximplementation.support.testpkg.ipkg.TImplementorSamePkg0.class));
+
+		// !firstSamePkg && !secondSamePkg
+		assertEquals(0, this.defaultImplementeeMethodInvocationInfoEvaluator
+				.compareImplementorPriority(implementation,
+						org.ximplementation.support.testpkg.TImplementorDiffPkg0.class,
+						org.ximplementation.support.testpkg.TImplementorDiffPkg0.class));
 	}
 }
