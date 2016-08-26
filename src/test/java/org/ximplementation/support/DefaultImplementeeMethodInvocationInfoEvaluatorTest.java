@@ -15,6 +15,7 @@
 package org.ximplementation.support;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -317,6 +318,101 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 			public int getPriority()
 			{
 				return Integer.MAX_VALUE;
+			}
+		}
+	}
+
+	@Test
+	public void isImplementMethodParamValidTest()
+	{
+		Class<?> implementee = IsImplementMethodParamValidTest.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "plus");
+
+		Implementation implementation = this.implementationResolver.resolve(
+				implementee,
+				IsImplementMethodParamValidTest.Implementor0.class,
+				IsImplementMethodParamValidTest.Implementor1.class);
+
+		// implementMethodInfo.getParamTypes() = null
+		{
+			ImplementMethodInfo implementMethodInfo = implementation.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							IsImplementMethodParamValidTest.Implementor0.class,
+							"plus"));
+
+			implementMethodInfo.setParamTypes(null);
+
+			assertTrue(this.defaultImplementeeMethodInvocationInfoEvaluator
+					.isImplementMethodParamValid(
+							implementMethodInfo,
+							new Object[] { 1, 2 }));
+		}
+
+		// implementMethodInfo.getParamTypes().length = 0
+		{
+			ImplementMethodInfo implementMethodInfo = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							IsImplementMethodParamValidTest.Implementor0.class,
+							"plus"));
+
+			assertTrue(this.defaultImplementeeMethodInvocationInfoEvaluator
+					.isImplementMethodParamValid(implementMethodInfo,
+							new Object[] { 1, 2 }));
+		}
+
+		// implementMethodInfo.getParamTypes().length >
+		// implementeeMethodParams.length
+		{
+			ImplementMethodInfo implementMethodInfo = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							IsImplementMethodParamValidTest.Implementor1.class,
+							"plus"));
+
+			assertFalse(this.defaultImplementeeMethodInvocationInfoEvaluator
+					.isImplementMethodParamValid(implementMethodInfo,
+							new Object[] { 1 }));
+		}
+
+		// !myParamTypes[i].isInstance(myParams[i])
+		{
+			ImplementMethodInfo implementMethodInfo = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							IsImplementMethodParamValidTest.Implementor1.class,
+							"plus"));
+
+			assertFalse(this.defaultImplementeeMethodInvocationInfoEvaluator
+					.isImplementMethodParamValid(implementMethodInfo,
+							new Object[] { 1, 2.0D }));
+		}
+	}
+
+	public static class IsImplementMethodParamValidTest
+	{
+		public static interface Implementee
+		{
+			Number plus(Number a, Number b);
+		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor0
+		{
+			@Implement
+			public Number plus()
+			{
+				return null;
+			}
+		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor1
+		{
+			@Implement
+			public int plus(Integer a, Integer b)
+			{
+				return 0;
 			}
 		}
 	}

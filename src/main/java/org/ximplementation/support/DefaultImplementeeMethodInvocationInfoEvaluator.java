@@ -158,7 +158,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 	{
 		Class<?>[] myParamTypes = implementMethodInfo.getParamTypes();
 
-		if (myParamTypes == null)
+		if (myParamTypes == null || myParamTypes.length == 0)
 			return true;
 
 		if (myParamTypes.length > implementeeMethodParams.length)
