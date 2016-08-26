@@ -71,6 +71,30 @@ public class ImplementInfo implements Serializable
 		this.implementMethodInfos = implementMethodInfos;
 	}
 
+	/**
+	 * 获取指定实现方法的实现方法信息。
+	 * <p>
+	 * 如果没有实现方法信息，此方法将返回{@code null}。
+	 * </p>
+	 * 
+	 * @param implementMethod
+	 * @return
+	 */
+	public ImplementMethodInfo getImplementMethodInfo(Method implementMethod)
+	{
+		if (this.implementMethodInfos == null)
+			return null;
+
+		for (ImplementMethodInfo implementMethodInfo : this.implementMethodInfos)
+		{
+			if (implementMethodInfo.getImplementMethod()
+					.equals(implementMethod))
+				return implementMethodInfo;
+		}
+
+		return null;
+	}
+
 	@Override
 	public String toString()
 	{
