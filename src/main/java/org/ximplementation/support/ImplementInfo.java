@@ -72,6 +72,17 @@ public class ImplementInfo implements Serializable
 	}
 
 	/**
+	 * 是否有实现方法信息。
+	 * 
+	 * @return
+	 */
+	public boolean hasImplementMethodInfo()
+	{
+		return (this.implementMethodInfos != null
+				&& this.implementMethodInfos.length > 0);
+	}
+
+	/**
 	 * 获取指定实现方法的实现方法信息。
 	 * <p>
 	 * 如果没有实现方法信息，此方法将返回{@code null}。

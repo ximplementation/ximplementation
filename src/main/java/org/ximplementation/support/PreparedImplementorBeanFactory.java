@@ -63,10 +63,11 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 
 		for (ImplementInfo implementInfo : implementInfos)
 		{
-			ImplementMethodInfo[] implementMethodInfos = implementInfo
-					.getImplementMethodInfos();
+			if (!implementInfo.hasImplementMethodInfo())
+				continue;
 
-			for (ImplementMethodInfo implementMethodInfo : implementMethodInfos)
+			for (ImplementMethodInfo implementMethodInfo : implementInfo
+					.getImplementMethodInfos())
 			{
 				Class<?> implementor = implementMethodInfo.getImplementor();
 

@@ -58,6 +58,9 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 		ImplementInfo implementInfo = findImplementInfo(implementation,
 				implementeeMethod);
 
+		if (!implementInfo.hasImplementMethodInfo())
+			return null;
+
 		for (ImplementMethodInfo myImplementMethodInfo : implementInfo
 				.getImplementMethodInfos())
 		{
@@ -108,9 +111,9 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 					if (myPriority == priority)
 					{
 						int methodInfoPriority = compareImplementMethodInfoPriority(
-								implementation,
-								implementeeMethod, implementeeMethodParams,
-								implementMethodInfo, myImplementMethodInfo);
+								implementation, implementeeMethod,
+								implementeeMethodParams, implementMethodInfo,
+								myImplementMethodInfo);
 
 						replace = (methodInfoPriority <= 0);
 					}
