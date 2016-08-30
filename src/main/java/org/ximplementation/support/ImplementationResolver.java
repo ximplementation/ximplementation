@@ -421,12 +421,7 @@ public class ImplementationResolver
 		if (implementorAno == null)
 			return false;
 
-		Class<?> myImplementee = implementorAno.value();
-
-		if (implementee.isAssignableFrom(myImplementee))
-			return true;
-
-		Class<?>[] myImplementees = implementorAno.implementees();
+		Class<?>[] myImplementees = implementorAno.value();
 		for (Class<?> _myImplementee : myImplementees)
 		{
 			if (implementee.isAssignableFrom(_myImplementee))

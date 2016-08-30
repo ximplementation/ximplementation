@@ -686,7 +686,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		{
 		}
 
-		@Implementor(implementees = { Implementee0.class })
+		@Implementor({ Implementee0.class })
 		public static class Implementor2
 		{
 		}

@@ -20,13 +20,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 实现者注解。
+ * <i>Implementor</i> annotation.
  * <p>
- * <i>实现者注解</i>用于将类标注为<i>实现者</i>。
+ * An <i>implementor</i> is a class which implements one or more
+ * <i>implementee</i>s.
+ * </p>
+ * <p>
+ * An <i>implementee</i> is a class which is implemented by one or more
+ * <i>implementor</i>s.
  * </p>
  * 
  * @author earthangry@gmail.com
- * @date 2015年12月3日
+ * @date 2015-12-3
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -34,16 +39,13 @@ import java.lang.annotation.Target;
 public @interface Implementor
 {
 	/**
-	 * <i>实现者</i>所实现的<i>接口</i>。
+	 * The <i>implementee</i>s which this <i>implementor</i> is implemented.
+	 * <p>
+	 * It can be any classes not just this <i>implementor</i>'s ancestor class
+	 * or interfaces.
+	 * </p>
 	 * 
 	 * @return
 	 */
-	Class<?> value() default Object.class;
-
-	/**
-	 * <i>实现者</i>所实现的<i>接口</i>数组。
-	 * 
-	 * @return
-	 */
-	Class<?>[] implementees() default Object.class;
+	Class<?>[] value() default Object.class;
 }

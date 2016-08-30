@@ -207,14 +207,9 @@ public class ImplementorManager
 
 		if (implementorAno != null)
 		{
-			Class<?> annoImplementee = implementorAno.value();
-			Class<?>[] annoImplementees = implementorAno.implementees();
+			Class<?>[] annoImplementees = implementorAno.value();
 
-			if (!Object.class.equals(annoImplementee))
-			{
-				implementees = new Class<?>[] { annoImplementee };
-			}
-			else if (!Arrays.equals(DEFAULT_IMPLEMENTOR_INTERFACECLASSES,
+			if (!Arrays.equals(DEFAULT_IMPLEMENTOR_INTERFACECLASSES,
 					annoImplementees))
 			{
 				implementees = annoImplementees;
