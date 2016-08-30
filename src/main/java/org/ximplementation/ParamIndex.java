@@ -20,14 +20,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 参数索引注解。
+ * Parameter index annotation.
  * <p>
- * <i>参数索引注解</i>标注于<i>实现者</i>类内的<i>实现方法</i>、<i>优先级方法</i>、<i><i>有效性方法</i> ，用于指定参数对应
- * <i>接口方法</i>的参数索引。
+ * This annotation indicate that the parameter value should be set to specified
+ * index value of the corresponding <i>implementee</i> method parameter values
+ * while its method invocation.
+ * </p>
+ * <p>
+ * This annotation can be added to implement method parameter,
+ * {@linkplain Validity @Validity} method parameter and
+ * {@linkplain Priority @Priority} method parameter of an <i>implementor</i>.
  * </p>
  * 
  * @author earthangry@gmail.com
- * @date 2015年12月3日
+ * @date 2015-12-3
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -35,9 +41,10 @@ import java.lang.annotation.Target;
 public @interface ParamIndex
 {
 	/**
-	 * 参数索引值。
+	 * The index of the corresponding <i>implementee</i> method parameter values
+	 * array.
 	 * <p>
-	 * 参数索引值以{@code 0}开始。
+	 * The index should be start with {@code 0}.
 	 * </p>
 	 * 
 	 * @return
