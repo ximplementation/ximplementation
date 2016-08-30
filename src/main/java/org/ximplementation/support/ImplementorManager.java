@@ -15,7 +15,6 @@
 package org.ximplementation.support;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -132,31 +131,28 @@ public class ImplementorManager
 	{
 		Queue<Class<?>> beSupereds = new LinkedList<Class<?>>();
 
-		beSupereds.add(implementor);
-		
 		Class<?>[] annoImplementees = getAnnotationImplementees(
 				implementor);
+		Class<?>[] directSupers = getDiectLangSuperClasses(implementor,
+				onlyInterfaceForLang);
 
 		if (annoImplementees != null && annoImplementees.length > 0)
-		{
-			Collection<Class<?>> beAdds = Arrays.asList(annoImplementees);
+			beSupereds.addAll(Arrays.asList(annoImplementees));
 
-			implementees.addAll(beAdds);
-			beSupereds.addAll(beAdds);
-		}
+		if (directSupers != null && directSupers.length > 0)
+			beSupereds.addAll(Arrays.asList(directSupers));
 
 		Class<?> beSupered = null;
 		while ((beSupered = beSupereds.poll()) != null)
 		{
+			implementees.add(beSupered);
+
 			Class<?>[] supers = getDiectLangSuperClasses(beSupered,
 					onlyInterfaceForLang);
 
 			if (supers != null && supers.length > 0)
 			{
-				Collection<Class<?>> beAdds = Arrays.asList(supers);
-
-				implementees.addAll(beAdds);
-				beSupereds.addAll(beAdds);
+				beSupereds.addAll(Arrays.asList(supers));
 			}
 		}
 	}
@@ -174,7 +170,7 @@ public class ImplementorManager
 		Class<?>[] superClasses = clazz.getInterfaces();
 
 		// ignore Object class
-		if (!onlyInterface
+		if (!onlyInterface && clazz.getSuperclass() != null
 				&& !Object.class.equals(clazz.getSuperclass()))
 		{
 			Class<?>[] _superClasses = new Class<?>[superClasses.length + 1];
@@ -185,6 +181,8 @@ public class ImplementorManager
 			}
 
 			_superClasses[_superClasses.length - 1] = clazz.getSuperclass();
+
+			superClasses = _superClasses;
 		}
 
 		return superClasses;
