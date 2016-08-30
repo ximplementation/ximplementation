@@ -22,8 +22,13 @@ import java.lang.annotation.Target;
 /**
  * <i>Implementor</i> annotation.
  * <p>
- * An <i>implementor</i> is a class which implements one or more
+ * This annotation indicate that the class is an <i>implementor</i> of some
  * <i>implementee</i>s.
+ * </p>
+ * <p>
+ * An <i>implementor</i> is a class which implements one or more
+ * <i>implementee</i>s by the {@code 'implements' or 'extends'} syntax or by
+ * this {@code Implementor} annotation.
  * </p>
  * <p>
  * An <i>implementee</i> is a class which is implemented by one or more
@@ -41,8 +46,7 @@ public @interface Implementor
 	/**
 	 * The <i>implementee</i>s which this <i>implementor</i> is implemented.
 	 * <p>
-	 * It can be any classes not just this <i>implementor</i>'s ancestor class
-	 * or interfaces.
+	 * It can be any classes not just this <i>implementor</i>'s ancestors.
 	 * </p>
 	 * 
 	 * @return
