@@ -20,13 +20,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 非实现方法注解。
+ * Not implement method annotation.
  * <p>
- * <i>非实现方法注解</i>标注于<i>实现者</i>内的<i>方法</i>，用于将方法标注为非实现方法。
+ * This annotation indicate that the method is not an implement method of any
+ * <i>implementee</i> methods.
+ * </p>
+ * <p>
+ * This annotation should be added to methods of an <i>implementor</i>.
  * </p>
  * 
  * @author earthangry@gmail.com
- * @date 2016年8月23日
+ * @date 2016-8-23
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

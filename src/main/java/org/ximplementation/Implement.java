@@ -25,6 +25,9 @@ import java.lang.annotation.Target;
  * This annotation indicate that the method is an implement method of a
  * <i>implementee</i> method.
  * </p>
+ * <p>
+ * This annotation should be added to methods of an <i>implementor</i>.
+ * </p>
  * 
  * @author earthangry@gmail.com
  * @date 2015-12-3
