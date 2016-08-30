@@ -15,18 +15,22 @@
 package org.ximplementation.support;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
+import org.ximplementation.Implement;
 import org.ximplementation.Implementor;
 
 /**
- * 实现者管理类。
+ * The <i>implementor</i> manager。
  * 
  * @author earthangry@gmail.com
- * @createDate 2015年12月7日
+ * @date 2015-12-7
  *
  */
 public class ImplementorManager
@@ -35,8 +39,7 @@ public class ImplementorManager
 
 	private Map<Class<?>, Set<Class<?>>> implementorsMap;
 
-	/** 是否只解析interface作为implementee */
-	private boolean onlyResolveInterface = true;
+	private boolean onlyInterfaceForLang = true;
 
 	public ImplementorManager()
 	{
@@ -45,22 +48,23 @@ public class ImplementorManager
 	}
 
 	/**
-	 * 是否仅解析{@code interface}作为接口。
+	 * Is only resolve {@code implements} (exclude {@code extends}) language
+	 * <i>implementee</i>.
 	 * 
 	 * @return
 	 */
-	public boolean isOnlyResolveInterface()
+	public boolean isOnlyInterfaceForLang()
 	{
-		return onlyResolveInterface;
+		return onlyInterfaceForLang;
 	}
 
-	public void setOnlyResolveInterface(boolean onlyResolveInterface)
+	public void setOnlyInterfaceForLang(boolean onlyInterfaceForLang)
 	{
-		this.onlyResolveInterface = onlyResolveInterface;
+		this.onlyInterfaceForLang = onlyInterfaceForLang;
 	}
 
 	/**
-	 * 获取所有<i>接口</i>。
+	 * Get all <i>implementee</i>s.
 	 * 
 	 * @return
 	 */
@@ -70,7 +74,7 @@ public class ImplementorManager
 	}
 
 	/**
-	 * 获取指定<i>接口</i>的<i>实现者</i>集合。
+	 * Get <i>implementor</i> set for the specified <i>implementee</i>.
 	 * 
 	 * @param implementee
 	 * @return
@@ -81,129 +85,142 @@ public class ImplementorManager
 	}
 
 	/**
-	 * 添加<i>实现者</i>集合。
+	 * Add <i>implementor</i>s.
+	 * <p>
+	 * All <i>implementee</i>s will be resolved for each.
+	 * </p>
 	 * 
 	 * @param implementors
 	 */
 	public void addImplementor(Class<?>... implementors)
 	{
+		Set<Class<?>> implementees = new HashSet<Class<?>>();
+
 		for (Class<?> implementor : implementors)
 		{
-			Class<?>[] implementees = resolveDirectImplementees(implementor);
+			resolveImplementees(implementor, implementees,
+					this.onlyInterfaceForLang);
 
-			if (implementees != null && implementees.length != 0)
-				addImplementor(implementees, implementor);
-		}
-	}
-
-	/**
-	 * 添加一个<i>接口者</i>类映射。
-	 * 
-	 * @param implementees
-	 * @param implementor
-	 */
-	protected void addImplementor(Class<?>[] implementees, Class<?> implementor)
-	{
-		if (implementees == null || implementees.length == 0)
-			return;
-
-		for (Class<?> implementee : implementees)
-		{
-			Set<Class<?>> implementors = this.implementorsMap.get(implementee);
-
-			if (implementors == null)
+			for (Class<?> implementee : implementees)
 			{
-				implementors = new HashSet<Class<?>>();
-				this.implementorsMap.put(implementee, implementors);
+				Set<Class<?>> myImplementors = this.implementorsMap
+						.get(implementee);
+
+				if (myImplementors == null)
+				{
+					myImplementors = new HashSet<Class<?>>();
+					this.implementorsMap.put(implementee, myImplementors);
+				}
+
+				myImplementors.add(implementor);
 			}
 
-			implementors.add(implementor);
-
-			Class<?>[] parentImplementees = resolveDirectImplementees(
-					implementee);
-
-			if (parentImplementees != null && parentImplementees.length > 0)
-				addImplementor(parentImplementees, implementor);
+			implementees.clear();
 		}
 	}
 
 	/**
-	 * 解析<i>实现者</i>所直接实现的<i>接口</i>类。
+	 * Resolve all <i>implementee</i>s for the <i>implementor</i>, and write
+	 * them into {@code implementees} set.
+	 * 
+	 * @param implementor
+	 * @param implementees
+	 * @param onlyInterfaceForLang
+	 */
+	protected void resolveImplementees(Class<?> implementor,
+			Set<Class<?>> implementees, boolean onlyInterfaceForLang)
+	{
+		Queue<Class<?>> beSupereds = new LinkedList<Class<?>>();
+
+		beSupereds.add(implementor);
+		
+		Class<?>[] annoImplementees = getAnnotationImplementees(
+				implementor);
+
+		if (annoImplementees != null && annoImplementees.length > 0)
+		{
+			Collection<Class<?>> beAdds = Arrays.asList(annoImplementees);
+
+			implementees.addAll(beAdds);
+			beSupereds.addAll(beAdds);
+		}
+
+		Class<?> beSupered = null;
+		while ((beSupered = beSupereds.poll()) != null)
+		{
+			Class<?>[] supers = getDiectLangSuperClasses(beSupered,
+					onlyInterfaceForLang);
+
+			if (supers != null && supers.length > 0)
+			{
+				Collection<Class<?>> beAdds = Arrays.asList(supers);
+
+				implementees.addAll(beAdds);
+				beSupereds.addAll(beAdds);
+			}
+		}
+	}
+
+	/**
+	 * Get super classes for the specified class.
+	 * 
+	 * @param clazz
+	 * @param onlyInterface
+	 * @return
+	 */
+	protected Class<?>[] getDiectLangSuperClasses(Class<?> clazz,
+			boolean onlyInterface)
+	{
+		Class<?>[] superClasses = clazz.getInterfaces();
+
+		// ignore Object class
+		if (!onlyInterface
+				&& !Object.class.equals(clazz.getSuperclass()))
+		{
+			Class<?>[] _superClasses = new Class<?>[superClasses.length + 1];
+
+			for (int i = 0; i < superClasses.length; i++)
+			{
+				_superClasses[i] = superClasses[i];
+			}
+
+			_superClasses[_superClasses.length - 1] = clazz.getSuperclass();
+		}
+
+		return superClasses;
+	}
+
+	/**
+	 * Get <i>implementee</i>s for the specified <i>implementor</i> by
+	 * {@linkplain Implement} annotation.
 	 * <p>
-	 * 如果无任何接口实现，此方法将返回空数组。
+	 * If none, a zero length array will be returned.
 	 * </p>
 	 * 
 	 * @param implementor
 	 * @return
 	 */
-	protected Class<?>[] resolveDirectImplementees(Class<?> implementor)
+	protected Class<?>[] getAnnotationImplementees(Class<?> implementor)
 	{
-		Class<?>[] implementees = resolveDiectLanguageImplementees(implementor);
+		Class<?>[] implementees = {};
 
-		Implementor implementorAno = implementor.getAnnotation(Implementor.class);
+		Implementor implementorAno = implementor
+				.getAnnotation(Implementor.class);
 
 		if (implementorAno != null)
 		{
-			Class<?>[] _implementees = {};
-
 			Class<?> annoImplementee = implementorAno.value();
 			Class<?>[] annoImplementees = implementorAno.implementees();
 
 			if (!Object.class.equals(annoImplementee))
 			{
-				_implementees = new Class<?>[] { annoImplementee };
+				implementees = new Class<?>[] { annoImplementee };
 			}
 			else if (!Arrays.equals(DEFAULT_IMPLEMENTOR_INTERFACECLASSES,
 					annoImplementees))
 			{
-				_implementees = annoImplementees;
+				implementees = annoImplementees;
 			}
-
-			if (implementees == null || implementees.length == 0)
-				implementees = _implementees;
-			else if (_implementees != null && _implementees.length > 0)
-			{
-				Class<?>[] newImplementees = new Class<?>[_implementees.length
-						+ implementees.length];
-
-				for (int i = 0; i < _implementees.length; i++)
-					newImplementees[i] = _implementees[i];
-
-				for (int i = 0; i < implementees.length; i++)
-					newImplementees[_implementees.length + i] = implementees[i];
-
-				implementees = newImplementees;
-			}
-		}
-
-		return implementees;
-	}
-
-	/**
-	 * 解析<i>实现者</i>通过{@code implements}或者{@code extends}所直接实现的<i>接口</i>数组。
-	 * <p>
-	 * 如果无任何接口实现，此方法将返回空数组。
-	 * </p>
-	 * 
-	 * @param implementor
-	 * @return
-	 */
-	protected Class<?>[] resolveDiectLanguageImplementees(Class<?> implementor)
-	{
-		Class<?>[] implementees = implementor.getInterfaces();
-
-		if (!this.isOnlyResolveInterface()
-				&& !Object.class.equals(implementor.getSuperclass()))
-		{
-			Class<?>[] newImplementees = new Class<?>[implementees.length + 1];
-
-			for (int i = 0; i < implementees.length; i++)
-			{
-				newImplementees[i] = implementees[i];
-			}
-
-			newImplementees[newImplementees.length - 1] = implementor
-					.getSuperclass();
 		}
 
 		return implementees;
