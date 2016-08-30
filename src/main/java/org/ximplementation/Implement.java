@@ -20,13 +20,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 实现方法注解。
+ * Implement method annotation.
  * <p>
- * <i>实现方法注解</i>标注于<i>实现者</i>内的<i>实现方法</i>，用于指定<i>实现方法</i>所实现的<i>接口方法</i>。
+ * This annotation indicate that the method is an implement method of a
+ * <i>implementee</i> method.
  * </p>
  * 
  * @author earthangry@gmail.com
- * @date 2015年12月3日
+ * @date 2015-12-3
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -34,12 +35,7 @@ import java.lang.annotation.Target;
 public @interface Implement
 {
 	/**
-	 * <i>实现方法</i>所实现的<i>接口方法</i>标识。
-	 * <p>
-	 * 此标识可以是<i>接口方法</i>名称、<i>接口方法</i>{@linkplain Refered}注解的
-	 * {@linkplain Refered#value() value}值、或者<i>接口方法</i>
-	 * {@linkplain java.lang.reflect.Method#toString() 签名}。
-	 * </p>
+	 * The identification of the <i>implementee</i> method.
 	 * 
 	 * @return
 	 */
