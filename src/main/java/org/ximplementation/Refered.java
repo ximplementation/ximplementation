@@ -20,13 +20,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 引用注解。
+ * Reference annotation.
  * <p>
- * <i>引用注解</i>用于为方法添加引用名，使其可以在其他注解中引用。
+ * This annotation indicate that the method has been identified by a name, and
+ * can be used by {@linkplain Implement @Implement},
+ * {@linkplain Priority @Priority}, {@linkplain Validity @Validity} annotations
+ * for method reference.
  * </p>
  * 
  * @author earthangry@gmail.com
- * @date 2015年12月3日
+ * @date 2015-12-3
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -34,7 +37,7 @@ import java.lang.annotation.Target;
 public @interface Refered
 {
 	/**
-	 * 引用名。
+	 * The reference name of this method.
 	 * 
 	 * @return
 	 */
