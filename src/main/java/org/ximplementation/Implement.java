@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * <i>implementee</i> method.
  * </p>
  * <p>
- * This annotation should be added to methods of an <i>implementor</i>.
+ * This annotation should be annotated on methods of an <i>implementor</i>.
  * </p>
  * 
  * @author earthangry@gmail.com
@@ -39,6 +39,16 @@ public @interface Implement
 {
 	/**
 	 * The identification of the <i>implementee</i> method.
+	 * <p>
+	 * It can be any the following values :
+	 * </p>
+	 * <ul>
+	 * <li>The name of the <i>implementee</i> method if no duplication;</li>
+	 * <li>The {@linkplain Refered#value() @Refered.value} of the
+	 * <i>implementee</i> method;</li>
+	 * <li>The {@code java.lang.reflect.Method.toString()} value of the
+	 * <i>implementee</i> method.</li>
+	 * </ul>
 	 * 
 	 * @return
 	 */

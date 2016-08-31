@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * while its method invocation.
  * </p>
  * <p>
- * This annotation can be added to implement method parameter,
+ * This annotation can be annotated on implement method parameter,
  * {@linkplain Validity @Validity} method parameter and
  * {@linkplain Priority @Priority} method parameter of an <i>implementor</i>.
  * </p>

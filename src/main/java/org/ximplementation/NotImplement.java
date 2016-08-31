@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * <i>implementee</i> methods.
  * </p>
  * <p>
- * This annotation should be added to methods of an <i>implementor</i>.
+ * This annotation should be annotated on methods of an <i>implementor</i>.
  * </p>
  * 
  * @author earthangry@gmail.com
