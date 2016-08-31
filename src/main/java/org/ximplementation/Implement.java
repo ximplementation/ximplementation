@@ -40,7 +40,7 @@ public @interface Implement
 	/**
 	 * The identification of the <i>implementee</i> method.
 	 * <p>
-	 * It can be any the following values :
+	 * It can be any of the following values :
 	 * </p>
 	 * <ul>
 	 * <li>The name of the <i>implementee</i> method if no duplication;</li>
@@ -49,6 +49,9 @@ public @interface Implement
 	 * <li>The {@code java.lang.reflect.Method.toString()} value of the
 	 * <i>implementee</i> method.</li>
 	 * </ul>
+	 * <p>
+	 * If not set, its value will be treated as this implement method name.
+	 * </p>
 	 * 
 	 * @return
 	 */

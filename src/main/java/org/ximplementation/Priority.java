@@ -50,7 +50,7 @@ public @interface Priority
 	/**
 	 * The identification of the priority method.
 	 * <p>
-	 * It can be any the following values :
+	 * It can be any of the following values :
 	 * </p>
 	 * <ul>
 	 * <li>The name of the priority method if no duplication;</li>
