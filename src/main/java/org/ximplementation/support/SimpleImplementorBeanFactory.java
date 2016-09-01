@@ -18,10 +18,13 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * 简单实现者Bean工厂。
+ * Simple <i>implementor</i> bean factory.
+ * <p>
+ * It manages a {@code Map} and simply get <i>implementor</i> beans from it.
+ * </p>
  * 
  * @author earthangry@gmail.com
- * @date 2016年8月15日
+ * @date 2016-8-15
  *
  */
 public class SimpleImplementorBeanFactory implements ImplementorBeanFactory
