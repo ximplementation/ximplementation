@@ -723,33 +723,11 @@ public class ImplementationResolverTest extends AbstractTestSupport
 				IsImplementMethod.Implementor2.class, getMethodByName(
 						IsImplementMethod.Implementor2.class, "myPlus")));
 
-		expectedException
-				.expect(ImplementationResolveException.class);
-		expectedException
-				.expectMessage("is not able to implement Method");
-		
-		this.implementationResolver.isImplementMethod(implementee,
-				implementeeMethod, implementeeMethodName,
-				implementeeMethodSignature, implementeeMethodRefered,
-				IsImplementMethod.Implementor3.class, getMethodByName(
-						IsImplementMethod.Implementor3.class, "myPlus"));
-
 		assertTrue(this.implementationResolver.isImplementMethod(implementee,
 				implementeeMethod, implementeeMethodName,
 				implementeeMethodSignature, implementeeMethodRefered,
 				IsImplementMethod.Implementor4.class, getMethodByName(
 						IsImplementMethod.Implementor4.class, "myPlus")));
-
-		expectedException
-				.expect(ImplementationResolveException.class);
-		expectedException
-				.expectMessage("is not able to implement Method");
-
-		this.implementationResolver.isImplementMethod(implementee,
-				implementeeMethod, implementeeMethodName,
-				implementeeMethodSignature, implementeeMethodRefered,
-				IsImplementMethod.Implementor5.class, getMethodByName(
-						IsImplementMethod.Implementor5.class, "myPlus"));
 
 		assertTrue(this.implementationResolver.isImplementMethod(implementee,
 				implementeeMethod, implementeeMethodName,
@@ -762,6 +740,47 @@ public class ImplementationResolverTest extends AbstractTestSupport
 				implementeeMethodSignature, implementeeMethodRefered,
 				IsImplementMethod.Implementor7.class,
 				getMethodByName(IsImplementMethod.Implementor7.class, "plus")));
+	}
+
+	@Test
+	public void isImplementMethodTestNotAbleToImplement()
+	{
+		Class<?> implementee = IsImplementMethod.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "plus");
+		String implementeeMethodName = implementeeMethod.getName();
+		String implementeeMethodSignature = implementeeMethod.toString();
+		String implementeeMethodRefered = "plus-ref";
+
+		expectedException
+				.expect(ImplementationResolveException.class);
+		expectedException
+				.expectMessage("is not able to implement Method");
+		
+		this.implementationResolver.isImplementMethod(implementee,
+				implementeeMethod, implementeeMethodName,
+				implementeeMethodSignature, implementeeMethodRefered,
+				IsImplementMethod.Implementor3.class, getMethodByName(
+						IsImplementMethod.Implementor3.class, "myPlus"));
+
+	}
+
+	@Test
+	public void isImplementMethodTestNotAbleToImplement1()
+	{
+		Class<?> implementee = IsImplementMethod.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "plus");
+		String implementeeMethodName = implementeeMethod.getName();
+		String implementeeMethodSignature = implementeeMethod.toString();
+		String implementeeMethodRefered = "plus-ref";
+
+		expectedException.expect(ImplementationResolveException.class);
+		expectedException.expectMessage("is not able to implement Method");
+
+		this.implementationResolver.isImplementMethod(implementee,
+				implementeeMethod, implementeeMethodName,
+				implementeeMethodSignature, implementeeMethodRefered,
+				IsImplementMethod.Implementor5.class, getMethodByName(
+						IsImplementMethod.Implementor5.class, "myPlus"));
 	}
 
 	public static class IsImplementMethod
@@ -809,7 +828,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 
 		public static class Implementor4
 		{
-			@Implement("org.ximplementation.support.ImplementationResolverTest.IsImplementMethod.Implementee.plus(java.lang.Number, java.lang.Number)")
+			@Implement("public abstract java.lang.Number org.ximplementation.support.ImplementationResolverTest$IsImplementMethod$Implementee.plus(java.lang.Number,java.lang.Number)")
 			public Number myPlus(Number a, Number b)
 			{
 				return null;
@@ -818,7 +837,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 
 		public static class Implementor5
 		{
-			@Implement("org.ximplementation.support.ImplementationResolverTest.IsImplementMethod.Implementee.plus(java.lang.Number, java.lang.Number)")
+			@Implement("public abstract java.lang.Number org.ximplementation.support.ImplementationResolverTest$IsImplementMethod$Implementee.plus(java.lang.Number,java.lang.Number)")
 			public Number myPlus(String a, String b)
 			{
 				return null;
@@ -1217,15 +1236,21 @@ public class ImplementationResolverTest extends AbstractTestSupport
 				this.implementationResolver.findReferedMethod(
 						FindReferedMethodTest.Test2.class, "test",
 						Number.class));
+	}
 
-		expectedException
-				.expect(ImplementationResolveException.class);
-		expectedException
-				.expectMessage("No method is found for");
+	@Test
+	public void findReferedMethodTestNoMethodIsFound()
+	{
+		expectedException.expect(ImplementationResolveException.class);
+		expectedException.expectMessage("No method is found for");
 
 		this.implementationResolver.findReferedMethod(
 				FindReferedMethodTest.Test3.class, "test", Number.class);
+	}
 
+	@Test
+	public void findReferedMethodTestMoreThanOneIsFound()
+	{
 		expectedException.expect(ImplementationResolveException.class);
 		expectedException.expectMessage("More than one");
 
@@ -1341,7 +1366,11 @@ public class ImplementationResolverTest extends AbstractTestSupport
 				this.implementationResolver.getMethodParamIndexes(
 						GetMethodParamIndexesTest.class, getMethodByName(
 								GetMethodParamIndexesTest.class, "test1")));
+	}
 
+	@Test
+	public void getMethodParamIndexesTestDupliateParamIndex()
+	{
 		expectedException.expect(ImplementationResolveException.class);
 		expectedException
 				.expectMessage("parameter index should not be duplicate with");
