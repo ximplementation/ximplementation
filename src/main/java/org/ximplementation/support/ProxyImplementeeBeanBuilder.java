@@ -21,10 +21,10 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * 基于{@linkplain Proxy}的接口实例构建器。
+ * Implementee bean builder based on JDK {@linkplain Proxy}.
  * 
  * @author earthangry@gmail.com
- * @date 2015年12月3日
+ * @date 2015-12-3
  *
  */
 public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
@@ -64,7 +64,7 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 	}
 
 	/**
-	 * 构建接口实例。
+	 * Do build instance.
 	 * 
 	 * @param implementation
 	 * @param implementorBeanFactory
