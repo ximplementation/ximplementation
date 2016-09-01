@@ -172,8 +172,19 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 
 		for (int i = 0; i < myParamTypes.length; i++)
 		{
-			if (!myParamTypes[i].isInstance(myParams[i]))
-				return false;
+			Class<?> myParamType = myParamTypes[i];
+			Object myParam = myParams[i];
+
+			if (myParam == null)
+			{
+				if (myParamType.isPrimitive())
+					return false;
+			}
+			else
+			{
+				if (!toWrapperType(myParamType).isInstance(myParam))
+					return false;
+			}
 		}
 
 		return true;
@@ -321,5 +332,16 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 		}
 		else
 			return (secondSamePkg ? 1 : 0);
+	}
+
+	/**
+	 * 将基本类型转换为对应的包装类型。
+	 * 
+	 * @param type
+	 * @return
+	 */
+	protected Class<?> toWrapperType(Class<?> type)
+	{
+		return TypeUtil.toWrapperType(type);
 	}
 }

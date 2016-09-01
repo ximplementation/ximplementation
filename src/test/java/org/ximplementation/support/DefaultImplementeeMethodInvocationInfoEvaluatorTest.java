@@ -332,7 +332,8 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 		Implementation implementation = this.implementationResolver.resolve(
 				implementee,
 				IsImplementMethodParamValidTest.Implementor0.class,
-				IsImplementMethodParamValidTest.Implementor1.class);
+				IsImplementMethodParamValidTest.Implementor1.class,
+				IsImplementMethodParamValidTest.Implementor2.class);
 
 		// implementMethodInfo.getParamTypes() = null
 		{
@@ -400,6 +401,19 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 					.isImplementMethodParamValid(implementMethodInfo,
 							new Object[] { 1, 2 }));
 		}
+
+		// primitive parameter types
+		{
+			ImplementMethodInfo implementMethodInfo = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							IsImplementMethodParamValidTest.Implementor2.class,
+							"plus"));
+
+			assertTrue(this.defaultImplementeeMethodInvocationInfoEvaluator
+					.isImplementMethodParamValid(implementMethodInfo,
+							new Object[] { 1, 2 }));
+		}
 	}
 
 	public static class IsImplementMethodParamValidTest
@@ -424,6 +438,16 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 		{
 			@Implement
 			public int plus(Integer a, Integer b)
+			{
+				return 0;
+			}
+		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor2
+		{
+			@Implement
+			public int plus(int a, int b)
 			{
 				return 0;
 			}
