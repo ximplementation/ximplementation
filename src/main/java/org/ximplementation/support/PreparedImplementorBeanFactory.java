@@ -22,13 +22,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 预准备的实现者Bean工厂。
+ * Prepared implementor bean factory.
  * <p>
- * 它先初始化实现者类，之后可以添加它们对应的Bean。
- * </p>
+ * It is initialized by prepared <i>implementor</i>s, then only beans which are
+ * instance of these <i>implementor</i>s can be added.
  * 
  * @author earthangry@gmail.com
- * @date 2016年8月15日
+ * @date 2016-8-15
  *
  */
 public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
@@ -36,7 +36,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	private Map<Class<?>, List<Object>> implementorBeansMap = new HashMap<Class<?>, List<Object>>();
 
 	/**
-	 * 以实现者套集构建。
+	 * Create a instance by <i>implementor</i> set.
 	 * 
 	 * @param implementors
 	 */
@@ -51,7 +51,8 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * 以{@linkplain Implementation}的所有实现者构建。
+	 * Create a instance by the <i>implementor</i>s of an
+	 * {@linkplain Implementation}.
 	 * 
 	 * @param implementation
 	 */
@@ -79,7 +80,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * 获取所有实现者。
+	 * Get all <i>implementor</i>s.
 	 * 
 	 * @return
 	 */
@@ -89,7 +90,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * 判断给定实现者是否可接受。
+	 * Returns if a specified <i>implementor</i> is acceptable.
 	 * 
 	 * @param implementor
 	 * @return
@@ -100,7 +101,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * 判断给定实现者Bean是否可接受。
+	 * Returns if a specified <i>implementor</i> bean is acceptable.
 	 * 
 	 * @param implementorBean
 	 * @return
@@ -112,9 +113,9 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * 添加实现者Bean。
+	 * Add an <i>implementor</i> bean.
 	 * <p>
-	 * 如果实现者Bean被接受，此方法将返回{@code true}；否则，返回{@code false}。
+	 * Returns {@code true} if the bean is acceptable, {@code false} otherwise.
 	 * </p>
 	 * 
 	 * @param implementorBean
