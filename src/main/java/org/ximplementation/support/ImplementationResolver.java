@@ -571,11 +571,13 @@ public class ImplementationResolver
 			Method implementMethod)
 	{
 		// 返回值类型
-		Class<?> implementeeReturnType = implementeeMethod.getReturnType();
-		Class<?> implementorReturnType = implementMethod.getReturnType();
+		Class<?> implementeeReturnType = toWrapperType(
+				implementeeMethod.getReturnType());
+		Class<?> implementorReturnType = toWrapperType(
+				implementMethod.getReturnType());
 
 		if (!implementeeReturnType
-				.isAssignableFrom(toWrapperType(implementorReturnType)))
+				.isAssignableFrom(implementorReturnType))
 			return false;
 
 		// 参数类型
@@ -595,13 +597,15 @@ public class ImplementationResolver
 			if (myParamIndex >= implementeeParamTypes.length)
 				return false;
 
-			Class<?> implementeeParamType = implementeeParamTypes[myParamIndex];
-			Class<?> implementorParamType = implementorParamTypes[i];
+			Class<?> implementeeParamType = toWrapperType(
+					implementeeParamTypes[myParamIndex]);
+			Class<?> implementorParamType = toWrapperType(
+					implementorParamTypes[i]);
 
 			if (!implementeeParamType
-					.isAssignableFrom(toWrapperType(implementorParamType))
-					&& !implementorParamType.isAssignableFrom(
-							toWrapperType(implementeeParamType)))
+					.isAssignableFrom(implementorParamType)
+					&& !implementorParamType
+							.isAssignableFrom(implementeeParamType))
 				return false;
 		}
 

@@ -1076,6 +1076,14 @@ public class ImplementationResolverTest extends AbstractTestSupport
 						getMethodByName(
 								IsInvokeFeasibleMethodTest.Implementor9.class,
 								"plus")));
+
+		assertTrue(
+				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+						getMethodByName(implementee, "minus"),
+						IsInvokeFeasibleMethodTest.Implementor10.class,
+						getMethodByName(
+								IsInvokeFeasibleMethodTest.Implementor10.class,
+								"minus")));
 	}
 
 	public static class IsInvokeFeasibleMethodTest
@@ -1083,6 +1091,8 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		public static interface Implementee
 		{
 			Integer plus(Integer a, Integer b);
+
+			int minus(int a, int b);
 		}
 
 		public static class Implementor0
@@ -1162,6 +1172,14 @@ public class ImplementationResolverTest extends AbstractTestSupport
 			public Integer plus(@ParamIndex(1) Integer b)
 			{
 				return null;
+			}
+		}
+
+		public static class Implementor10
+		{
+			public int minus(int a, int b)
+			{
+				return 0;
 			}
 		}
 	}
