@@ -1382,27 +1382,4 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	{
 
 	}
-
-	@Test
-	public void toWrapperTypeTest()
-	{
-		assertEquals(Boolean.class,
-				this.implementationResolver.toWrapperType(boolean.class));
-		assertEquals(Byte.class,
-				this.implementationResolver.toWrapperType(byte.class));
-		assertEquals(Character.class,
-				this.implementationResolver.toWrapperType(char.class));
-		assertEquals(Double.class,
-				this.implementationResolver.toWrapperType(double.class));
-		assertEquals(Float.class,
-				this.implementationResolver.toWrapperType(float.class));
-		assertEquals(Integer.class,
-				this.implementationResolver.toWrapperType(int.class));
-		assertEquals(Long.class,
-				this.implementationResolver.toWrapperType(long.class));
-		assertEquals(Short.class,
-				this.implementationResolver.toWrapperType(short.class));
-		assertEquals(Number.class,
-				this.implementationResolver.toWrapperType(Number.class));
-	}
 }
