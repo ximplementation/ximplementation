@@ -650,17 +650,13 @@ public class ImplementationResolver
 					}
 					else
 					{
-						Class<?> returnType = m.getReturnType();
-
-						if (returnType.isPrimitive())
-							returnType = toWrapperType(returnType);
+						Class<?> returnType = toWrapperType(m.getReturnType());
 
 						boolean returnValid = false;
 
 						for (Class<?> validReturnType : validReturnTypes)
 						{
-							if (validReturnType.isPrimitive())
-								validReturnType = toWrapperType(
+							validReturnType = toWrapperType(
 										validReturnType);
 
 							if (validReturnType.isAssignableFrom(returnType))
@@ -788,28 +784,11 @@ public class ImplementationResolver
 	/**
 	 * 将基本类型转换为对应的包装类型。
 	 * 
-	 * @param primitiveType
+	 * @param type
 	 * @return
 	 */
-	protected Class<?> toWrapperType(Class<?> primitiveType)
+	protected Class<?> toWrapperType(Class<?> type)
 	{
-		if (boolean.class.equals(primitiveType))
-			return Boolean.class;
-		else if(byte.class.equals(primitiveType))
-			return Byte.class;
-		else if (char.class.equals(primitiveType))
-			return Character.class;
-		else if (double.class.equals(primitiveType))
-			return Double.class;
-		else if (float.class.equals(primitiveType))
-			return Float.class;
-		else if (int.class.equals(primitiveType))
-			return Integer.class;
-		else if (long.class.equals(primitiveType))
-			return Long.class;
-		else if (short.class.equals(primitiveType))
-			return Short.class;
-		else
-			return primitiveType;
+		return TypeUtil.toWrapperType(type);
 	}
 }
