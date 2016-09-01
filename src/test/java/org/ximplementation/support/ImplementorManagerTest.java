@@ -14,6 +14,7 @@
 
 package org.ximplementation.support;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.util.HashSet;
@@ -51,6 +52,8 @@ public class ImplementorManagerTest extends AbstractTestSupport
 
 			implementorManager
 					.addImplementor(AddImplementorTest.Implementor0.class);
+			implementorManager
+					.addImplementor(AddImplementorTest.Implementor1.class);
 
 			HashSet<Class<?>> expected = new HashSet<Class<?>>();
 			expected.add(AddImplementorTest.Implementee0.class);
@@ -61,6 +64,35 @@ public class ImplementorManagerTest extends AbstractTestSupport
 					implementorManager.getImplementees());
 
 			assertEquals(expected, actual);
+
+			{
+				HashSet<Class<?>> expectedImplementors = new HashSet<Class<?>>();
+				expectedImplementors.add(AddImplementorTest.Implementor0.class);
+				expectedImplementors.add(AddImplementorTest.Implementor1.class);
+
+				assertEquals(expectedImplementors,
+						implementorManager.getImplementors(
+								AddImplementorTest.Implementee0.class));
+			}
+
+			{
+				HashSet<Class<?>> expectedImplementors = new HashSet<Class<?>>();
+				expectedImplementors.add(AddImplementorTest.Implementor0.class);
+				expectedImplementors.add(AddImplementorTest.Implementor1.class);
+
+				assertEquals(expectedImplementors,
+						implementorManager.getImplementors(
+								AddImplementorTest.Implementee1.class));
+			}
+
+			{
+				HashSet<Class<?>> expectedImplementors = new HashSet<Class<?>>();
+				expectedImplementors.add(AddImplementorTest.Implementor0.class);
+
+				assertEquals(expectedImplementors,
+						implementorManager.getImplementors(
+								AddImplementorTest.Implementee2.class));
+			}
 		}
 
 		// onlyInterfaceForLang = false
@@ -70,17 +102,57 @@ public class ImplementorManagerTest extends AbstractTestSupport
 
 			implementorManager
 					.addImplementor(AddImplementorTest.Implementor0.class);
+			implementorManager
+					.addImplementor(AddImplementorTest.Implementor1.class);
 
 			HashSet<Class<?>> expected = new HashSet<Class<?>>();
 			expected.add(AddImplementorTest.Implementee0.class);
 			expected.add(AddImplementorTest.Implementee1.class);
 			expected.add(AddImplementorTest.Implementee2.class);
-			expected.add(AddImplementorTest.AbstractImplementor.class);
+			expected.add(AddImplementorTest.AbstractImplementee.class);
 
 			HashSet<Class<?>> actual = new HashSet<Class<?>>(
 					implementorManager.getImplementees());
 
 			assertEquals(expected, actual);
+
+			{
+				HashSet<Class<?>> expectedImplementors = new HashSet<Class<?>>();
+				expectedImplementors.add(AddImplementorTest.Implementor0.class);
+				expectedImplementors.add(AddImplementorTest.Implementor1.class);
+
+				assertEquals(expectedImplementors,
+						implementorManager.getImplementors(
+								AddImplementorTest.Implementee0.class));
+			}
+
+			{
+				HashSet<Class<?>> expectedImplementors = new HashSet<Class<?>>();
+				expectedImplementors.add(AddImplementorTest.Implementor0.class);
+				expectedImplementors.add(AddImplementorTest.Implementor1.class);
+
+				assertEquals(expectedImplementors,
+						implementorManager.getImplementors(
+								AddImplementorTest.Implementee1.class));
+			}
+
+			{
+				HashSet<Class<?>> expectedImplementors = new HashSet<Class<?>>();
+				expectedImplementors.add(AddImplementorTest.Implementor0.class);
+
+				assertEquals(expectedImplementors,
+						implementorManager.getImplementors(
+								AddImplementorTest.Implementee2.class));
+			}
+
+			{
+				HashSet<Class<?>> expectedImplementors = new HashSet<Class<?>>();
+				expectedImplementors.add(AddImplementorTest.Implementor0.class);
+
+				assertEquals(expectedImplementors,
+						implementorManager.getImplementors(
+								AddImplementorTest.AbstractImplementee.class));
+			}
 		}
 	}
 
@@ -99,14 +171,205 @@ public class ImplementorManagerTest extends AbstractTestSupport
 		{
 		}
 
-		public static abstract class AbstractImplementor
+		public static abstract class AbstractImplementee
 		{
 		}
 
 		@Implementor(Implementee2.class)
-		public static class Implementor0 extends AbstractImplementor
+		public static class Implementor0 extends AbstractImplementee
 				implements Implementee1
 		{
 		}
+
+		public static class Implementor1 implements Implementee1
+		{
+		}
+	}
+
+	@Test
+	public void resolveImplementeesTest()
+	{
+		ImplementorManager implementorManager = new ImplementorManager();
+
+		// onlyInterfaceForLang = true
+		{
+			HashSet<Class<?>> actual = new HashSet<Class<?>>();
+
+			implementorManager.resolveImplementees(
+					ResolveImplementeesTest.Implementor0.class, actual,
+					true);
+
+			HashSet<Class<?>> expected = new HashSet<Class<?>>();
+			expected.add(ResolveImplementeesTest.Implementee0.class);
+			expected.add(ResolveImplementeesTest.Implementee1.class);
+			expected.add(ResolveImplementeesTest.Implementee2.class);
+
+			assertEquals(expected, actual);
+		}
+
+		// onlyInterfaceForLang = false
+		{
+			HashSet<Class<?>> actual = new HashSet<Class<?>>();
+
+			implementorManager.resolveImplementees(
+					ResolveImplementeesTest.Implementor0.class, actual, false);
+
+			HashSet<Class<?>> expected = new HashSet<Class<?>>();
+			expected.add(ResolveImplementeesTest.Implementee0.class);
+			expected.add(ResolveImplementeesTest.Implementee1.class);
+			expected.add(ResolveImplementeesTest.Implementee2.class);
+			expected.add(ResolveImplementeesTest.AbstractImplementee.class);
+
+			assertEquals(expected, actual);
+		}
+	}
+
+	public static class ResolveImplementeesTest
+	{
+		public static interface Implementee0
+		{
+
+		}
+
+		public static interface Implementee1 extends Implementee0
+		{
+		}
+
+		public static interface Implementee2
+		{
+		}
+
+		public static abstract class AbstractImplementee
+		{
+		}
+
+		@Implementor(Implementee2.class)
+		public static class Implementor0 extends AbstractImplementee
+				implements Implementee1
+		{
+		}
+	}
+
+	@Test
+	public void getDiectLangSuperClassesTest()
+	{
+		ImplementorManager implementorManager = new ImplementorManager();
+
+		// onlyInterface = true
+		{
+			Class<?>[] actual = implementorManager
+					.getDiectLangSuperClasses(
+					GetDiectLangSuperClassesTest.Implementor0.class, true);
+
+			Class<?>[] expected = {
+					GetDiectLangSuperClassesTest.Implementee1.class,
+					GetDiectLangSuperClassesTest.Implementee2.class };
+
+			assertArrayEquals(expected, actual);
+		}
+
+		// onlyInterface = false
+		{
+			Class<?>[] actual = implementorManager.getDiectLangSuperClasses(
+					GetDiectLangSuperClassesTest.Implementor0.class, false);
+
+			Class<?>[] expected = {
+					GetDiectLangSuperClassesTest.Implementee1.class,
+					GetDiectLangSuperClassesTest.Implementee2.class,
+					GetDiectLangSuperClassesTest.AbstractImplementee.class };
+
+			assertArrayEquals(expected, actual);
+		}
+	}
+
+	public static class GetDiectLangSuperClassesTest
+	{
+		public static interface Implementee0
+		{
+
+		}
+
+		public static interface Implementee1 extends Implementee0
+		{
+		}
+
+		public static interface Implementee2
+		{
+		}
+
+		public static abstract class AbstractImplementee
+		{
+		}
+
+		public static class Implementor0 extends AbstractImplementee
+				implements Implementee1, Implementee2
+		{
+		}
+	}
+
+	@Test
+	public void getAnnotationImplementeesTest()
+	{
+		ImplementorManager implementorManager = new ImplementorManager();
+
+		// implementorAno != null
+		{
+			Class<?>[] actual = implementorManager.getAnnotationImplementees(
+					GetAnnotationImplementeesTest.Implementor0.class);
+
+			Class<?>[] expected = {
+					GetAnnotationImplementeesTest.Implementee0.class,
+					GetAnnotationImplementeesTest.Implementee1.class };
+
+			assertArrayEquals(expected, actual);
+		}
+
+		// Arrays.equals(DEFAULT_IMPLEMENTOR_INTERFACECLASSES, annoImplementees)
+		{
+			Class<?>[] actual = implementorManager.getAnnotationImplementees(
+					GetAnnotationImplementeesTest.Implementor1.class);
+
+			Class<?>[] expected = {};
+
+			assertArrayEquals(expected, actual);
+		}
+
+		// implementorAno == null
+		{
+			Class<?>[] actual = implementorManager.getAnnotationImplementees(
+					GetAnnotationImplementeesTest.Implementor2.class);
+
+			Class<?>[] expected = {};
+
+			assertArrayEquals(expected, actual);
+		}
+	}
+
+	public static class GetAnnotationImplementeesTest
+	{
+		public static interface Implementee0
+		{
+
+		}
+
+		public static interface Implementee1
+		{
+
+		}
+
+		@Implementor({ Implementee0.class, Implementee1.class })
+		public static class Implementor0
+		{
+		}
+
+		@Implementor(Object.class)
+		public static class Implementor1
+		{
+		}
+
+		public static class Implementor2
+		{
+		}
+
 	}
 }
