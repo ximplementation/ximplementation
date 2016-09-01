@@ -15,14 +15,14 @@
 package org.ximplementation.support;
 
 /**
- * 代理接口标识。
+ * Proxy implementee token.
  * <p>
- * {@linkplain ProxyImplementeeBeanBuilder}创建的<i>接口</i>实例
- * {@linkplain java.lang.reflect.Proxy Proxy}对象会实现此接口。
+ * Each <i>implementee</i> instance created by
+ * {@linkplain ProxyImplementeeBeanBuilder} will implements this interface.
  * </p>
  * 
  * @author earthangry@gmail.com
- * @date 2015年12月3日
+ * @date 2015-12-3
  *
  */
 public interface ProxyImplementee
