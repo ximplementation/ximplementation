@@ -35,10 +35,10 @@ import org.ximplementation.Refered;
 import org.ximplementation.Validity;
 
 /**
- * 实现信息解析器。
+ * {@linkplain Implementation} resolver.
  * 
  * @author earthangry@gmail.com
- * @date 2015年12月5日
+ * @date 2015-12-5
  *
  */
 public class ImplementationResolver
@@ -49,12 +49,11 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 解析接口者实现信息。
+	 * Resolve {@linkplain Implementation} for an <i>implementee</i> and its
+	 * <i>implementor</i>s.
 	 * 
 	 * @param implementee
-	 *            接口
 	 * @param implementors
-	 *            实现者数组
 	 * @return
 	 * @throws ImplementationResolveException
 	 */
@@ -68,12 +67,11 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 解析接口者实现信息。
+	 * Resolve {@linkplain Implementation} for an <i>implementee</i> and its
+	 * <i>implementor</i>s.
 	 * 
 	 * @param implementee
-	 *            接口
 	 * @param implementors
-	 *            实现者套集
 	 * @return
 	 * @throws ImplementationResolveException
 	 */
@@ -84,12 +82,10 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 解析接口者实现信息。
+	 * Do resolving.
 	 * 
 	 * @param implementee
-	 *            接口类
 	 * @param implementors
-	 *            实现者套集
 	 * @return
 	 * @throws ImplementationResolveException
 	 */
@@ -100,7 +96,7 @@ public class ImplementationResolver
 
 		List<ImplementInfo> implementInfos = new ArrayList<ImplementInfo>();
 
-		Method[] implementeeMethods = getCandicateImplementeeMethods(
+		Method[] implementeeMethods = getCandidateImplementeeMethods(
 				implementee);
 
 		for (int i = 0; i < implementeeMethods.length; i++)
@@ -126,7 +122,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 解析{@linkplain ImplementInfo}。
+	 * Resolve {@linkplain ImplementInfo}.
 	 * 
 	 * @param implementee
 	 * @param implementeeMethods
@@ -162,7 +158,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 解析{@linkplain ImplementMethodInfo}。
+	 * Resolve {@linkplain ImplementMethodInfo}.
 	 * 
 	 * @param implementee
 	 * @param implementeeMethods
@@ -179,7 +175,7 @@ public class ImplementationResolver
 		String implementeeMethodSignature = getMethodSignature(implementee, implementeeMethod);
 		String implementeeMethodRefered = getRefered(implementeeMethod);
 
-		Method[] implementMethods = getCandicateImplementMethods(implementor);
+		Method[] implementMethods = getCandidateImplementMethods(implementor);
 
 		for (int i = 0; i < implementMethods.length; i++)
 		{
@@ -199,7 +195,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 构建{@linkplain ImplementMethodInfo}。
+	 * Build {@linkplain ImplementMethodInfo}.
 	 * 
 	 * @param implementee
 	 * @param implementeeMethod
@@ -218,7 +214,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 解析{@linkplain ImplementMethodInfo}的属性。
+	 * Resolve {@linkplain ImplementMethodInfo} properties.
 	 * 
 	 * @param implementee
 	 * @param implementeeMethod
@@ -235,8 +231,8 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 解析{@linkplain ImplementMethodInfo}的
-	 * {@linkplain ImplementMethodInfo#getParamTypes()} 属性。
+	 * Resolve {@linkplain ImplementMethodInfo} 's
+	 * {@linkplain ImplementMethodInfo#getParamTypes()} property.
 	 * 
 	 * @param implementee
 	 * @param implementeeMethod
@@ -251,8 +247,8 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 解析{@linkplain ImplementMethodInfo}的
-	 * {@linkplain ImplementMethodInfo#getGenericParamTypes()} 属性。
+	 * Resolve {@linkplain ImplementMethodInfo} 's
+	 * {@linkplain ImplementMethodInfo#getGenericParamTypes()} property.
 	 * 
 	 * @param implementee
 	 * @param implementeeMethod
@@ -267,8 +263,8 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 解析{@linkplain ImplementMethodInfo}的
-	 * {@linkplain ImplementMethodInfo#getParamIndexes()}属性。
+	 * Resolve {@linkplain ImplementMethodInfo} 's
+	 * {@linkplain ImplementMethodInfo#getParamIndexes()} property.
 	 * 
 	 * @param implementee
 	 * @param implementeeMethod
@@ -284,9 +280,9 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 解析{@linkplain ImplementMethodInfo}的
-	 * {@linkplain ImplementMethodInfo#getValidityMethod()}、
-	 * {@linkplain ImplementMethodInfo#getValidityParamIndexes()}属性。
+	 * Resolve {@linkplain ImplementMethodInfo} 's
+	 * {@linkplain ImplementMethodInfo#getValidityMethod()} and
+	 * {@linkplain ImplementMethodInfo#getValidityParamIndexes()} property.
 	 * 
 	 * @param implementee
 	 * @param implementeeMethod
@@ -318,10 +314,10 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 解析{@linkplain ImplementMethodInfo}的
-	 * {@linkplain ImplementMethodInfo#getPriorityValue()}
-	 * {@linkplain ImplementMethodInfo#getPriorityMethod()}、
-	 * {@linkplain ImplementMethodInfo#getPriorityParamIndexes()}属性。
+	 * Resolve {@linkplain ImplementMethodInfo} 's
+	 * {@linkplain ImplementMethodInfo#getPriorityValue()},
+	 * {@linkplain ImplementMethodInfo#getPriorityMethod()} and
+	 * {@linkplain ImplementMethodInfo#getPriorityParamIndexes()} property.
 	 * 
 	 * @param implementee
 	 * @param implementeeMethod
@@ -361,29 +357,35 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 获取候选接口方法数组。
+	 * Get candidate <i>implementee</i> methods.
+	 * <p>
+	 * They will be used for resolving later.
+	 * </p>
 	 * 
 	 * @param implementee
 	 * @return
 	 */
-	protected Method[] getCandicateImplementeeMethods(Class<?> implementee)
+	protected Method[] getCandidateImplementeeMethods(Class<?> implementee)
 	{
 		return implementee.getMethods();
 	}
 
 	/**
-	 * 获取候选实现方法数组。
+	 * Get candidate implement methods.
+	 * <p>
+	 * They will be used for resolving later.
+	 * </p>
 	 * 
 	 * @param implementor
 	 * @return
 	 */
-	protected Method[] getCandicateImplementMethods(Class<?> implementor)
+	protected Method[] getCandidateImplementMethods(Class<?> implementor)
 	{
 		return implementor.getMethods();
 	}
 
 	/**
-	 * 判断给定方法是否是<i>接口方法</i>。
+	 * Returns if the method is a legal <i>implementee</i> method.
 	 * 
 	 * @param implementee
 	 * @param implementeeMethod
@@ -405,7 +407,8 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 判断{@code implementor}是否是{@code implementee}的<i>实现者</i>。
+	 * Returns if the {@code implementor} is <i>implementor</i> of the
+	 * {@code implementee}.
 	 * 
 	 * @param implementee
 	 * @param implementor
@@ -432,7 +435,8 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 判断是否是实现方法。
+	 * Returns if the {@code implementMethod} is <i>implement method</i> of the
+	 * {@code implementeeMethod}.
 	 * 
 	 * @param implementee
 	 * @param implementeeMethod
@@ -458,9 +462,9 @@ public class ImplementationResolver
 
 			if (implementAnoValue == null || implementAnoValue.isEmpty())
 			{
-				// 方法名相同且调用可行
+				// the same name and invoke feasible
 				return implementeeMethodName.equals(implementMethod.getName())
-						&& isInvokeFeasibleMethod(implementee,
+						&& isInvocationFeasibleMethod(implementee,
 								implementeeMethod, implementor,
 								implementMethod);
 			}
@@ -469,7 +473,7 @@ public class ImplementationResolver
 				if (implementAnoValue.equals(implementeeMethodRefered)
 						|| implementAnoValue.equals(implementeeMethodSignature))
 				{
-					if (!isInvokeFeasibleMethod(implementee, implementeeMethod, implementor, implementMethod))
+					if (!isInvocationFeasibleMethod(implementee, implementeeMethod, implementor, implementMethod))
 						throw new ImplementationResolveException("Method [" + implementMethod
 								+ "] is not able to implement Method [" + implementeeMethod + "] ");
 
@@ -477,7 +481,7 @@ public class ImplementationResolver
 				}
 				else if (implementAnoValue.equals(implementeeMethodName))
 				{
-					return isInvokeFeasibleMethod(implementee, implementeeMethod, implementor, implementMethod);
+					return isInvocationFeasibleMethod(implementee, implementeeMethod, implementor, implementMethod);
 				}
 				else
 					return false;
@@ -488,7 +492,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 判断给定方法是否可能是<i>实现方法</i>。
+	 * Returns if the {@code implementMethod} may be an <i>implement method</i>.
 	 * 
 	 * @param implementor
 	 * @param implementMethod
@@ -511,7 +515,8 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 判断是否是重写方法。
+	 * Returns if the {@code subMethod} is overridden method of the
+	 * {@code superMethod}.
 	 * 
 	 * @param superClass
 	 * @param superMethod
@@ -527,11 +532,11 @@ public class ImplementationResolver
 		Class<?>[] superParamTypes = superMethod.getParameterTypes();
 		Class<?>[] subParamTypes = subMethod.getParameterTypes();
 
-		// 参数数目
+		// parameter count check first
 		if (superParamTypes.length != subParamTypes.length)
 			return false;
 
-		// 参数类型
+		// then parameter types
 		for (int i = 0; i < superParamTypes.length; i++)
 		{
 			Class<?> superParamType = superParamTypes[i];
@@ -541,7 +546,7 @@ public class ImplementationResolver
 				return false;
 		}
 
-		// 返回值类型
+		// then return type
 		Class<?> superReturnType = superMethod.getReturnType();
 		Class<?> subReturnType = subMethod.getReturnType();
 
@@ -552,13 +557,16 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 判断{@code implementMethod}方法对于{@code implementeeMethod}方法是否调用可行。
+	 * Returns if the {@code implementMethod} method is invocation feasible to
+	 * the {@code implementeeMethod} method.
 	 * <p>
-	 * 如果方法{@code A}对于方法{@code B}调用可行，那么：
+	 * Method {@code A} is invocation feasible to method {@code B} if :
 	 * </p>
 	 * <ul>
-	 * <li>{@code A}方法的返回值类型必须是{@code B}方法返回值类型的子类；</li>
-	 * <li>{@code A}方法的参数类型必须是对应{@code B}方法参数类型的子类或者父类。</li>
+	 * <li>The return type of {@code A} is sub type of {@code B} after both are
+	 * wrapped if primitive type;</li>
+	 * <li>Each parameter type of {@code A} is sub or super type of {@code B}
+	 * after both are wrapped if primitive type.</li>
 	 * </ul>
 	 * 
 	 * @param implementee
@@ -567,7 +575,7 @@ public class ImplementationResolver
 	 * @param implementMethod
 	 * @return
 	 */
-	protected boolean isInvokeFeasibleMethod(Class<?> implementee, Method implementeeMethod, Class<?> implementor,
+	protected boolean isInvocationFeasibleMethod(Class<?> implementee, Method implementeeMethod, Class<?> implementor,
 			Method implementMethod)
 	{
 		// 返回值类型
@@ -613,9 +621,9 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 查找被引用的方法名。
+	 * Find refered method.
 	 * <p>
-	 * 如果没找到，此方法将返回{@code null}。
+	 * Returns {@code null} if not found.
 	 * </p>
 	 * 
 	 * @param clazz
@@ -693,7 +701,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 获取方法签名。
+	 * Get the method signature.
 	 * 
 	 * @param clazz
 	 * @param method
@@ -705,9 +713,9 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 获取引用名。
+	 * Get refered name of the method.
 	 * <p>
-	 * 如果方法没有{@linkplain Refered}注解，将返回{@code null}。
+	 * Returns {@code null} if the method is not {@linkplain Refered} annotated.
 	 * </p>
 	 * 
 	 * @param method
@@ -721,7 +729,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 解析方法参数的{@linkplain ParamIndex}值数组。
+	 * Resolve {@linkplain ParamIndex} array of the method.
 	 * 
 	 * @param clazz
 	 * @param method
@@ -770,7 +778,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 获取指定注解实例。
+	 * Get the specified annotation of an element.
 	 * 
 	 * @param element
 	 * @param clazz
@@ -782,7 +790,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * 将基本类型转换为对应的包装类型。
+	 * Get the wrapper type if primitive type.
 	 * 
 	 * @param type
 	 * @return

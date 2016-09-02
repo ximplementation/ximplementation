@@ -34,7 +34,7 @@ import org.ximplementation.Validity;
  * </ol>
  * 
  * @author earthangry@gmail.com
- * @date 2016年8月15日
+ * @date 2016-8-15
  *
  */
 public class DefaultImplementeeMethodInvocationInfoEvaluator

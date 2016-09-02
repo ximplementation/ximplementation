@@ -564,7 +564,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		Class<?> implementee = GetCandicateImplementeeMethodsTest.class;
 
 		Method[] methods = this.implementationResolver
-				.getCandicateImplementeeMethods(implementee);
+				.getCandidateImplementeeMethods(implementee);
 
 		assertEquals(implementee.getMethods().length, methods.length);
 
@@ -587,7 +587,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		Class<?> implementor = GetCandicateImplementMethodsTest.class;
 
 		Method[] methods = this.implementationResolver
-				.getCandicateImplementMethods(implementor);
+				.getCandidateImplementMethods(implementor);
 
 		assertEquals(implementor.getMethods().length, methods.length);
 
@@ -1018,7 +1018,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		Class<?> implementee = IsInvokeFeasibleMethodTest.Implementee.class;
 
 		assertFalse(
-				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "plus"),
 						IsInvokeFeasibleMethodTest.Implementor0.class,
 						getMethodByName(
@@ -1026,7 +1026,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 								"plus")));
 
 		assertFalse(
-				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "plus"),
 						IsInvokeFeasibleMethodTest.Implementor1.class,
 						getMethodByName(
@@ -1034,7 +1034,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 								"plus")));
 
 		assertFalse(
-				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "plus"),
 						IsInvokeFeasibleMethodTest.Implementor2.class,
 						getMethodByName(
@@ -1042,7 +1042,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 								"plus")));
 
 		assertFalse(
-				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "plus"),
 						IsInvokeFeasibleMethodTest.Implementor3.class,
 						getMethodByName(
@@ -1050,7 +1050,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 								"plus")));
 
 		assertTrue(
-				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "plus"),
 						IsInvokeFeasibleMethodTest.Implementor4.class,
 						getMethodByName(
@@ -1058,14 +1058,14 @@ public class ImplementationResolverTest extends AbstractTestSupport
 								"plus")));
 
 		assertTrue(
-				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "plus"),
 						IsInvokeFeasibleMethodTest.Implementor5.class,
 						getMethodByName(
 								IsInvokeFeasibleMethodTest.Implementor5.class,
 								"plus")));
 
-		assertTrue(this.implementationResolver.isInvokeFeasibleMethod(
+		assertTrue(this.implementationResolver.isInvocationFeasibleMethod(
 				implementee, getMethodByName(implementee, "plus"),
 				IsInvokeFeasibleMethodTest.Implementor6.class,
 						getMethodByName(
@@ -1073,7 +1073,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 								"plus")));
 
 		assertTrue(
-				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "plus"),
 						IsInvokeFeasibleMethodTest.Implementor7.class,
 						getMethodByName(
@@ -1081,7 +1081,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 								"plus")));
 
 		assertTrue(
-				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "plus"),
 						IsInvokeFeasibleMethodTest.Implementor8.class,
 						getMethodByName(
@@ -1089,7 +1089,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 								"plus")));
 
 		assertTrue(
-				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "plus"),
 						IsInvokeFeasibleMethodTest.Implementor9.class,
 						getMethodByName(
@@ -1097,7 +1097,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 								"plus")));
 
 		assertTrue(
-				this.implementationResolver.isInvokeFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "minus"),
 						IsInvokeFeasibleMethodTest.Implementor10.class,
 						getMethodByName(

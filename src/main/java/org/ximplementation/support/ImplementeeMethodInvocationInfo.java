@@ -15,18 +15,16 @@
 package org.ximplementation.support;
 
 /**
- * 接口方法调用信息。
+ * The invocation info of an <i>implementee</i> method.
  * 
  * @author earthangry@gmail.com
- * @date 2015年12月6日
+ * @date 2015-12-6
  *
  */
 public class ImplementeeMethodInvocationInfo
 {
-	/** 实现方法信息 */
 	private ImplementMethodInfo implementMethodInfo;
 
-	/** 实现Bean */
 	private Object implementorBean;
 
 	public ImplementeeMethodInvocationInfo()

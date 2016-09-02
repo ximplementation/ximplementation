@@ -18,17 +18,17 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 
 /**
- * 接口方法实现信息。
+ * Implement info of an <i>implementee method</i>.
  * 
  * @author earthangry@gmail.com
- * @date 2015年12月5日
+ * @date 2015-12-5
  *
  */
 public class ImplementInfo implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	/** 接口方法 */
+	/** implementee method */
 	private Method implementeeMethod;
 
 	private ImplementMethodInfo[] implementMethodInfos;
@@ -72,7 +72,7 @@ public class ImplementInfo implements Serializable
 	}
 
 	/**
-	 * 是否有实现方法信息。
+	 * Returns if it has implement method info.
 	 * 
 	 * @return
 	 */
@@ -83,9 +83,10 @@ public class ImplementInfo implements Serializable
 	}
 
 	/**
-	 * 获取指定实现方法的实现方法信息。
+	 * Returns the {@linkplain ImplementMethodInfo} for a specified <i>implement
+	 * method</i>.
 	 * <p>
-	 * 如果没有实现方法信息，此方法将返回{@code null}。
+	 * Returns {@code null} if no.
 	 * </p>
 	 * 
 	 * @param implementMethod

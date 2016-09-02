@@ -17,18 +17,19 @@ package org.ximplementation.support;
 import java.util.Collection;
 
 /**
- * 实现者Bean工厂。
+ * Factory of <i>implementor</i> beans.
  * 
  * @author earthangry@gmail.com
- * @date 2016年8月15日
+ * @date 2016-8-15
  *
  */
 public interface ImplementorBeanFactory
 {
 	/**
-	 * 获取指定实现者的Bean集合。
+	 * Get beans of the specified <i>implementor</i>.
 	 * <p>
-	 * 如果不存在，此方法应该返回{@code null}或者空集合。
+	 * It should return {@code null} or an empty {@code Collection} if no beans
+	 * for it.
 	 * </p>
 	 * 
 	 * @param implementor

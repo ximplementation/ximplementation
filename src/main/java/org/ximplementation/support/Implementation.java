@@ -19,20 +19,20 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 /**
- * 接口实现信息。
+ * Implement information for an <i>implementee</i>.
  * 
  * @author earthangry@gmail.com
- * @date 2015年12月5日
+ * @date 2015-12-5
  *
  */
 public class Implementation implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	/** 接口 */
+	/** implementee */
 	private Class<?> implementee;
 
-	/** 实现信息 */
+	/** implement info */
 	private ImplementInfo[] implementInfos;
 
 	public Implementation()
@@ -68,9 +68,10 @@ public class Implementation implements Serializable
 	}
 
 	/**
-	 * 获取指定接口方法的实现信息。
+	 * Get the {@linkplain ImplementInfo} for a specified <i>implementee</i>
+	 * method.
 	 * <p>
-	 * 如果没有实现信息，此方法将返回{@code null}。
+	 * Returns {@code null} if the <i>implementee</i> method not exists.
 	 * </p>
 	 * 
 	 * @param implementeeMethod

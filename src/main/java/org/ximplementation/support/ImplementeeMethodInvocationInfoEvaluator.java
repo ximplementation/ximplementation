@@ -17,18 +17,18 @@ package org.ximplementation.support;
 import java.lang.reflect.Method;
 
 /**
- * 接口方法调用信息计算器。
+ * The {@linkplain ImplementeeMethodInvocationInfo} evaluator.
  * 
  * @author earthangry@gmail.com
- * @date 2016年8月15日
+ * @date 2016-8-15
  *
  */
 public interface ImplementeeMethodInvocationInfoEvaluator
 {
 	/**
-	 * 计算{@linkplain ImplementeeMethodInvocationInfo}。
+	 * Evaluate {@linkplain ImplementeeMethodInvocationInfo}.
 	 * <p>
-	 * 如果无结果，此方法应该返回{@code null}。
+	 * It should returns {@code null} if no result.
 	 * </p>
 	 * 
 	 * @param implementation

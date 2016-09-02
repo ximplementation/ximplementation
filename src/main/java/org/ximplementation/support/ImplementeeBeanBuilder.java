@@ -18,16 +18,16 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * 接口实例构建器。
+ * Builder of <i>implementee</i> bean.
  * 
  * @author earthangry@gmail.com
- * @date 2015年12月3日
+ * @date 2015-12-3
  *
  */
 public interface ImplementeeBeanBuilder
 {
 	/**
-	 * 构建接口实例。
+	 * Build an <i>implementee</i> bean.
 	 * 
 	 * @param implementation
 	 * @param implementorBeansMap
@@ -37,7 +37,7 @@ public interface ImplementeeBeanBuilder
 			Map<Class<?>, ? extends Collection<?>> implementorBeansMap);
 
 	/**
-	 * 构建接口实例。
+	 * Build an <i>implementee</i> bean.
 	 * 
 	 * @param implementation
 	 * @param implementorBeanFactory

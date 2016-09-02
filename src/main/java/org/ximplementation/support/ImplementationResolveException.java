@@ -15,10 +15,11 @@
 package org.ximplementation.support;
 
 /**
- * 接口实现信息解析异常。
+ * {@linkplain Implementation} resolving exception in
+ * {@linkplain ImplementationResolver}.
  * 
  * @author earthangry@gmail.com
- * @date 2015年12月5日
+ * @date 2015-12-5
  *
  */
 public class ImplementationResolveException extends RuntimeException

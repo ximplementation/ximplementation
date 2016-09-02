@@ -19,10 +19,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 /**
- * 实现方法信息。
+ * Implement method info.
  * 
  * @author earthangry@gmail.com
- * @date 2015年12月5日
+ * @date 2015-12-5
  *
  */
 public class ImplementMethodInfo implements Serializable
@@ -31,34 +31,34 @@ public class ImplementMethodInfo implements Serializable
 
 	private static final long serialVersionUID = 1L;
 
-	/** 实现者 */
+	/** implementor */
 	private Class<?> implementor;
 
-	/** 实现方法 */
+	/** implement method */
 	private Method implementMethod;
 
-	/** 实现方法参数类型列表 */
+	/** implement method parameter types */
 	private Class<?>[] paramTypes;
 
-	/** 实现方法参数泛型列表 */
+	/** generic implement method parameter types */
 	private Type[] genericParamTypes;
 
-	/** 实现方法的参数索引数组 */
+	/** implement method parameter indexes */
 	private int[] paramIndexes;
 
-	/** 有效性方法 */
+	/** validity method */
 	private Method validityMethod;
 
-	/** 有效性方法的参数索引数组 */
+	/** validity method parameter indexes */
 	private int[] validityParamIndexes;
 
-	/** 优先级值 */
+	/** priority value */
 	private int priorityValue;
 
-	/** 优先级方法 */
+	/** priority method */
 	private Method priorityMethod;
 
-	/** 优先级方法的参数索引数组 */
+	/** priority method parameter indexes */
 	private int[] priorityParamIndexes;
 
 	public ImplementMethodInfo()
@@ -124,7 +124,12 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * 获取实现方法参数数组。
+	 * Get parameter arrays of this <i>implement method</i> for the specified
+	 * <i>implementee method</i> parameter array.
+	 * <p>
+	 * Returns an array of {@code 0} length if this <i>implement method</i> has
+	 * no parameter.
+	 * </p>
 	 * 
 	 * @param implementeeMethodParams
 	 * @return
@@ -160,9 +165,11 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * 获取有效性方法参数数组。
+	 * Get parameter arrays of the <i>validity method</i> for the specified
+	 * <i>implementee method</i> parameter array.
 	 * <p>
-	 * 如果无有效性方法，此方法将返回一个空数组。
+	 * Returns an array of {@code 0} length if there is no <i>validity
+	 * method</i>.
 	 * </p>
 	 * 
 	 * @param implementeeMethodParams
@@ -210,9 +217,11 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * 获取优先级方法参数数组。
+	 * Get parameter arrays of the <i>priority method</i> for the specified
+	 * <i>implementee method</i> parameter array.
 	 * <p>
-	 * 如果无优先级方法，此方法将返回一个空数组。
+	 * Returns an array of {@code 0} length if there is no <i>priority
+	 * method</i>.
 	 * </p>
 	 * 
 	 * @param implementeeMethodParams
@@ -225,9 +234,10 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * 根据索引拷贝数组。
+	 * Copy array by indexes.
 	 * <P>
-	 * 如果{@code indexes}为{@code null}或空数组，此方法将返回一个空数组。
+	 * Returns an array of {@code 0} length if the {@code indexes} is
+	 * {@code null} or empty.
 	 * </P>
 	 * 
 	 * @param source
