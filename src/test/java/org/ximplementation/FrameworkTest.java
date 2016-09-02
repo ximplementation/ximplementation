@@ -29,10 +29,10 @@ import org.ximplementation.support.ImplementeeBeanBuilder;
 import org.ximplementation.support.ProxyImplementeeBeanBuilder;
 
 /**
- * 框架设计测试。
+ * Test case for showing concepts and design of this framework.
  * 
  * @author earthangry@gmail.com
- * @date 2015年12月5日
+ * @date 2015-12-5
  *
  */
 public class FrameworkTest

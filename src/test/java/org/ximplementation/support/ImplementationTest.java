@@ -25,10 +25,10 @@ import org.junit.Test;
 import org.ximplementation.Implementor;
 
 /**
- * {@linkplain Implementation}单元测试用例。
+ * {@linkplain Implementation} unit tests.
  * 
  * @author earthangry@gmail.com
- * @date 2016年8月29日
+ * @date 2016-8-29
  *
  */
 public class ImplementationTest extends AbstractTestSupport

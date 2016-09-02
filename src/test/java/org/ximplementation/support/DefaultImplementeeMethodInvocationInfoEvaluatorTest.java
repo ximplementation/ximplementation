@@ -35,10 +35,10 @@ import org.ximplementation.Priority;
 import org.ximplementation.Validity;
 
 /**
- * {@linkplain DefaultImplementeeMethodInvocationInfoEvaluator}单元测试类。
+ * {@linkplain DefaultImplementeeMethodInvocationInfoEvaluator} unit tests.
  * 
  * @author earthangry@gmail.com
- * @date 2016年8月25日
+ * @date 2016-8-25
  *
  */
 public class DefaultImplementeeMethodInvocationInfoEvaluatorTest

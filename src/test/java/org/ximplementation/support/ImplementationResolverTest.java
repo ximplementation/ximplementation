@@ -41,10 +41,10 @@ import org.ximplementation.Refered;
 import org.ximplementation.Validity;
 
 /**
- * {@linkplain ImplementationResolver}单元测试用例。
+ * {@linkplain ImplementationResolver} unit tests.
  * 
  * @author earthangry@gmail.com
- * @date 2015年12月5日
+ * @date 2015-12-5
  *
  */
 public class ImplementationResolverTest extends AbstractTestSupport

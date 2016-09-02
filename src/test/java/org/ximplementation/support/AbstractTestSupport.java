@@ -18,10 +18,10 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 /**
- * 单元测试支持类。
+ * Unit tests support class.
  * 
  * @author earthangry@gmail.com
- * @date 2016年8月25日
+ * @date 2016-8-25
  *
  */
 public abstract class AbstractTestSupport

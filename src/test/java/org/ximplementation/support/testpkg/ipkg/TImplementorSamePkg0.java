@@ -16,10 +16,10 @@ package org.ximplementation.support.testpkg.ipkg;
 
 /**
  * {@code DefaultImplementeeMethodInvocationInfoEvaluatorTest.compareImplementorPriorityTest()}
- * 测试数据类。
+ * test data.
  * 
  * @author earthangry@gmail.com
- * @date 2016年8月26日
+ * @date 2016-8-26
  *
  */
 public class TImplementorSamePkg0 implements TImplementee
