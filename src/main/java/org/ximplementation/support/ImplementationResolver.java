@@ -526,6 +526,9 @@ public class ImplementationResolver
 	 */
 	protected boolean isOverridenMethod(Class<?> superClass, Method superMethod, Class<?> subClass, Method subMethod)
 	{
+		if (!superClass.isAssignableFrom(subClass))
+			return false;
+
 		if (!superMethod.getName().equals(subMethod.getName()))
 			return false;
 
@@ -534,6 +537,13 @@ public class ImplementationResolver
 
 		// parameter count check first
 		if (superParamTypes.length != subParamTypes.length)
+			return false;
+
+		// then return type
+		Class<?> superReturnType = superMethod.getReturnType();
+		Class<?> subReturnType = subMethod.getReturnType();
+
+		if (!superReturnType.isAssignableFrom(subReturnType))
 			return false;
 
 		// then parameter types
@@ -545,13 +555,6 @@ public class ImplementationResolver
 			if (!superParamType.equals(subParamType))
 				return false;
 		}
-
-		// then return type
-		Class<?> superReturnType = superMethod.getReturnType();
-		Class<?> subReturnType = subMethod.getReturnType();
-
-		if (!superReturnType.isAssignableFrom(subReturnType))
-			return false;
 
 		return true;
 	}

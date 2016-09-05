@@ -222,6 +222,7 @@ public class ProxyImplementeeBeanBuilderTest extends AbstractTestSupport
 		{
 			public static int MY_RE = -9999;
 
+			@Implement
 			@Validity("isValid")
 			public int plus(int a, int b)
 			{

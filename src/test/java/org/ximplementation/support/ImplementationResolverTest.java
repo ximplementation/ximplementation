@@ -924,88 +924,100 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	{
 		Class<?> implementee = IsOverridenMethodTest.Implementee.class;
 
+		// !superClass.isAssignableFrom(subClass)
 		assertFalse(this.implementationResolver.isOverridenMethod(implementee,
 				getMethodByName(implementee, "plus"),
 				IsOverridenMethodTest.Implementor0.class, getMethodByName(
 						IsOverridenMethodTest.Implementor0.class, "myPlus")));
 
+		// !superMethod.getName().equals(subMethod.getName())
 		assertFalse(this.implementationResolver.isOverridenMethod(implementee,
 				getMethodByName(implementee, "plus"),
 				IsOverridenMethodTest.Implementor1.class, getMethodByName(
-						IsOverridenMethodTest.Implementor1.class, "plus")));
+						IsOverridenMethodTest.Implementor1.class, "myPlus")));
 
+		// superParamTypes.length != subParamTypes.length
 		assertFalse(this.implementationResolver.isOverridenMethod(implementee,
 				getMethodByName(implementee, "plus"),
 				IsOverridenMethodTest.Implementor2.class, getMethodByName(
 						IsOverridenMethodTest.Implementor2.class, "plus")));
 
-		assertFalse(this.implementationResolver.isOverridenMethod(implementee,
+		// superReturnType.isAssignableFrom(subReturnType)
+		assertTrue(this.implementationResolver.isOverridenMethod(implementee,
 				getMethodByName(implementee, "plus"),
 				IsOverridenMethodTest.Implementor3.class, getMethodByName(
 						IsOverridenMethodTest.Implementor3.class, "plus")));
 
+		// All passed
 		assertTrue(this.implementationResolver.isOverridenMethod(implementee,
 				getMethodByName(implementee, "plus"),
 				IsOverridenMethodTest.Implementor4.class, getMethodByName(
 						IsOverridenMethodTest.Implementor4.class, "plus")));
-
-		assertTrue(this.implementationResolver.isOverridenMethod(implementee,
-				getMethodByName(implementee, "plus"),
-				IsOverridenMethodTest.Implementor5.class, getMethodByName(
-						IsOverridenMethodTest.Implementor5.class, "plus")));
 	}
 
 	public static class IsOverridenMethodTest
 	{
-		public static interface Implementee
+		public static interface Implementee<T extends Number>
 		{
-			Integer plus(Integer a, Integer b);
+			Number plus(Number a, Number b);
+
+			T plus1(T a, T b);
+
+			<G extends Number> G plus2(G a, G b);
 		}
 
 		public static class Implementor0
 		{
-			public Integer myPlus(Integer a, Integer b)
+			public Number plus(Number a, Number b)
 			{
 				return null;
 			}
 		}
 
-		public static class Implementor1
+		public static abstract class Implementor1<T extends Number>
+				implements Implementee<T>
 		{
-			public Integer plus(Integer a)
+			public Number myPlus(Number a, Number b)
 			{
 				return null;
 			}
 		}
 
-		public static class Implementor2
+		public static abstract class Implementor2<T extends Number>
+				implements Implementee<T>
 		{
-			public Integer plus(Integer a, Number b)
+			public Number plus(Number a)
 			{
 				return null;
 			}
 		}
 
-		public static class Implementor3
-		{
-			public String plus(Integer a, Integer b)
-			{
-				return null;
-			}
-		}
-		
-		public static class Implementor4 implements Implementee
+		public static abstract class Implementor3<T extends Number>
+				implements Implementee<T>
 		{
 			@Override
-			public Integer plus(Integer a, Integer b)
+			public Integer plus(Number a, Number b)
 			{
 				return null;
 			}
 		}
 
-		public static class Implementor5
+		public static class Implementor4 implements Implementee<Integer>
 		{
-			public Integer plus(Integer a, Integer b)
+			@Override
+			public Number plus(Number a, Number b)
+			{
+				return null;
+			}
+
+			@Override
+			public Integer plus1(Integer a, Integer b)
+			{
+				return null;
+			}
+
+			@Override
+			public <G extends Number> G plus2(G a, G b)
 			{
 				return null;
 			}

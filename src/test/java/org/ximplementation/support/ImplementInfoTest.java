@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.ximplementation.Implement;
 import org.ximplementation.Implementor;
 
 /**
@@ -193,6 +194,7 @@ public class ImplementInfoTest extends AbstractTestSupport
 		@Implementor(Implementee.class)
 		public static class Implementor1
 		{
+			@Implement
 			public Number plus(Number a, Number b)
 			{
 				return null;
