@@ -398,6 +398,11 @@ public class ImplementationResolver
 		if (Modifier.isStatic(modifier) || !Modifier.isPublic(modifier))
 			return false;
 
+		// exclude synthetic methods, compiler may generate odd methods
+		// especially when extending generic type
+		if (implementeeMethod.isSynthetic())
+			return false;
+
 		Class<?> delcClass = implementeeMethod.getDeclaringClass();
 
 		if (Object.class.equals(delcClass))
@@ -503,6 +508,11 @@ public class ImplementationResolver
 		int modifier = implementMethod.getModifiers();
 	
 		if (Modifier.isStatic(modifier) || !Modifier.isPublic(modifier))
+			return false;
+
+		// exclude synthetic methods, compiler may generate odd methods
+		// especially when extending generic type
+		if (implementMethod.isSynthetic())
 			return false;
 	
 		if (Object.class.equals(implementMethod.getDeclaringClass()))
