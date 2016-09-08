@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.After;
 import org.junit.Before;
@@ -953,6 +954,14 @@ public class ImplementationResolverTest extends AbstractTestSupport
 				getMethodByName(implementee, "plus"),
 				IsOverridenMethodTest.Implementor4.class, getMethodByName(
 						IsOverridenMethodTest.Implementor4.class, "plus")));
+
+		// Generic
+		assertTrue(this.implementationResolver.isOverridenMethod(implementee,
+				getMethodByName(implementee, "plus1"),
+				IsOverridenMethodTest.Implementor4.class,
+				getMethodByNameAndType(
+						IsOverridenMethodTest.Implementor4.class, "plus1",
+						Integer.class, Integer.class)));
 	}
 
 	public static class IsOverridenMethodTest
@@ -1025,105 +1034,126 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	}
 
 	@Test
-	public void isInvokeFeasibleMethodTest()
+	public void isInvocationFeasibleMethodTest()
 	{
-		Class<?> implementee = IsInvokeFeasibleMethodTest.Implementee.class;
+		Class<?> implementee = IsInvocationFeasibleMethodTest.Implementee.class;
 
+		// !implementeeReturnType.isAssignableFrom(implementorReturnType)
 		assertFalse(
 				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "plus"),
-						IsInvokeFeasibleMethodTest.Implementor0.class,
+						IsInvocationFeasibleMethodTest.Implementor0.class,
 						getMethodByName(
-								IsInvokeFeasibleMethodTest.Implementor0.class,
+								IsInvocationFeasibleMethodTest.Implementor0.class,
 								"plus")));
 
+		// implementorParamTypes.length > implementeeParamTypes.length
 		assertFalse(
 				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "plus"),
-						IsInvokeFeasibleMethodTest.Implementor1.class,
+						IsInvocationFeasibleMethodTest.Implementor1.class,
 						getMethodByName(
-								IsInvokeFeasibleMethodTest.Implementor1.class,
+								IsInvocationFeasibleMethodTest.Implementor1.class,
 								"plus")));
 
+		// myParamIndex >= implementeeParamTypes.length
 		assertFalse(
 				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "plus"),
-						IsInvokeFeasibleMethodTest.Implementor2.class,
+						IsInvocationFeasibleMethodTest.Implementor2.class,
 						getMethodByName(
-								IsInvokeFeasibleMethodTest.Implementor2.class,
+								IsInvocationFeasibleMethodTest.Implementor2.class,
 								"plus")));
 
+		// !implementeeParamType.isAssignableFrom(implementorParamType)
 		assertFalse(
 				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "plus"),
-						IsInvokeFeasibleMethodTest.Implementor3.class,
+						IsInvocationFeasibleMethodTest.Implementor3.class,
 						getMethodByName(
-								IsInvokeFeasibleMethodTest.Implementor3.class,
+								IsInvocationFeasibleMethodTest.Implementor3.class,
 								"plus")));
 
+		// implementorParamType.isAssignableFrom(implementeeParamType)
 		assertTrue(
 				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "plus"),
-						IsInvokeFeasibleMethodTest.Implementor4.class,
+						IsInvocationFeasibleMethodTest.Implementor4.class,
 						getMethodByName(
-								IsInvokeFeasibleMethodTest.Implementor4.class,
+								IsInvocationFeasibleMethodTest.Implementor4.class,
 								"plus")));
 
+		// primitive return type in implementor
 		assertTrue(
 				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "plus"),
-						IsInvokeFeasibleMethodTest.Implementor5.class,
+						IsInvocationFeasibleMethodTest.Implementor5.class,
 						getMethodByName(
-								IsInvokeFeasibleMethodTest.Implementor5.class,
+								IsInvocationFeasibleMethodTest.Implementor5.class,
 								"plus")));
 
+		// primitive parameter type in implementor
 		assertTrue(this.implementationResolver.isInvocationFeasibleMethod(
 				implementee, getMethodByName(implementee, "plus"),
-				IsInvokeFeasibleMethodTest.Implementor6.class,
+				IsInvocationFeasibleMethodTest.Implementor6.class,
 						getMethodByName(
-						IsInvokeFeasibleMethodTest.Implementor6.class,
+						IsInvocationFeasibleMethodTest.Implementor6.class,
 								"plus")));
 
+		// super parameter type in implementor
 		assertTrue(
 				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "plus"),
-						IsInvokeFeasibleMethodTest.Implementor7.class,
+						IsInvocationFeasibleMethodTest.Implementor7.class,
 						getMethodByName(
-								IsInvokeFeasibleMethodTest.Implementor7.class,
+								IsInvocationFeasibleMethodTest.Implementor7.class,
 								"plus")));
 
+		// subset of parameters
 		assertTrue(
 				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "plus"),
-						IsInvokeFeasibleMethodTest.Implementor8.class,
+						IsInvocationFeasibleMethodTest.Implementor8.class,
 						getMethodByName(
-								IsInvokeFeasibleMethodTest.Implementor8.class,
+								IsInvocationFeasibleMethodTest.Implementor8.class,
 								"plus")));
 
+		//// subset of parameters
 		assertTrue(
 				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "plus"),
-						IsInvokeFeasibleMethodTest.Implementor9.class,
+						IsInvocationFeasibleMethodTest.Implementor9.class,
 						getMethodByName(
-								IsInvokeFeasibleMethodTest.Implementor9.class,
+								IsInvocationFeasibleMethodTest.Implementor9.class,
 								"plus")));
 
+		// the same return type and parameter types
 		assertTrue(
 				this.implementationResolver.isInvocationFeasibleMethod(implementee,
 						getMethodByName(implementee, "minus"),
-						IsInvokeFeasibleMethodTest.Implementor10.class,
+						IsInvocationFeasibleMethodTest.Implementor10.class,
 						getMethodByName(
-								IsInvokeFeasibleMethodTest.Implementor10.class,
+								IsInvocationFeasibleMethodTest.Implementor10.class,
 								"minus")));
+
+		// generic
+		assertTrue(this.implementationResolver.isInvocationFeasibleMethod(
+				implementee, getMethodByName(implementee, "gplus"),
+				IsInvocationFeasibleMethodTest.Implementor11.class,
+				getMethodByName(
+						IsInvocationFeasibleMethodTest.Implementor11.class,
+						"gplus")));
 	}
 
-	public static class IsInvokeFeasibleMethodTest
+	public static class IsInvocationFeasibleMethodTest
 	{
-		public static interface Implementee
+		public static interface Implementee<T extends Number>
 		{
 			Integer plus(Integer a, Integer b);
 
 			int minus(int a, int b);
+
+			T gplus(T a, T b);
 		}
 
 		public static class Implementor0
@@ -1211,6 +1241,14 @@ public class ImplementationResolverTest extends AbstractTestSupport
 			public int minus(int a, int b)
 			{
 				return 0;
+			}
+		}
+
+		public static class Implementor11<T extends AtomicInteger>
+		{
+			public T gplus(T a, T b)
+			{
+				return null;
 			}
 		}
 	}
