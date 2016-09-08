@@ -539,13 +539,14 @@ public class ImplementationResolver
 		if (!superClass.isAssignableFrom(subClass))
 			return false;
 
+		// method name check first
 		if (!superMethod.getName().equals(subMethod.getName()))
 			return false;
 
 		Class<?>[] superParamTypes = superMethod.getParameterTypes();
 		Class<?>[] subParamTypes = subMethod.getParameterTypes();
 
-		// parameter count check first
+		// then parameter count
 		if (superParamTypes.length != subParamTypes.length)
 			return false;
 
@@ -553,8 +554,12 @@ public class ImplementationResolver
 		Class<?> superReturnType = superMethod.getReturnType();
 		Class<?> subReturnType = subMethod.getReturnType();
 
+		// generic return type resolve is not need, because sub type is
+		// allowed, and Method.getReturnType() is erasure of generic.
 		if (!superReturnType.isAssignableFrom(subReturnType))
-			return false;
+				return false;
+
+		Type[] gsuperParamTypes = superMethod.getGenericParameterTypes();
 
 		// then parameter types
 		for (int i = 0; i < superParamTypes.length; i++)
@@ -562,8 +567,20 @@ public class ImplementationResolver
 			Class<?> superParamType = superParamTypes[i];
 			Class<?> subParamType = subParamTypes[i];
 
+			// method scope generic parameter type resolve is not need, because
+			// it will be erased by Method.getParameterTypes() and can not be
+			// changed in overridden methods.
 			if (!superParamType.equals(subParamType))
+			{
+				Type gsuperParamType = gsuperParamTypes[i];
+
+				// not generic actually
+				if (gsuperParamType.equals(superParamType))
+					return false;
+
+				// TODO resolve generic
 				return false;
+			}
 		}
 
 		return true;
