@@ -61,13 +61,16 @@ public class FrameworkTest
 
 		Map<Class<?>, Set<?>> implementorBeans = new HashMap<Class<?>, Set<?>>();
 
-		implementorBeans.put(TServiceImplDefault.class, Collections.singleton(new TServiceImplDefault()));
-		implementorBeans.put(TServiceImplSpecial.class, Collections.singleton(new TServiceImplSpecial()));
+		implementorBeans.put(TServiceImplDefault.class,
+				Collections.singleton(new TServiceImplDefault<Number>()));
+		implementorBeans.put(TServiceImplSpecial.class,
+				Collections.singleton(new TServiceImplSpecial<Number>()));
 		implementorBeans.put(TServiceImplInteger.class, Collections.singleton(new TServiceImplInteger()));
 		implementorBeans.put(TServiceImplDouble.class,
 				Collections.singleton(new TServiceImplDouble()));
 
-		TService tservice = (TService) this.implementeeBeanBuilder
+		@SuppressWarnings("unchecked")
+		TService<Number> tservice = (TService<Number>) this.implementeeBeanBuilder
 				.build(implementation,
 				implementorBeans);
 
@@ -92,24 +95,26 @@ public class FrameworkTest
 		}
 	}
 
-	public static interface TService
+	public static interface TService<T extends Number>
 	{
-		String handle(Number a, Number b);
+		String handle(T a, T b);
 	}
 
-	public static class TServiceImplDefault implements TService
+	public static class TServiceImplDefault<T extends Number>
+			implements TService<T>
 	{
 		public static final String MY_RE = TServiceImplDefault.class
 				.getSimpleName();
 
 		@Override
-		public String handle(Number a, Number b)
+		public String handle(T a, T b)
 		{
 			return MY_RE;
 		}
 	}
 
-	public static class TServiceImplSpecial implements TService
+	public static class TServiceImplSpecial<T extends Number>
+			implements TService<T>
 	{
 		public static final String MY_RE = TServiceImplSpecial.class
 				.getSimpleName();
@@ -118,23 +123,23 @@ public class FrameworkTest
 
 		@Validity("isValid")
 		@Override
-		public String handle(Number a, Number b)
+		public String handle(T a, T b)
 		{
 			return MY_RE;
 		}
 
-		public boolean isValid(@ParamIndex(1) Number b)
+		public boolean isValid(@ParamIndex(1) T b)
 		{
 			return B.equals(b);
 		}
 	}
 
-	@Implementor(TService.class)
-	public static class TServiceImplInteger
+	public static class TServiceImplInteger implements TService<Integer>
 	{
 		public static final String MY_RE = TServiceImplInteger.class
 				.getSimpleName();
 
+		@Override
 		@Implement("handle")
 		public String handle(Integer a, Integer b)
 		{
