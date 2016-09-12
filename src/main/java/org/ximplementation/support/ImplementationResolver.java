@@ -15,15 +15,19 @@
 package org.ximplementation.support;
 
 import java.lang.annotation.Annotation;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.ximplementation.Implement;
@@ -43,6 +47,8 @@ import org.ximplementation.Validity;
  */
 public class ImplementationResolver
 {
+	private Map<Type, WeakReference<Map<TypeVariable<?>, Type>>> typeVariablesMap = new HashMap<Type, WeakReference<Map<TypeVariable<?>, Type>>>();
+
 	public ImplementationResolver()
 	{
 		super();
@@ -560,6 +566,8 @@ public class ImplementationResolver
 				return false;
 
 		Type[] gsuperParamTypes = superMethod.getGenericParameterTypes();
+		Type[] gsubParamTypes = subMethod.getGenericParameterTypes();
+		Map<TypeVariable<?>, Type> subTypeParams = null;
 
 		// then parameter types
 		for (int i = 0; i < superParamTypes.length; i++)
@@ -578,8 +586,12 @@ public class ImplementationResolver
 				if (gsuperParamType.equals(superParamType))
 					return false;
 
-				// TODO resolve generic
-				return false;
+				if (subTypeParams == null)
+					subTypeParams = resolveTypeParams(subClass);
+
+				if (!isOverriddenEquals(gsuperParamType, gsubParamTypes[i],
+						subTypeParams))
+					return false;
 			}
 		}
 
@@ -828,5 +840,45 @@ public class ImplementationResolver
 	protected Class<?> toWrapperType(Class<?> type)
 	{
 		return TypeUtil.toWrapperType(type);
+	}
+
+	/**
+	 * Resolve type parameter map.
+	 * 
+	 * @param type
+	 * @return
+	 */
+	protected Map<TypeVariable<?>, Type> resolveTypeParams(Type type)
+	{
+		Map<TypeVariable<?>, Type> map = null;
+
+		WeakReference<Map<TypeVariable<?>, Type>> mapref = this.typeVariablesMap
+				.get(type);
+
+		if (mapref != null && (map = mapref.get()) != null)
+			return map;
+
+		map = TypeUtil.resolveTypeParams(type);
+
+		this.typeVariablesMap.put(type,
+				new WeakReference<Map<TypeVariable<?>, Type>>(map));
+
+		return map;
+	}
+
+	/**
+	 * Returns if the type parameter in super class is overridden-equals with
+	 * the type parameter in sub class.
+	 * 
+	 * @param superTypeParam
+	 * @param subTypeParam
+	 * @param subTypeParams
+	 * @return
+	 */
+	protected boolean isOverriddenEquals(Type superTypeParam, Type subTypeParam,
+			Map<TypeVariable<?>, Type> subTypeParams)
+	{
+		return TypeUtil.isOverriddenEquals(superTypeParam, subTypeParam,
+				subTypeParams);
 	}
 }
