@@ -921,50 +921,50 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	}
 
 	@Test
-	public void isOverridenMethodTest()
+	public void isOverriddenMethodTest()
 	{
-		Class<?> implementee = IsOverridenMethodTest.Implementee.class;
+		Class<?> implementee = IsOverriddenMethodTest.Implementee.class;
 
 		// !superClass.isAssignableFrom(subClass)
-		assertFalse(this.implementationResolver.isOverridenMethod(implementee,
+		assertFalse(this.implementationResolver.isOverriddenMethod(implementee,
 				getMethodByName(implementee, "plus"),
-				IsOverridenMethodTest.Implementor0.class, getMethodByName(
-						IsOverridenMethodTest.Implementor0.class, "myPlus")));
+				IsOverriddenMethodTest.Implementor0.class, getMethodByName(
+						IsOverriddenMethodTest.Implementor0.class, "myPlus")));
 
 		// !superMethod.getName().equals(subMethod.getName())
-		assertFalse(this.implementationResolver.isOverridenMethod(implementee,
+		assertFalse(this.implementationResolver.isOverriddenMethod(implementee,
 				getMethodByName(implementee, "plus"),
-				IsOverridenMethodTest.Implementor1.class, getMethodByName(
-						IsOverridenMethodTest.Implementor1.class, "myPlus")));
+				IsOverriddenMethodTest.Implementor1.class, getMethodByName(
+						IsOverriddenMethodTest.Implementor1.class, "myPlus")));
 
 		// superParamTypes.length != subParamTypes.length
-		assertFalse(this.implementationResolver.isOverridenMethod(implementee,
+		assertFalse(this.implementationResolver.isOverriddenMethod(implementee,
 				getMethodByName(implementee, "plus"),
-				IsOverridenMethodTest.Implementor2.class, getMethodByName(
-						IsOverridenMethodTest.Implementor2.class, "plus")));
+				IsOverriddenMethodTest.Implementor2.class, getMethodByName(
+						IsOverriddenMethodTest.Implementor2.class, "plus")));
 
 		// superReturnType.isAssignableFrom(subReturnType)
-		assertTrue(this.implementationResolver.isOverridenMethod(implementee,
+		assertTrue(this.implementationResolver.isOverriddenMethod(implementee,
 				getMethodByName(implementee, "plus"),
-				IsOverridenMethodTest.Implementor3.class, getMethodByName(
-						IsOverridenMethodTest.Implementor3.class, "plus")));
+				IsOverriddenMethodTest.Implementor3.class, getMethodByName(
+						IsOverriddenMethodTest.Implementor3.class, "plus")));
 
 		// All passed
-		assertTrue(this.implementationResolver.isOverridenMethod(implementee,
+		assertTrue(this.implementationResolver.isOverriddenMethod(implementee,
 				getMethodByName(implementee, "plus"),
-				IsOverridenMethodTest.Implementor4.class, getMethodByName(
-						IsOverridenMethodTest.Implementor4.class, "plus")));
+				IsOverriddenMethodTest.Implementor4.class, getMethodByName(
+						IsOverriddenMethodTest.Implementor4.class, "plus")));
 
 		// Generic
-		assertTrue(this.implementationResolver.isOverridenMethod(implementee,
+		assertTrue(this.implementationResolver.isOverriddenMethod(implementee,
 				getMethodByName(implementee, "plus1"),
-				IsOverridenMethodTest.Implementor4.class,
+				IsOverriddenMethodTest.Implementor4.class,
 				getMethodByNameAndType(
-						IsOverridenMethodTest.Implementor4.class, "plus1",
+						IsOverriddenMethodTest.Implementor4.class, "plus1",
 						Integer.class, Integer.class)));
 	}
 
-	public static class IsOverridenMethodTest
+	public static class IsOverriddenMethodTest
 	{
 		public static interface Implementee<T extends Number>
 		{

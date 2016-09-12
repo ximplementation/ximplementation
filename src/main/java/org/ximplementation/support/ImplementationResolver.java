@@ -493,7 +493,7 @@ public class ImplementationResolver
 			}
 		}
 		else
-			return isOverridenMethod(implementee, implementeeMethod, implementor, implementMethod);
+			return isOverriddenMethod(implementee, implementeeMethod, implementor, implementMethod);
 	}
 
 	/**
@@ -534,7 +534,7 @@ public class ImplementationResolver
 	 * @param subMethod
 	 * @return
 	 */
-	protected boolean isOverridenMethod(Class<?> superClass, Method superMethod, Class<?> subClass, Method subMethod)
+	protected boolean isOverriddenMethod(Class<?> superClass, Method superMethod, Class<?> subClass, Method subMethod)
 	{
 		if (!superClass.isAssignableFrom(subClass))
 			return false;
