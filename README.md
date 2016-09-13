@@ -14,10 +14,10 @@ Suppose there is an interface:
 
 ```java
 
-	public interface Service
+	public interface Service<T extends Number>
 	{
-		Number plus(Number a, Number b);
-		Number minus(Number a, Number b);
+		T plus(T a, T b);
+		T minus(T a, T b);
 	}
 ```
 
@@ -25,29 +25,32 @@ You can write its implementation in a very free and different way:
 
 ```java
 
-	@Implementor(Service.class)
-	public class ServiceImplPlus
+	public class ServiceImplDefault<T extends Number> implements Service<T>
 	{
-		@Implement("plus")
-		public Number plus(Number a, Number b){...}
+		public T plus(T a, T b){...}
+		public T minus(T a, T b){...}
+	}
+	
+	public class ServiceImplPlusInteger implements Service<Integer>
+	{
+		@Override
+		public Integer plus(Integer a, Integer b){...}
+		
+		@NotImplement
+		@Override
+		public Integer minus(Integer a, Integer b){ throw new UnsupportedOperationException(); }
 	}
 	
 	@Implementor(Service.class)
-	public class ServiceImplMinus
+	public class ServiceImplMinusInteger
 	{
-		@Implement("minus")
-		Number minus(Number a, Number b){...}
+		@Implement
+		public Integer minus(Integer a, Integer b){...}
 	}
 	
-	@Implementor(Service.class)
-	public class ServiceImplPlusInteger
-	{
-		@Implement("plus")
-		public Number plus(Integer a, Integer b){...}
-	}
 ```
 
-> The `ServiceImplMinus` and `ServiceImplPlusInteger` are not necessary if you don't want them.  
+> The `ServiceImplMinusInteger` is not necessary if you don't want.  
 > And, you can write more than one implementations for `plus` and/or `minus` methods in the same class or other `@Implementor` classes.
 
 Then, you can get a `Service` instance by:
@@ -55,14 +58,14 @@ Then, you can get a `Service` instance by:
 ```java
 
 	Implementation implementation = new ImplementationResolver().resolve(Service.class,
-	 	ServiceImplPlus.class, ServiceImplMinus.class, ServiceImplPlusInteger.class);
+			 	ServiceImplDefault.class, ServiceImplPlusInteger.class, ServiceImplMinusInteger.class);
 	
 	Map<Class<?>, Collection<?>> implementorBeans = new HashMap<Class<?>, Collection<?>>();
-	implementorBeans.put(ServiceImplPlus.class, Arrays.asList(new ServiceImplPlus()));
-	implementorBeans.put(ServiceImplMinus.class, Arrays.asList(new ServiceImplMinus()));
+	implementorBeans.put(ServiceImplDefault.class, Arrays.asList(new ServiceImplDefault<Number>()));
 	implementorBeans.put(ServiceImplPlusInteger.class, Arrays.asList(new ServiceImplPlusInteger()));
+	implementorBeans.put(ServiceImplMinusInteger.class, Arrays.asList(new ServiceImplMinusInteger()));
 	
-	Service service = new ProxyImplementeeBeanBuilder().build(implementation, implementorBeans);
+	Service<Number> service = (Service<Number>)new ProxyImplementeeBeanBuilder().build(implementation, implementorBeans);
 ```
 
-The `serivce.plus` method invocation will be delegated to `ServiceImplPlusInteger.plus` method while the parameter type is `Integer`, to `ServiceImplPlus.plus` method otherwise; and the `serivce.minus` method will be delegated to `ServiceImplMinus.minus` method.
+The `serivce.plus` method invocation will be delegated to `ServiceImplPlusInteger.plus` method if the parameter type is `Integer`, to `ServiceImplDefault.plus` method otherwise; and the `serivce.minus` method will be delegated to `ServiceImplMinusInteger.minus` method if the parameter type is `Integer`, to `ServiceImplDefault.minus` method otherwise.
