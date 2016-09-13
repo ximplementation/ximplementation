@@ -21,16 +21,22 @@ import org.ximplementation.Priority;
 import org.ximplementation.Validity;
 
 /**
- * 默认接口方法调用信息计算器。
+ * Default {@linkplain ImplementeeMethodInvocationInfo} evaluator.
  * <p>
- * 此类先筛除参数类型不匹配和{@linkplain Validity @Validaty}不通过的实现方法，之后按照如下规则依次计算：
+ * It eliminates <i>implement method</i>s whose parameter mismatched or
+ * {@linkplain Validity @Validaty} not passed, then evaluating sequentially as
+ * the following :
  * </p>
  * <ol>
- * <li>计算所有实现方法的{@linkplain Priority @Priority}优先级值，并返回优先级值最高的那个；</li>
- * <li>否则，返回参数类型最接近的那个；</li>
- * <li>否则，返回声明了{@linkplain Validity @Validaty}的那个；</li>
- * <li>否则，返回实现者类与接口类不在同一个包内的那个；</li>
- * <li>否则，随机返回一个。</li>
+ * <li>Returns the one whose method is max {@linkplain Priority @Priority} ;
+ * </li>
+ * <li>Else, returns the one whose method parameter is closest to the invocation
+ * parameters;</li>
+ * <li>Else, returns the only one which declared {@linkplain Validity @Validaty}
+ * ;</li>
+ * <li>Else, returns the only one whose <i>implementor</i> is not the same
+ * package with the <i>implementee</i>;</li>
+ * <li>Else, returns one randomly.</li>
  * </ol>
  * 
  * @author earthangry@gmail.com
@@ -136,7 +142,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 	}
 
 	/**
-	 * 查找{@linkplain ImplementInfo}。
+	 * Find {@linkplain ImplementInfo}。
 	 * 
 	 * @param implementation
 	 * @param implementeeMethod
@@ -149,7 +155,8 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 	}
 
 	/**
-	 * 判断对象数组是否能作为{@linkplain ImplementMethodInfo#getImplementMethod()}方法的参数数组。
+	 * Returns if {@linkplain ImplementMethodInfo#getImplementMethod()}
+	 * parameter types are valid for the given parameters.
 	 * 
 	 * @param implementMethodInfo
 	 * @param implementeeMethodParams
@@ -191,11 +198,11 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 	}
 
 	/**
-	 * 比较两个对{@code implementeeMethodParams}都有效的{@linkplain ImplementMethodInfo}
-	 * 的优先级。
+	 * Compare two {@linkplain ImplementMethodInfo}'s priority which both are
+	 * valid to {@code implementeeMethodParams}.
 	 * <p>
-	 * 如果是{@code first}的优先级高，返回{@code >0}；如果是{@code second}的优先级高，返回{@code <0}
-	 * ；如果二者相同，返回{@code 0}。
+	 * Returns {@code >0} if {@code first} is higher; returns {@code <0} if
+	 * {@code second} is higher; returns {@code 0} if they are the same.
 	 * </p>
 	 * 
 	 * @param implementation
@@ -213,7 +220,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 		int priority = compareImplementMethodParamTypePriority(implementation,
 				implementeeMethod, implementeeMethodParams, first, second);
 	
-		// 定义了validity方法的要优于未定义validity方法的
+		// the one with @Validity is higher
 		if (priority == 0)
 		{
 			boolean firstHasValidity = first.hasValidityMethod();
@@ -235,10 +242,11 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 	}
 
 	/**
-	 * 比较两个{@linkplain ImplementMethodInfo}的参数类型优先级。
+	 * Compare two {@linkplain ImplementMethodInfo}'s method parameter type
+	 * priority.
 	 * <p>
-	 * 如果是{@code first}的优先级高，返回{@code >0}；如果是{@code second}的优先级高，返回{@code <0}
-	 * ；如果二者相同，返回{@code 0}。
+	 * Returns {@code >0} if {@code first} is higher; returns {@code <0} if
+	 * {@code second} is higher; returns {@code 0} if they are the same.
 	 * </p>
 	 * 
 	 * @param implementation
@@ -253,7 +261,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 			Method implementeeMethod, Object[] implementeeMethodParams,
 			ImplementMethodInfo first, ImplementMethodInfo second)
 	{
-		// 比较二者的参数类型哪一个与implementeeMethodParams更贴近
+		// which is closer to implementee method parameters
 		int firstCloserCount = 0;
 		int secondCloserCount = 0;
 	
@@ -302,10 +310,11 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 	}
 
 	/**
-	 * 比较两个实现者的优先级。
+	 * Compare two <i>implementor</i>'s priority.
 	 * <p>
-	 * 如果是{@code firstImplementor}的优先级高，返回{@code >0}；如果是
-	 * {@code secondImplementor} 的优先级高，返回{@code <0}；如果二者相同，返回{@code 0}。
+	 * Returns {@code >0} if {@code firstImplementor} is higher; returns
+	 * {@code <0} if {@code secondImplementor} is higher; returns {@code 0} if
+	 * they are the same.
 	 * </p>
 	 * 
 	 * @param implementation
@@ -325,7 +334,8 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 		boolean secondSamePkg = secondImplementor.getPackage().getName()
 				.startsWith(implementeePkg);
 	
-		// 如果都跟或都不跟implementee在同一个包下，则认为相同，否则，不跟implementee在同一个包下的优先级高
+		// the same priority if they both or not with implementee, the one not
+		// is higher
 		if (firstSamePkg)
 		{
 			return (secondSamePkg ? 0 : -1);
@@ -335,7 +345,8 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 	}
 
 	/**
-	 * 将基本类型转换为对应的包装类型。
+	 * Returns the wrapper type of the specified type if it is a primitive,
+	 * returns itself if not.
 	 * 
 	 * @param type
 	 * @return
