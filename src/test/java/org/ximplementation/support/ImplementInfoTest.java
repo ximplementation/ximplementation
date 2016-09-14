@@ -138,7 +138,7 @@ public class ImplementInfoTest extends AbstractTestSupport
 
 		// return implementMethodInfo;
 		{
-			Implementation implementation = this.implementationResolver
+			Implementation<GetImplementMethodInfoTest.Implementee> implementation = this.implementationResolver
 					.resolve(GetImplementMethodInfoTest.Implementee.class,
 							GetImplementMethodInfoTest.Implementor0.class,
 							GetImplementMethodInfoTest.Implementor1.class);

@@ -57,7 +57,7 @@ Then, you can get a `Service` instance by:
 
 ```java
 
-	Implementation implementation = new ImplementationResolver().resolve(Service.class,
+	Implementation<Service> implementation = new ImplementationResolver().resolve(Service.class,
 			 	ServiceImplDefault.class, ServiceImplPlusInteger.class, ServiceImplMinusInteger.class);
 	
 	Map<Class<?>, Collection<?>> implementorBeans = new HashMap<Class<?>, Collection<?>>();
@@ -65,7 +65,7 @@ Then, you can get a `Service` instance by:
 	implementorBeans.put(ServiceImplPlusInteger.class, Arrays.asList(new ServiceImplPlusInteger()));
 	implementorBeans.put(ServiceImplMinusInteger.class, Arrays.asList(new ServiceImplMinusInteger()));
 	
-	Service<Number> service = (Service<Number>)new ProxyImplementeeBeanBuilder().build(implementation, implementorBeans);
+	Service<Number> service = new ProxyImplementeeBeanBuilder().build(implementation, implementorBeans);
 ```
 
 The `serivce.plus` method invocation will be delegated to `ServiceImplPlusInteger.plus` method if the parameter type is `Integer`, to `ServiceImplDefault.plus` method otherwise; and the `serivce.minus` method will be delegated to `ServiceImplMinusInteger.minus` method if the parameter type is `Integer`, to `ServiceImplDefault.minus` method otherwise.
@@ -129,9 +129,9 @@ But with ximplementation, you need only to create one dependency chain no matter
 
 ```java
 
-	Implementation implementation = ...;
+	Implementation<Service> implementation = ...;
 	Map<Class<?>, Collection<?>> implementorBeans = ...;
 	
-	Service<Entity> service = (Service<Entity>)new ProxyImplementeeBeanBuilder().build(implementation, implementorBeans);
+	Service<Entity> service = new ProxyImplementeeBeanBuilder().build(implementation, implementorBeans);
 	Controller<Entity> controller = new Controller<Entity>(service);
 ```

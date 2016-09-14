@@ -63,7 +63,8 @@ public class ImplementationResolver
 	 * @return
 	 * @throws ImplementationResolveException
 	 */
-	public Implementation resolve(Class<?> implementee, Class<?>... implementors)
+	public <T> Implementation<T> resolve(Class<T> implementee,
+			Class<?>... implementors)
 			throws ImplementationResolveException
 	{
 		Set<Class<?>> simplementors = new HashSet<Class<?>>(
@@ -81,7 +82,7 @@ public class ImplementationResolver
 	 * @return
 	 * @throws ImplementationResolveException
 	 */
-	public Implementation resolve(Class<?> implementee,
+	public <T> Implementation<T> resolve(Class<T> implementee,
 			Set<Class<?>> implementors) throws ImplementationResolveException
 	{
 		return doResolve(implementee, implementors);
@@ -95,10 +96,11 @@ public class ImplementationResolver
 	 * @return
 	 * @throws ImplementationResolveException
 	 */
-	protected Implementation doResolve(Class<?> implementee, Set<Class<?>> implementors)
+	protected <T> Implementation<T> doResolve(Class<T> implementee,
+			Set<Class<?>> implementors)
 			throws ImplementationResolveException
 	{
-		Implementation implementation = new Implementation();
+		Implementation<T> implementation = new Implementation<T>();
 
 		List<ImplementInfo> implementInfos = new ArrayList<ImplementInfo>();
 

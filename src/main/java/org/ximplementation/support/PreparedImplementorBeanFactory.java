@@ -56,7 +56,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	 * 
 	 * @param implementation
 	 */
-	public PreparedImplementorBeanFactory(Implementation implementation)
+	public PreparedImplementorBeanFactory(Implementation<?> implementation)
 	{
 		super();
 

@@ -25,12 +25,12 @@ import java.util.Arrays;
  * @date 2015-12-5
  *
  */
-public class Implementation implements Serializable
+public class Implementation<T> implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
 	/** implementee */
-	private Class<?> implementee;
+	private Class<T> implementee;
 
 	/** implement info */
 	private ImplementInfo[] implementInfos;
@@ -40,19 +40,19 @@ public class Implementation implements Serializable
 		super();
 	}
 
-	public Implementation(Class<?> implementee, ImplementInfo[] implementInfos)
+	public Implementation(Class<T> implementee, ImplementInfo[] implementInfos)
 	{
 		super();
 		this.implementee = implementee;
 		this.implementInfos = implementInfos;
 	}
 
-	public Class<?> getImplementee()
+	public Class<T> getImplementee()
 	{
 		return implementee;
 	}
 
-	public void setImplementee(Class<?> implementee)
+	public void setImplementee(Class<T> implementee)
 	{
 		this.implementee = implementee;
 	}

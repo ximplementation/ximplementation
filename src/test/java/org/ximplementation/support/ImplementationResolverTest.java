@@ -68,7 +68,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	{
 		Class<?> implementee = ResolveTestArray.Implementee.class;
 
-		Implementation implementation = this.implementationResolver
+		Implementation<?> implementation = this.implementationResolver
 				.resolve(implementee, ResolveTestArray.Implementor0.class,
 						ResolveTestArray.Implementor1.class);
 
@@ -99,7 +99,8 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		implementors.add(ResolveTestArray.Implementor0.class);
 		implementors.add(ResolveTestArray.Implementor1.class);
 
-		Implementation implementation = this.implementationResolver.resolve(
+		Implementation<?> implementation = this.implementationResolver
+				.resolve(
 				implementee, implementors);
 
 		assertEquals(ResolveTestArray.Implementee.class,
@@ -149,7 +150,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		implementors.add(DoResolveTest.Implementor0.class);
 		implementors.add(DoResolveTest.Implementor1.class);
 
-		Implementation implementation = this.implementationResolver
+		Implementation<?> implementation = this.implementationResolver
 				.doResolve(DoResolveTest.Implementee.class, implementors);
 		
 		assertEquals(DoResolveTest.Implementee.class,

@@ -49,7 +49,7 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 	}
 
 	@Override
-	public Object build(Implementation implementation,
+	public <T> T build(Implementation<T> implementation,
 			Map<Class<?>, ? extends Collection<?>> implementorBeansMap)
 	{
 		return doBuild(implementation,
@@ -57,7 +57,7 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 	}
 
 	@Override
-	public Object build(Implementation implementation,
+	public <T> T build(Implementation<T> implementation,
 			ImplementorBeanFactory implementorBeanFactory)
 	{
 		return doBuild(implementation, implementorBeanFactory);
@@ -70,14 +70,15 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 	 * @param implementorBeanFactory
 	 * @return
 	 */
-	protected Object doBuild(Implementation implementation,
+	protected <T> T doBuild(Implementation<T> implementation,
 			ImplementorBeanFactory implementorBeanFactory)
 	{
 		Class<?> implementee = implementation.getImplementee();
 		if (!implementee.isInterface())
 			throw new IllegalArgumentException("[implementee] must be an interface");
 
-		Object proxy = Proxy.newProxyInstance(implementee.getClassLoader(),
+		@SuppressWarnings("unchecked")
+		T proxy = (T) Proxy.newProxyInstance(implementee.getClassLoader(),
 				new Class<?>[] { implementee, ProxyImplementee.class },
 				new ProxyImplementeeInvocationHandler(implementation,
 						implementorBeanFactory));
@@ -88,7 +89,7 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 	protected class ProxyImplementeeInvocationHandler
 			implements InvocationHandler
 	{
-		private Implementation implementation;
+		private Implementation<?> implementation;
 
 		private ImplementorBeanFactory implementorBeanFactory;
 
@@ -97,7 +98,8 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 			super();
 		}
 
-		public ProxyImplementeeInvocationHandler(Implementation implementation,
+		public ProxyImplementeeInvocationHandler(
+				Implementation<?> implementation,
 				ImplementorBeanFactory implementorBeanFactory)
 		{
 			super();
@@ -105,12 +107,12 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 			this.implementorBeanFactory = implementorBeanFactory;
 		}
 
-		public Implementation getImplementation()
+		public Implementation<?> getImplementation()
 		{
 			return implementation;
 		}
 
-		public void setImplementation(Implementation implementation)
+		public void setImplementation(Implementation<?> implementation)
 		{
 			this.implementation = implementation;
 		}

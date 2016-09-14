@@ -33,7 +33,7 @@ public interface ImplementeeBeanBuilder
 	 * @param implementorBeansMap
 	 * @return
 	 */
-	Object build(Implementation implementation,
+	<T> T build(Implementation<T> implementation,
 			Map<Class<?>, ? extends Collection<?>> implementorBeansMap);
 
 	/**
@@ -43,6 +43,6 @@ public interface ImplementeeBeanBuilder
 	 * @param implementorBeanFactory
 	 * @return
 	 */
-	Object build(Implementation implementation,
+	<T> T build(Implementation<T> implementation,
 			ImplementorBeanFactory implementorBeanFactory);
 }

@@ -55,7 +55,9 @@ public class FrameworkTest
 	@Test
 	public void test()
 	{
-		Implementation implementation = this.implementationResolver.resolve(
+		@SuppressWarnings("rawtypes")
+		Implementation<TService> implementation = this.implementationResolver
+				.resolve(
 				TService.class, TServiceImplDefault.class, TServiceImplSpecial.class,
 				TServiceImplInteger.class, TServiceImplDouble.class);
 
@@ -70,7 +72,7 @@ public class FrameworkTest
 				Collections.singleton(new TServiceImplDouble()));
 
 		@SuppressWarnings("unchecked")
-		TService<Number> tservice = (TService<Number>) this.implementeeBeanBuilder
+		TService<Number> tservice = this.implementeeBeanBuilder
 				.build(implementation,
 				implementorBeans);
 

@@ -51,7 +51,7 @@ public class ImplementationTest extends AbstractTestSupport
 	{
 		// this.implementInfos == null
 		{
-			Implementation implementation = new Implementation(
+			Implementation<GetImplementInfoTest.Implementee> implementation = new Implementation<GetImplementInfoTest.Implementee>(
 					GetImplementInfoTest.Implementee.class, null);
 
 			assertNull(implementation.getImplementInfo(
@@ -64,7 +64,8 @@ public class ImplementationTest extends AbstractTestSupport
 			Method implementeeMethod = getMethodByName(
 					GetImplementInfoTest.Implementee.class, "plus");
 
-			Implementation implementation = this.implementationResolver.resolve(
+			Implementation<GetImplementInfoTest.Implementee> implementation = this.implementationResolver
+					.resolve(
 					GetImplementInfoTest.Implementee.class,
 					GetImplementInfoTest.Implementor0.class);
 
@@ -77,7 +78,8 @@ public class ImplementationTest extends AbstractTestSupport
 
 		// return null
 		{
-			Implementation implementation = this.implementationResolver.resolve(
+			Implementation<GetImplementInfoTest.Implementee> implementation = this.implementationResolver
+					.resolve(
 					GetImplementInfoTest.Implementee.class,
 					GetImplementInfoTest.Implementor1.class);
 

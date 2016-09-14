@@ -39,7 +39,7 @@ public interface ImplementeeMethodInvocationInfoEvaluator
 	 * @throws Throwable
 	 */
 	ImplementeeMethodInvocationInfo evaluate(
-			Implementation implementation,
+			Implementation<?> implementation,
 			Method implementeeMethod, Object[] implementeeMethodParams,
 			ImplementorBeanFactory implementorBeanFactory)
 			throws Throwable;

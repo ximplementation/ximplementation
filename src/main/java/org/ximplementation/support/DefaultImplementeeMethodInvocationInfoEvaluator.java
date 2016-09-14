@@ -53,7 +53,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 
 	@Override
 	public ImplementeeMethodInvocationInfo evaluate(
-			Implementation implementation, Method implementeeMethod,
+			Implementation<?> implementation, Method implementeeMethod,
 			Object[] implementeeMethodParams,
 			ImplementorBeanFactory implementorBeanFactory) throws Throwable
 	{
@@ -148,7 +148,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 	 * @param implementeeMethod
 	 * @return
 	 */
-	protected ImplementInfo findImplementInfo(Implementation implementation,
+	protected ImplementInfo findImplementInfo(Implementation<?> implementation,
 			Method implementeeMethod)
 	{
 		return implementation.getImplementInfo(implementeeMethod);
@@ -213,7 +213,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 	 * @return
 	 */
 	protected int compareImplementMethodInfoPriority(
-			Implementation implementation,
+			Implementation<?> implementation,
 			Method implementeeMethod, Object[] implementeeMethodParams,
 			ImplementMethodInfo first, ImplementMethodInfo second)
 	{
@@ -257,7 +257,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 	 * @return
 	 */
 	protected int compareImplementMethodParamTypePriority(
-			Implementation implementation,
+			Implementation<?> implementation,
 			Method implementeeMethod, Object[] implementeeMethodParams,
 			ImplementMethodInfo first, ImplementMethodInfo second)
 	{
@@ -322,7 +322,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 	 * @param secondImplementor
 	 * @return
 	 */
-	protected int compareImplementorPriority(Implementation implementation,
+	protected int compareImplementorPriority(Implementation<?> implementation,
 			Class<?> firstImplementor, Class<?> secondImplementor)
 	{
 		String implementeePkg = implementation.getImplementee().getPackage()

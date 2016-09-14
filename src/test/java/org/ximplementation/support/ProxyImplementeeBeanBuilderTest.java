@@ -63,7 +63,7 @@ public class ProxyImplementeeBeanBuilderTest extends AbstractTestSupport
 	@Test
 	public void buildTestByMap()
 	{
-		Implementation implementation = new ImplementationResolver()
+		Implementation<BuildTest.Implementee1> implementation = new ImplementationResolver()
 				.resolve(BuildTest.Implementee1.class,
 						BuildTest.Implementor0.class,
 						BuildTest.Implementor1.class,
@@ -77,7 +77,7 @@ public class ProxyImplementeeBeanBuilderTest extends AbstractTestSupport
 		implementorBeansMap.put(BuildTest.Implementor2.class,
 				Arrays.asList(new BuildTest.Implementor2()));
 
-		BuildTest.Implementee1 implementee1 = (BuildTest.Implementee1) this.proxyImplementeeBeanBuilder
+		BuildTest.Implementee1 implementee1 = this.proxyImplementeeBeanBuilder
 				.build(implementation, implementorBeansMap);
 
 		assertNotNull(implementee1);
@@ -87,7 +87,8 @@ public class ProxyImplementeeBeanBuilderTest extends AbstractTestSupport
 	@Test
 	public void buildTestByImplementorBeanFactory()
 	{
-		Implementation implementation = new ImplementationResolver().resolve(
+		Implementation<BuildTest.Implementee1> implementation = new ImplementationResolver()
+				.resolve(
 				BuildTest.Implementee1.class, BuildTest.Implementor0.class,
 				BuildTest.Implementor1.class, BuildTest.Implementor2.class);
 
@@ -99,7 +100,7 @@ public class ProxyImplementeeBeanBuilderTest extends AbstractTestSupport
 		implementorBeansMap.put(BuildTest.Implementor2.class,
 				Arrays.asList(new BuildTest.Implementor2()));
 
-		BuildTest.Implementee1 implementee1 = (BuildTest.Implementee1) this.proxyImplementeeBeanBuilder
+		BuildTest.Implementee1 implementee1 = this.proxyImplementeeBeanBuilder
 				.build(implementation,
 						new SimpleImplementorBeanFactory(implementorBeansMap));
 
@@ -121,7 +122,8 @@ public class ProxyImplementeeBeanBuilderTest extends AbstractTestSupport
 		ImplementorBeanFactory implementorBeanFactory = new SimpleImplementorBeanFactory(
 				implementorBeansMap);
 
-		Implementation implementation = new ImplementationResolver().resolve(
+		Implementation<BuildTest.Implementee0> implementation = new ImplementationResolver()
+				.resolve(
 				BuildTest.Implementee0.class, BuildTest.Implementor0.class,
 				BuildTest.Implementor1.class, BuildTest.Implementor2.class);
 
@@ -146,11 +148,12 @@ public class ProxyImplementeeBeanBuilderTest extends AbstractTestSupport
 		ImplementorBeanFactory implementorBeanFactory = new SimpleImplementorBeanFactory(
 				implementorBeansMap);
 
-		Implementation implementation = new ImplementationResolver().resolve(
+		Implementation<BuildTest.Implementee1> implementation = new ImplementationResolver()
+				.resolve(
 				BuildTest.Implementee1.class, BuildTest.Implementor0.class,
 				BuildTest.Implementor1.class, BuildTest.Implementor2.class);
 
-		BuildTest.Implementee1 implementee1 = (BuildTest.Implementee1) this.proxyImplementeeBeanBuilder
+		BuildTest.Implementee1 implementee1 = this.proxyImplementeeBeanBuilder
 				.doBuild(implementation, implementorBeanFactory);
 
 		assertEquals(152, implementee1.plus(150, 2));
@@ -172,11 +175,12 @@ public class ProxyImplementeeBeanBuilderTest extends AbstractTestSupport
 		ImplementorBeanFactory implementorBeanFactory = new SimpleImplementorBeanFactory(
 				implementorBeansMap);
 
-		Implementation implementation = new ImplementationResolver().resolve(
+		Implementation<BuildTest.Implementee1> implementation = new ImplementationResolver()
+				.resolve(
 				BuildTest.Implementee1.class, BuildTest.Implementor0.class,
 				BuildTest.Implementor1.class, BuildTest.Implementor2.class);
 
-		BuildTest.Implementee1 implementee1 = (BuildTest.Implementee1) this.proxyImplementeeBeanBuilder
+		BuildTest.Implementee1 implementee1 = this.proxyImplementeeBeanBuilder
 				.doBuild(implementation, implementorBeanFactory);
 
 		this.expectedException.expect(UnsupportedOperationException.class);

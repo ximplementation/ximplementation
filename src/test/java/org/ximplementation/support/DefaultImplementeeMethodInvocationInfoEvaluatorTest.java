@@ -329,7 +329,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 		Class<?> implementee = IsImplementMethodParamValidTest.Implementee.class;
 		Method implementeeMethod = getMethodByName(implementee, "plus");
 
-		Implementation implementation = this.implementationResolver.resolve(
+		Implementation<?> implementation = this.implementationResolver.resolve(
 				implementee,
 				IsImplementMethodParamValidTest.Implementor0.class,
 				IsImplementMethodParamValidTest.Implementor1.class,
@@ -460,7 +460,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 		Class<?> implementee = CompareImplementMethodInfoPriorityTest.Implementee.class;
 		Method implementeeMethod = getMethodByName(implementee, "plus");
 
-		Implementation implementation = this.implementationResolver.resolve(
+		Implementation<?> implementation = this.implementationResolver.resolve(
 				implementee,
 				CompareImplementMethodInfoPriorityTest.Implementor0.class,
 				CompareImplementMethodInfoPriorityTest.Implementor1.class,
@@ -582,7 +582,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 		Class<?> implementee = CompareImplementMethodParamTypePriorityTest.Implementee.class;
 		Method implementeeMethod = getMethodByName(implementee, "plus");
 
-		Implementation implementation = this.implementationResolver.resolve(
+		Implementation<?> implementation = this.implementationResolver.resolve(
 				implementee,
 				CompareImplementMethodParamTypePriorityTest.Implementor0.class,
 				CompareImplementMethodParamTypePriorityTest.Implementor1.class,
@@ -740,7 +740,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 	{
 		Class<?> implementee = org.ximplementation.support.testpkg.ipkg.TImplementee.class;
 
-		Implementation implementation = this.implementationResolver.resolve(
+		Implementation<?> implementation = this.implementationResolver.resolve(
 				implementee,
 				org.ximplementation.support.testpkg.ipkg.TImplementorSamePkg0.class,
 				org.ximplementation.support.testpkg.ipkg.TImplementorSamePkg1.class,
