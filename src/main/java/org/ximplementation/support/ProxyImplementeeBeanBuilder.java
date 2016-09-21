@@ -81,18 +81,16 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 		T proxy = (T) Proxy.newProxyInstance(implementee.getClassLoader(),
 				new Class<?>[] { implementee, ProxyImplementee.class },
 				new ProxyImplementeeInvocationHandler(implementation,
-						implementorBeanFactory));
+						implementorBeanFactory,
+						this.implementeeMethodInvocationInfoEvaluator));
 
 		return proxy;
 	}
 
-	protected class ProxyImplementeeInvocationHandler
+	protected class ProxyImplementeeInvocationHandler extends
+			ProxyImplementeeInvocationSupport
 			implements InvocationHandler
 	{
-		private Implementation<?> implementation;
-
-		private ImplementorBeanFactory implementorBeanFactory;
-
 		public ProxyImplementeeInvocationHandler()
 		{
 			super();
@@ -100,32 +98,11 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 
 		public ProxyImplementeeInvocationHandler(
 				Implementation<?> implementation,
-				ImplementorBeanFactory implementorBeanFactory)
+				ImplementorBeanFactory implementorBeanFactory,
+				ImplementeeMethodInvocationInfoEvaluator implementeeMethodInvocationInfoEvaluator)
 		{
-			super();
-			this.implementation = implementation;
-			this.implementorBeanFactory = implementorBeanFactory;
-		}
-
-		public Implementation<?> getImplementation()
-		{
-			return implementation;
-		}
-
-		public void setImplementation(Implementation<?> implementation)
-		{
-			this.implementation = implementation;
-		}
-
-		public ImplementorBeanFactory getImplementorBeanFactory()
-		{
-			return implementorBeanFactory;
-		}
-
-		public void setImplementorBeanFactory(
-				ImplementorBeanFactory implementorBeanFactory)
-		{
-			this.implementorBeanFactory = implementorBeanFactory;
+			super(implementation, implementorBeanFactory,
+					implementeeMethodInvocationInfoEvaluator);
 		}
 
 		@Override
@@ -134,23 +111,7 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 			if (Object.class.equals(method.getDeclaringClass()))
 				return method.invoke(this, args);
 
-			ImplementeeMethodInvocationInfo invocationInfo = ProxyImplementeeBeanBuilder.this.implementeeMethodInvocationInfoEvaluator
-					.evaluate(
-					this.implementation, method, args,
-					this.implementorBeanFactory);
-
-			if (invocationInfo == null)
-				throw new UnsupportedOperationException("No valid implement is found for [" + method + "]");
-
-			ImplementMethodInfo implementMethodInfo = invocationInfo
-					.getImplementMethodInfo();
-
-			Object implementBean = invocationInfo.getImplementorBean();
-			Method implementMethod = implementMethodInfo.getImplementMethod();
-			Object[] implementMethodParams = implementMethodInfo
-					.getParams(args);
-
-			return implementMethod.invoke(implementBean, implementMethodParams);
+			return invoke(method, args);
 		}
 
 		@Override
