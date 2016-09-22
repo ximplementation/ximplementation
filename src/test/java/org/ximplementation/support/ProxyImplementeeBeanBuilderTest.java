@@ -69,16 +69,13 @@ public class ProxyImplementeeBeanBuilderTest extends AbstractTestSupport
 						BuildTest.Implementor1.class,
 						BuildTest.Implementor2.class);
 		
-		Map<Class<?>, List<?>> implementorBeansMap = new HashMap<Class<?>, List<?>>();
-		implementorBeansMap.put(BuildTest.Implementor0.class,
-				Arrays.asList(new BuildTest.Implementor0()));
-		implementorBeansMap.put(BuildTest.Implementor1.class,
-				Arrays.asList(new BuildTest.Implementor1()));
-		implementorBeansMap.put(BuildTest.Implementor2.class,
-				Arrays.asList(new BuildTest.Implementor2()));
+		ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory
+				.valueOf(new BuildTest.Implementor0(),
+						new BuildTest.Implementor1(),
+						new BuildTest.Implementor2());
 
 		BuildTest.Implementee1 implementee1 = this.proxyImplementeeBeanBuilder
-				.build(implementation, implementorBeansMap);
+				.build(implementation, implementorBeanFactory);
 
 		assertNotNull(implementee1);
 		assertTrue(implementee1 instanceof ProxyImplementee);
@@ -184,7 +181,8 @@ public class ProxyImplementeeBeanBuilderTest extends AbstractTestSupport
 				.doBuild(implementation, implementorBeanFactory);
 
 		this.expectedException.expect(UnsupportedOperationException.class);
-		this.expectedException.expectMessage("No valid implement is found");
+		this.expectedException
+				.expectMessage("No valid implement method found for");
 
 		implementee1.minus(2, 1);
 	}

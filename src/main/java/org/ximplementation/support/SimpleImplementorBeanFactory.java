@@ -14,7 +14,10 @@
 
 package org.ximplementation.support;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,5 +62,46 @@ public class SimpleImplementorBeanFactory implements ImplementorBeanFactory
 	{
 		return (this.implementorBeansMap == null ? null
 				: this.implementorBeansMap.get(implementor));
+	}
+
+	/**
+	 * Build an instance by <i>implementor</i> beans map.
+	 * 
+	 * @param implementorBeansMap
+	 * @return
+	 */
+	public static SimpleImplementorBeanFactory valueOf(
+			Map<Class<?>, ? extends Collection<?>> implementorBeansMap)
+	{
+		return new SimpleImplementorBeanFactory(implementorBeansMap);
+	}
+
+	/**
+	 * Build an instance by <i>implementor</i> beans array.
+	 * 
+	 * @param implementorBeans
+	 * @return
+	 */
+	public static SimpleImplementorBeanFactory valueOf(
+			Object... implementorBeans)
+	{
+		Map<Class<?>, List<Object>> implementorBeansMap = new HashMap<Class<?>, List<Object>>();
+		
+		for (Object implementorBean : implementorBeans)
+		{
+			Class<?> myClass = implementorBean.getClass();
+
+			List<Object> myBeanList = implementorBeansMap.get(myClass);
+
+			if (myBeanList == null)
+			{
+				myBeanList = new ArrayList<Object>(1);
+				implementorBeansMap.put(myClass, myBeanList);
+			}
+
+			myBeanList.add(implementorBean);
+		}
+		
+		return new SimpleImplementorBeanFactory(implementorBeansMap);
 	}
 }

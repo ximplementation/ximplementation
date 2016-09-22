@@ -14,9 +14,6 @@
 
 package org.ximplementation.support;
 
-import java.util.Collection;
-import java.util.Map;
-
 /**
  * Builder of <i>implementee</i> bean.
  * 
@@ -26,16 +23,6 @@ import java.util.Map;
  */
 public interface ImplementeeBeanBuilder
 {
-	/**
-	 * Build an <i>implementee</i> bean.
-	 * 
-	 * @param implementation
-	 * @param implementorBeansMap
-	 * @return
-	 */
-	<T> T build(Implementation<T> implementation,
-			Map<Class<?>, ? extends Collection<?>> implementorBeansMap);
-
 	/**
 	 * Build an <i>implementee</i> bean.
 	 * 

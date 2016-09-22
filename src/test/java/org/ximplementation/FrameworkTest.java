@@ -14,11 +14,6 @@
 
 package org.ximplementation;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,7 +21,9 @@ import org.junit.Test;
 import org.ximplementation.support.Implementation;
 import org.ximplementation.support.ImplementationResolver;
 import org.ximplementation.support.ImplementeeBeanBuilder;
+import org.ximplementation.support.ImplementorBeanFactory;
 import org.ximplementation.support.ProxyImplementeeBeanBuilder;
+import org.ximplementation.support.SimpleImplementorBeanFactory;
 
 /**
  * Test case for showing concepts and design of this framework.
@@ -61,20 +58,15 @@ public class FrameworkTest
 				TService.class, TServiceImplDefault.class, TServiceImplSpecial.class,
 				TServiceImplInteger.class, TServiceImplDouble.class);
 
-		Map<Class<?>, Set<?>> implementorBeans = new HashMap<Class<?>, Set<?>>();
-
-		implementorBeans.put(TServiceImplDefault.class,
-				Collections.singleton(new TServiceImplDefault<Number>()));
-		implementorBeans.put(TServiceImplSpecial.class,
-				Collections.singleton(new TServiceImplSpecial<Number>()));
-		implementorBeans.put(TServiceImplInteger.class, Collections.singleton(new TServiceImplInteger()));
-		implementorBeans.put(TServiceImplDouble.class,
-				Collections.singleton(new TServiceImplDouble()));
+		ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory
+				.valueOf(new TServiceImplDefault<Number>(),
+						new TServiceImplSpecial<Number>(),
+						new TServiceImplInteger(), new TServiceImplDouble());
 
 		@SuppressWarnings("unchecked")
 		TService<Number> tservice = this.implementeeBeanBuilder
 				.build(implementation,
-				implementorBeans);
+						implementorBeanFactory);
 
 		{
 			String re = tservice.handle(1.0F, 2.0F);

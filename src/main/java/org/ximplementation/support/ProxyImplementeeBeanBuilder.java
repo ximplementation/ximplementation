@@ -17,8 +17,6 @@ package org.ximplementation.support;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * Implementee bean builder based on JDK {@linkplain Proxy}.
@@ -46,14 +44,6 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 			ImplementeeMethodInvocationInfoEvaluator implementeeMethodInvocationInfoEvaluator)
 	{
 		this.implementeeMethodInvocationInfoEvaluator = implementeeMethodInvocationInfoEvaluator;
-	}
-
-	@Override
-	public <T> T build(Implementation<T> implementation,
-			Map<Class<?>, ? extends Collection<?>> implementorBeansMap)
-	{
-		return doBuild(implementation,
-				new SimpleImplementorBeanFactory(implementorBeansMap));
 	}
 
 	@Override

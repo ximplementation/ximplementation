@@ -60,12 +60,10 @@ Then, you can get a `Service` instance by:
 	Implementation<Service> implementation = new ImplementationResolver().resolve(Service.class,
 			 	ServiceImplDefault.class, ServiceImplPlusInteger.class, ServiceImplMinusInteger.class);
 	
-	Map<Class<?>, Collection<?>> implementorBeans = new HashMap<Class<?>, Collection<?>>();
-	implementorBeans.put(ServiceImplDefault.class, Arrays.asList(new ServiceImplDefault<Number>()));
-	implementorBeans.put(ServiceImplPlusInteger.class, Arrays.asList(new ServiceImplPlusInteger()));
-	implementorBeans.put(ServiceImplMinusInteger.class, Arrays.asList(new ServiceImplMinusInteger()));
+	ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory
+				.valueOf(new ServiceImplDefault<Number>(), new ServiceImplPlusInteger(), new ServiceImplMinusInteger());
 	
-	Service<Number> service = new ProxyImplementeeBeanBuilder().build(implementation, implementorBeans);
+	Service<Number> service = new ProxyImplementeeBeanBuilder().build(implementation, implementorBeanFactory);
 ```
 
 The `serivce.plus` method invocation will be delegated to `ServiceImplPlusInteger.plus` method if the parameter type is `Integer`, to `ServiceImplDefault.plus` method otherwise; and the `serivce.minus` method will be delegated to `ServiceImplMinusInteger.minus` method if the parameter type is `Integer`, to `ServiceImplDefault.minus` method otherwise.
@@ -109,7 +107,7 @@ For example :
 	}
 ```
 
-You have to create a dependency chain for each implementation of `Service` traditionally :
+You have to create one dependency chain for each implementation of `Service` traditionally :
 
 ```java
 
@@ -130,8 +128,8 @@ But with ximplementation, you need only to create one dependency chain no matter
 ```java
 
 	Implementation<Service> implementation = ...;
-	Map<Class<?>, Collection<?>> implementorBeans = ...;
+	ImplementorBeanFactory implementorBeanFactory = ...;
 	
-	Service<Entity> service = new ProxyImplementeeBeanBuilder().build(implementation, implementorBeans);
+	Service<Entity> service = new ProxyImplementeeBeanBuilder().build(implementation, implementorBeanFactory);
 	Controller<Entity> controller = new Controller<Entity>(service);
 ```
