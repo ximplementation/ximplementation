@@ -15,7 +15,6 @@
 package org.ximplementation.support;
 
 import java.lang.annotation.Annotation;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -24,11 +23,11 @@ import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import org.ximplementation.Implement;
 import org.ximplementation.Implementor;
@@ -47,7 +46,7 @@ import org.ximplementation.Validity;
  */
 public class ImplementationResolver
 {
-	private Map<Type, WeakReference<Map<TypeVariable<?>, Type>>> typeVariablesMap = new HashMap<Type, WeakReference<Map<TypeVariable<?>, Type>>>();
+	private Map<Type, Map<TypeVariable<?>, Type>> typeVariablesMap = new WeakHashMap<Type, Map<TypeVariable<?>, Type>>();
 
 	public ImplementationResolver()
 	{
@@ -854,16 +853,17 @@ public class ImplementationResolver
 	{
 		Map<TypeVariable<?>, Type> map = null;
 
-		WeakReference<Map<TypeVariable<?>, Type>> mapref = this.typeVariablesMap
-				.get(type);
+		// make this class thread safe
+		synchronized (this.typeVariablesMap)
+		{
+			map = this.typeVariablesMap.get(type);
 
-		if (mapref != null && (map = mapref.get()) != null)
-			return map;
-
-		map = TypeUtil.resolveTypeParams(type);
-
-		this.typeVariablesMap.put(type,
-				new WeakReference<Map<TypeVariable<?>, Type>>(map));
+			if (map == null)
+			{
+				map = TypeUtil.resolveTypeParams(type);
+				this.typeVariablesMap.put(type, map);
+			}
+		}
 
 		return map;
 	}
