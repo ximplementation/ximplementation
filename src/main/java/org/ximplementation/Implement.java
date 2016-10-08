@@ -33,6 +33,11 @@ import java.lang.annotation.Target;
  * implemented by one or more methods in <i>implementor</i>.
  * </p>
  * <p>
+ * The <i>implement method</i> can be annotated with {@linkplain Priority} which
+ * indicating its invocation priority and {@linkplain Validity} which indicating
+ * its invocation validity.
+ * </p>
+ * <p>
  * This annotation should be annotated on methods of an <i>implementor</i>.
  * </p>
  * 
