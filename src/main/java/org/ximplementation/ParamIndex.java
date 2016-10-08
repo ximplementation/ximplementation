@@ -23,13 +23,19 @@ import java.lang.annotation.Target;
  * Parameter index annotation.
  * <p>
  * This annotation indicate that the parameter value should be set to specified
- * index value of the corresponding <i>implementee</i> method parameter values
+ * index value of the corresponding <i>implementee method</i> parameter values
  * while its method invocation.
  * </p>
  * <p>
- * This annotation can be annotated on implement method parameter,
- * {@linkplain Validity @Validity} method parameter and
- * {@linkplain Priority @Priority} method parameter of an <i>implementor</i>.
+ * This annotation is useful if you don't want your <i>implement method</i>,
+ * {@linkplain Validity @Validity} method or {@linkplain Priority @Priority}
+ * method align to the <i>implementee method</i> parameters strictly, only one
+ * or some of them.
+ * </p>
+ * <p>
+ * This annotation can be annotated on <i>implement method</i> parameters,
+ * {@linkplain Validity @Validity} method parameters and
+ * {@linkplain Priority @Priority} method parameters of an <i>implementor</i>.
  * </p>
  * 
  * @author earthangry@gmail.com
@@ -41,10 +47,9 @@ import java.lang.annotation.Target;
 public @interface ParamIndex
 {
 	/**
-	 * The index of the corresponding <i>implementee</i> method parameter values
-	 * array.
+	 * The index of the corresponding <i>implementee method</i> parameter.
 	 * <p>
-	 * The index should be start with {@code 0}.
+	 * The first <i>implementee method</i> parameter index is {@code 0}.
 	 * </p>
 	 * 
 	 * @return

@@ -22,13 +22,13 @@ import java.lang.annotation.Target;
 /**
  * Validity annotation.
  * <p>
- * This annotation indicate that the implement method has an invocation
+ * This annotation indicate that the <i>implement method</i> has an invocation
  * validation by a validity method, the validity method should be invoked first
- * for determining if the implement method is applicable for the current
- * <i>implementee</i> method invocation.
+ * for determining if the <i>implement method</i> is applicable for the current
+ * <i>implementee method</i> invocation.
  * </p>
  * <p>
- * This annotation should be annotated on implement method.
+ * This annotation should be annotated on <i>implement method</i>.
  * </p>
  * 
  * @author earthangry@gmail.com
@@ -48,8 +48,8 @@ public @interface Validity
 	 * <li>The name of the validity method if no duplication;</li>
 	 * <li>The {@linkplain Refered#value() @Refered.value} of the validity
 	 * method;</li>
-	 * <li>The {@code java.lang.reflect.Method.toString()} value of the validity
-	 * method.</li>
+	 * <li>The signature part of the validity method (eg.
+	 * <code>"isValid(java.lang.String)"</code>).</li>
 	 * </ul>
 	 * 
 	 * @return

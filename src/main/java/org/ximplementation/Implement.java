@@ -22,8 +22,15 @@ import java.lang.annotation.Target;
 /**
  * Implement method annotation.
  * <p>
- * This annotation indicate that the method is an implement method of a
- * <i>implementee</i> method.
+ * This annotation indicate that the method is an <i>implement method</i>.
+ * </p>
+ * <p>
+ * An <i>implement method</i> is a method in an <i>implementor</i> which
+ * overriding or {@code @Implement} methods in <i>implementee</i>.
+ * </p>
+ * <p>
+ * An <i>implementee method</i> is a method in an <i>implementee</i> which is
+ * implemented by one or more methods in <i>implementor</i>.
  * </p>
  * <p>
  * This annotation should be annotated on methods of an <i>implementor</i>.
@@ -38,19 +45,21 @@ import java.lang.annotation.Target;
 public @interface Implement
 {
 	/**
-	 * The identification of the <i>implementee</i> method.
+	 * The identification of the <i>implementee method</i> which this method is
+	 * implemented.
 	 * <p>
 	 * It can be any of the following values :
 	 * </p>
 	 * <ul>
-	 * <li>The name of the <i>implementee</i> method if no duplication;</li>
-	 * <li>The {@linkplain Refered#value() @Refered.value} of the
-	 * <i>implementee</i> method;</li>
-	 * <li>The {@code java.lang.reflect.Method.toString()} value of the
-	 * <i>implementee</i> method.</li>
+	 * <li>The name of the <i>implementee method</i>;</li>
+	 * <li>The {@linkplain Refered#value() @Refered.value} of the <i>implementee
+	 * method</i>;</li>
+	 * <li>The signature part of the <i>implementee method</i> (eg.
+	 * <code>"plus(java.lang.Integer, java.lang.Integer)"</code>).</li>
 	 * </ul>
 	 * <p>
-	 * If not set, its value will be treated as this implement method name.
+	 * If not set, its value will be treated as this <i>implement method</i>
+	 * name.
 	 * </p>
 	 * 
 	 * @return

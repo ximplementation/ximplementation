@@ -22,11 +22,11 @@ import java.lang.annotation.Target;
 /**
  * Priority annotation.
  * <p>
- * This annotation indicate that the implement method has an invocation
+ * This annotation indicate that the <i>implement method</i> has an invocation
  * priority, either a fixed value or the result of a priority method invocation.
  * </p>
  * <p>
- * This annotation should be annotated on implement method.
+ * This annotation should be annotated on <i>implement method</i>.
  * </p>
  * 
  * @author earthangry@gmail.com
@@ -56,8 +56,8 @@ public @interface Priority
 	 * <li>The name of the priority method if no duplication;</li>
 	 * <li>The {@linkplain Refered#value() @Refered.value} of the priority
 	 * method;</li>
-	 * <li>The {@code java.lang.reflect.Method.toString()} value of the priority
-	 * method.</li>
+	 * <li>The signature part of the priority method (eg.
+	 * <code>"getPriority(java.lang.String)"</code>).</li>
 	 * </ul>
 	 * 
 	 * @return

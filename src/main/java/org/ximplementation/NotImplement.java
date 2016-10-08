@@ -22,8 +22,8 @@ import java.lang.annotation.Target;
 /**
  * Not implement method annotation.
  * <p>
- * This annotation indicate that the method is not an implement method of any
- * <i>implementee</i> methods.
+ * This annotation indicate that the method is not <i>implement method</i> of
+ * any <i>implementee method</i>.
  * </p>
  * <p>
  * This annotation should be annotated on methods of an <i>implementor</i>.

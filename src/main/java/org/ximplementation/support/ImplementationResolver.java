@@ -46,6 +46,8 @@ import org.ximplementation.Validity;
  */
 public class ImplementationResolver
 {
+	protected static final String METHOD_SIGNATURE_PART_REGEX = ".*\\(.*\\).*";
+
 	private Map<Type, Map<TypeVariable<?>, Type>> typeVariablesMap = new WeakHashMap<Type, Map<TypeVariable<?>, Type>>();
 
 	public ImplementationResolver()
@@ -483,7 +485,10 @@ public class ImplementationResolver
 			else
 			{
 				if (implementAnoValue.equals(implementeeMethodRefered)
-						|| implementAnoValue.equals(implementeeMethodSignature))
+						|| (isMethodSignaturePart(implementAnoValue)
+								&& matchMethodSignature(
+										implementeeMethodSignature,
+										implementAnoValue)))
 				{
 					if (!isInvocationFeasibleMethod(implementee, implementeeMethod, implementor, implementMethod))
 						throw new ImplementationResolveException("Method [" + implementMethod
@@ -691,6 +696,12 @@ public class ImplementationResolver
 				method = m;
 				break;
 			}
+			else if (isMethodSignaturePart(methodRef) && matchMethodSignature(
+					getMethodSignature(clazz, m), methodRef))
+			{
+				method = m;
+				break;
+			}
 			else
 			{
 				if (m.getName().equals(methodRef))
@@ -753,6 +764,30 @@ public class ImplementationResolver
 	protected String getMethodSignature(Class<?> clazz, Method method)
 	{
 		return method.toString();
+	}
+
+	/**
+	 * Returns if the specified string is part of method signature.
+	 * 
+	 * @param sp
+	 * @return
+	 */
+	protected boolean isMethodSignaturePart(String sp)
+	{
+		return (sp != null && sp.matches(METHOD_SIGNATURE_PART_REGEX));
+	}
+
+	/**
+	 * Returns if the specified string matches the method signature.
+	 * 
+	 * @param methodSignature
+	 * @param part
+	 * @return
+	 */
+	protected boolean matchMethodSignature(String methodSignature, String part)
+	{
+		return (part != null && !part.isEmpty()
+				&& methodSignature.indexOf(part) > -1);
 	}
 
 	/**

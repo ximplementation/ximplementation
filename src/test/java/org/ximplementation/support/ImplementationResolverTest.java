@@ -742,6 +742,12 @@ public class ImplementationResolverTest extends AbstractTestSupport
 				implementeeMethodSignature, implementeeMethodRefered,
 				IsImplementMethod.Implementor7.class,
 				getMethodByName(IsImplementMethod.Implementor7.class, "plus")));
+
+		assertTrue(this.implementationResolver.isImplementMethod(implementee,
+				implementeeMethod, implementeeMethodName,
+				implementeeMethodSignature, implementeeMethodRefered,
+				IsImplementMethod.Implementor8.class,
+				getMethodByName(IsImplementMethod.Implementor8.class, "plus")));
 	}
 
 	@Test
@@ -858,6 +864,15 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		public static class Implementor7 implements Implementee
 		{
 			@Override
+			public Number plus(Number a, Number b)
+			{
+				return null;
+			}
+		}
+
+		public static class Implementor8
+		{
+			@Implement("plus(java.lang.Number,java.lang.Number)")
 			public Number plus(Number a, Number b)
 			{
 				return null;
@@ -1287,6 +1302,13 @@ public class ImplementationResolverTest extends AbstractTestSupport
 				this.implementationResolver.findReferedMethod(
 						FindReferedMethodTest.Test2.class, "test",
 						Number.class));
+
+		assertEquals(
+				getMethodByNameAndType(FindReferedMethodTest.Test4.class,
+						"test", int.class),
+				this.implementationResolver.findReferedMethod(
+						FindReferedMethodTest.Test4.class, "test(int)",
+						Number.class));
 	}
 
 	@Test
@@ -1381,6 +1403,36 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		public void test(Integer a, Integer b)
 		{
 		}
+	}
+
+	@Test
+	public void isMethodSignaturePartTest()
+	{
+		assertTrue(this.implementationResolver.isMethodSignaturePart("()"));
+		assertTrue(this.implementationResolver.isMethodSignaturePart("plus()"));
+		assertTrue(
+				this.implementationResolver.isMethodSignaturePart("plus(a,b)"));
+		assertTrue(this.implementationResolver
+				.isMethodSignaturePart("plus(java.lang.Integer)"));
+		assertFalse(this.implementationResolver.isMethodSignaturePart("("));
+		assertFalse(this.implementationResolver.isMethodSignaturePart(")"));
+		assertFalse(this.implementationResolver.isMethodSignaturePart("plus"));
+		assertFalse(this.implementationResolver.isMethodSignaturePart("plus("));
+		assertFalse(this.implementationResolver.isMethodSignaturePart("plus)"));
+	}
+
+	@Test
+	public void matchMethodSignatureTest()
+	{
+		assertFalse(this.implementationResolver.matchMethodSignature("plus()",
+				null));
+		assertFalse(this.implementationResolver.matchMethodSignature("plus()",
+				""));
+		assertTrue(this.implementationResolver.matchMethodSignature("plus()",
+				"plus()"));
+		assertTrue(this.implementationResolver
+				.matchMethodSignature("public void plus()",
+				"plus()"));
 	}
 
 	@Test
