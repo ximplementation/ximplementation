@@ -124,7 +124,7 @@ import java.lang.annotation.Target;
  * <p>
  * Here, {@code Bar0.handle}, {@code Bar1.handle}, {@code Bar2.handle},
  * {@code Bar2.handle0}, {@code Bar2.handle1} are all <i>implement method</i>s
- * of {@code Foo.handle}
+ * of {@code Foo.handle}.
  * </p>
  * 
  * @author earthangry@gmail.com
