@@ -96,7 +96,7 @@ public @interface Implementor
 	/**
 	 * The <i>implementee</i>s which this <i>implementor</i> is implemented.
 	 * <p>
-	 * It can be any classes not just this <i>implementor</i>'s ancestors.
+	 * It can be any classes not only this <i>implementor</i>'s ancestors.
 	 * </p>
 	 * 
 	 * @return
