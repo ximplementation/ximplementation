@@ -52,7 +52,10 @@ import java.lang.annotation.Target;
  * {@linkplain Validity @Validity} indicating it has an invocation validity,
  * annotated with {@linkplain Priority @Priority} indicating it has an
  * invocation priority comparing with other <i>implement method</i>s, only the
- * one with {@code true} validity and max priority will be invoked.
+ * one with {@code true} validity and max priority will be invoked. If two
+ * <i>implement method</i>s have the same {@linkplain Priority @Priority} value,
+ * the one whose parameter types are closer to the current <i>implementee
+ * method</i> invocation parameters has higher priority.
  * </p>
  * <p>
  * This annotation should be annotated on methods of an <i>implementor</i>.
