@@ -26,13 +26,63 @@ import java.lang.annotation.Target;
  * <i>implementee</i>s.
  * </p>
  * <p>
- * An <i>implementor</i> is a class which implements one or more
- * <i>implementee</i>s by the {@code 'implements' or 'extends'} syntax or by
- * {@code @Implementor} annotation.
+ * <b>An <i>implementor</i> is a class which implements one or more
+ * <i>implementee</i>s through the {@code 'implements'} or {@code 'extends'}
+ * keywords or through {@code @Implementor} annotation.</b>
  * </p>
  * <p>
- * An <i>implementee</i> is a class which is implemented by one or more
- * <i>implementor</i>s.
+ * <b>An <i>implementee</i> is a class which is implemented by one or more
+ * <i>implementor</i>s.</b>
+ * </p>
+ * <p>
+ * <b>Also, if {@code A} is an <i>implementor</i> of {@code B}, and {@code B} is
+ * an <i>implementor</i> of {@code C}, then {@code A} is an <i>implementor</i>
+ * of {@code C}.</b>
+ * </p>
+ * <p>
+ * Examples:
+ * </p>
+ * <code>
+ * <pre>
+ * public interface Foo0
+ * {
+ * 	void foo0();
+ * }
+ * 
+ * public abstract class Foo1
+ * {
+ * 	public abstract void foo1();
+ * }
+ * 
+ * public class Bar0 extends Foo1 implements Foo0
+ * {
+ * 	&#64;Override
+ * 	public void foo0(){}
+ * 
+ * 	&#64;Override
+ * 	public void foo1(){}
+ * }
+ * 
+ * &#64;Implementor(Foo0.class)
+ * public class Bar1
+ * {
+ * 	&#64;Implement
+ * 	public void foo0(){}
+ * }
+ * 
+ * &#64;Implementor({Foo0.class, Foo1.class})
+ * public class Bar2
+ * {
+ * 	&#64;Implement
+ * 	public void foo1(){}
+ * }
+ * </pre>
+ * </code>
+ * <p>
+ * Here, {@code Foo0} and {@code Foo1} are <i>implementee</i>s, {@code Bar0} is
+ * an <i>implementor</i> of {@code Foo0} and {@code Foo1}, {@code Bar1} is an
+ * <i>implementor</i> of {@code Foo0}, {@code Bar2} is an <i>implementor</i> of
+ * {@code Foo0} and {@code Foo1} but only implements {@code Foo1.foo1} method.
  * </p>
  * 
  * @author earthangry@gmail.com
