@@ -25,25 +25,112 @@ import java.lang.annotation.Target;
  * This annotation indicate that the method is an <i>implement method</i>.
  * </p>
  * <p>
- * An <i>implement method</i> is a method in an <i>implementor</i> which
- * overriding or {@code @Implement} methods in <i>implementee</i>.
+ * <b>An <i>implement method</i> is a method in an <i>implementor</i> which
+ * overriding or {@code @Implement} methods in <i>implementee</i>.</b>
  * </p>
  * <p>
- * An <i>implementee method</i> is a method in an <i>implementee</i> which is
- * implemented by one or more methods in <i>implementor</i>.
+ * <b>An <i>implementee method</i> is a method in an <i>implementee</i> which is
+ * implemented by one or more methods in <i>implementor</i>.</b>
  * </p>
  * <p>
- * The <i>implement method</i> can be annotated with {@linkplain Priority} which
- * indicating its invocation priority and {@linkplain Validity} which indicating
- * its invocation validity.
+ * <i>Implement method</i> defined through {@code @Implement} is out of Java
+ * syntax limitation, it can have different name, sub parameter type and less
+ * parameters with the <i>implementee method</i>, and more than one <i>implement
+ * method</i>s in one <i>implementor</i> for the same <i>implementee method</i>.
+ * If a parameter of an <i>implement method</i> is annotated with
+ * {@linkplain ParamIndex @ParamIndex} , then its value will be set to the
+ * specified {@linkplain ParamIndex#value()} index parameter value of the
+ * <i>implementee method</i> when invoking. If not annotated with
+ * {@linkplain ParamIndex @ParamIndex}, its value will be set to the
+ * corresponding index parameter value of the <i>implementee method</i> when
+ * invoking.
+ * </p>
+ * <p>
+ * There may be many <i>implement method</i>s for one <i>implementee method</i>,
+ * but only one of them will be invoked in an <i>implementee method</i>
+ * invocation. <i>Implement method</i> annotated with
+ * {@linkplain Validity @Validity} indicating it has an invocation validity,
+ * annotated with {@linkplain Priority @Priority} indicating it has an
+ * invocation priority comparing with other <i>implement method</i>s, only the
+ * one with {@code true} validity and max priority will be invoked.
  * </p>
  * <p>
  * This annotation should be annotated on methods of an <i>implementor</i>.
  * </p>
+ * <p>
+ * Examples:
+ * </p>
+ * <code>
+ * 
+ * <pre>
+ * public interface Foo
+ * {
+ * 	void handle(int a, int b);
+ * }
+ * 
+ * public class Bar0 implements Foo
+ * {
+ * 	&#64;Override
+ * 	public void handle(int a, int b)
+ * 	{
+ * 	}
+ * }
+ * 
+ * &#64;Implementor(Foo.class)
+ * public class Bar1
+ * {
+ * 	&#64;Implement
+ * 	&#64;Priority(method = "getPriority")
+ * 	&#64;Validity("isValid")
+ * 	public void handle(int a, int b)
+ * 	{
+ * 	}
+ * 
+ * 	public int getPriority(int a, int b)
+ * 	{
+ * 		return 1;
+ * 	}
+ * 
+ * 	public boolean isValid(int a, int b)
+ * 	{
+ * 		return (a > 0);
+ * 	}
+ * }
+ * 
+ * &#64;Implementor(Foo.class)
+ * public class Bar2
+ * {
+ * 	&#64;Implement
+ * 	public void handle(int a, int b)
+ * 	{
+ * 	}
+ * 
+ * 	&#64;Implement("handle")
+ * 	public void handle0(int a)
+ * 	{
+ * 	}
+ * 
+ * 	&#64;Implement("handle")
+ * 	public void handle1(@ParamIndex(1) int b)
+ * 	{
+ * 	}
+ * }
+ * </pre>
+ * 
+ * <code>
+ * <p>
+ * Here, {@code Bar0.handle}, {@code Bar1.handle}, {@code Bar2.handle},
+ * {@code Bar2.handle0}, {@code Bar2.handle1} are all <i>implement method</i>s
+ * of {@code Foo.handle}
+ * </p>
  * 
  * @author earthangry@gmail.com
  * @date 2015-12-3
- *
+ * @see Implementor
+ * @see Priority
+ * @see Validity
+ * @see ParamIndex
+ * @see Refered
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })
