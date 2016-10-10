@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
  * <p>
  * <i>Implement method</i> defined through {@code @Implement} is out of Java
  * syntax limitation, it can have different name, sub parameter type and less
- * parameters with the <i>implementee method</i>, and more than one <i>implement
+ * parameters to the <i>implementee method</i>, and more than one <i>implement
  * method</i>s in one <i>implementor</i> for the same <i>implementee method</i>.
  * If a parameter of an <i>implement method</i> is annotated with
  * {@linkplain ParamIndex @ParamIndex} , then its value will be set to the
@@ -52,11 +52,29 @@ import java.lang.annotation.Target;
  * {@linkplain Validity @Validity} indicating it has an invocation validity,
  * annotated with {@linkplain Priority @Priority} indicating it has an
  * invocation priority comparing with other <i>implement method</i>s, only the
- * one with {@code true} validity and max priority will be invoked. If two
- * <i>implement method</i>s have the same {@linkplain Priority @Priority} value,
- * the one whose parameter types are closer to the current <i>implementee
- * method</i> invocation parameters has higher priority.
+ * one with all parameter types matched and {@code true} validity and max
+ * priority will be invoked.
  * </p>
+ * <p>
+ * Suppose there are two <i>implement method</i>s {@code A} and {@code B} for
+ * the same <i>implementee method</i>, the priority evaluating rule is as
+ * following:
+ * </p>
+ * <ol>
+ * <li>If the {@linkplain Priority @Priority} value of {@code A} {@code >} the
+ * {@linkplain Priority @Priority} value of {@code B}, then {@code A}'s priority
+ * {@code >} {@code B}'s priority;</li>
+ * <li>Else, if the parameter types of {@code A} are closer to the current
+ * invocation parameters than the parameter types of {@code B}, then {@code A}'s
+ * priority {@code >} {@code B}'s priority (eg. {@code handle(Long)} is closer
+ * to {@code handle(1L)} than {@code handle(Number)});</li>
+ * <li>Else, if {@code A} is annotated with {@linkplain Validity @Validity} but
+ * {@code B} not, then {@code A}'s priority {@code >} {@code B}'s priority;</li>
+ * <li>Else, if {@code A}'s <i>implementor</i> is not in the same nor in the sub
+ * package with the <i>implementee</i> but {@code B}'s <i>implementor</i> is,
+ * then {@code A}'s priority {@code >} {@code B}'s priority;</li>
+ * <li>Else, the max priority one is random.</li>
+ * </ol>
  * <p>
  * This annotation should be annotated on methods of an <i>implementor</i>.
  * </p>
