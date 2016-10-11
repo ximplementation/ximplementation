@@ -37,8 +37,10 @@ import java.lang.annotation.Target;
  * syntax limitation, it can have different name, sub parameter type and less
  * parameters to the <i>implementee method</i>, and more than one <i>implement
  * method</i>s in one <i>implementor</i> for the same <i>implementee method</i>.
- * If a parameter of an <i>implement method</i> is annotated with
- * {@linkplain ParamIndex @ParamIndex} , then its value will be set to the
+ * </p>
+ * <p>
+ * If a parameter of an {@code @Implement} <i>implement method</i> is annotated
+ * with {@linkplain ParamIndex @ParamIndex} , then its value will be set to the
  * specified {@linkplain ParamIndex#value()} index parameter value of the
  * <i>implementee method</i> when invoking. If not annotated with
  * {@linkplain ParamIndex @ParamIndex}, its value will be set to the
@@ -61,9 +63,9 @@ import java.lang.annotation.Target;
  * following:
  * </p>
  * <ol>
- * <li>If the {@linkplain Priority @Priority} value of {@code A} {@code >} the
- * {@linkplain Priority @Priority} value of {@code B}, then {@code A}'s priority
- * {@code >} {@code B}'s priority;</li>
+ * <li>If the {@linkplain Priority @Priority} result of {@code A} {@code >} the
+ * {@linkplain Priority @Priority} result of {@code B}, then {@code A}'s
+ * priority {@code >} {@code B}'s priority;</li>
  * <li>Else, if the parameter types of {@code A} are closer to the current
  * invocation parameters than the parameter types of {@code B}, then {@code A}'s
  * priority {@code >} {@code B}'s priority (eg. {@code handle(Long)} is closer
@@ -75,9 +77,6 @@ import java.lang.annotation.Target;
  * then {@code A}'s priority {@code >} {@code B}'s priority;</li>
  * <li>Else, the max priority one is random.</li>
  * </ol>
- * <p>
- * This annotation should be annotated on methods of an <i>implementor</i>.
- * </p>
  * <p>
  * Examples:
  * </p>
