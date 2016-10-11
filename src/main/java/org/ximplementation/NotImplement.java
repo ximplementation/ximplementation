@@ -26,6 +26,11 @@ import java.lang.annotation.Target;
  * any <i>implementee method</i>.
  * </p>
  * <p>
+ * It can be used if you don't want to implement some <i>implementee method</i>s
+ * when creating an <i>implementor</i> through {@code 'implements'} or
+ * {@code 'extends'}.
+ * </p>
+ * <p>
  * This annotation should be annotated on methods of an <i>implementor</i>.
  * </p>
  * 

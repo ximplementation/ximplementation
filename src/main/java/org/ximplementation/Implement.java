@@ -62,6 +62,9 @@ import java.lang.annotation.Target;
  * following:
  * </p>
  * <ol>
+ * <li>If {@code A} or {@code B} is not annotated with
+ * {@linkplain Priority @Priority}, then it will be treated as annotated with
+ * {@code @Priority(0)};</li>
  * <li>If the {@linkplain Priority @Priority} result of {@code A} {@code >} the
  * {@linkplain Priority @Priority} result of {@code B}, then {@code A}'s
  * priority {@code >} {@code B}'s priority;</li>

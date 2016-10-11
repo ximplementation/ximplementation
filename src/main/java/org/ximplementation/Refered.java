@@ -23,9 +23,9 @@ import java.lang.annotation.Target;
  * Reference annotation.
  * <p>
  * This annotation indicate that the method has been identified by a name, and
- * can be used by {@linkplain Implement @Implement},
- * {@linkplain Priority @Priority}, {@linkplain Validity @Validity} annotations
- * for method reference.
+ * can be referenced by {@linkplain Implement#value() @Implement.value},
+ * {@linkplain Priority#method() @Priority.method},
+ * {@linkplain Validity#value() @Validity.value}.
  * </p>
  * 
  * @author earthangry@gmail.com
