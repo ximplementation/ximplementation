@@ -37,6 +37,9 @@ import java.lang.annotation.Target;
 @Target({ ElementType.METHOD })
 public @interface Priority
 {
+	/** The default priority value */
+	int DEFAULT = 0;
+
 	/**
 	 * The fixed priority value.
 	 * <p>
@@ -45,7 +48,7 @@ public @interface Priority
 	 * 
 	 * @return
 	 */
-	int value() default 0;
+	int value() default DEFAULT;
 
 	/**
 	 * The identification of the priority method.

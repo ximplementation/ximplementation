@@ -18,6 +18,8 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
+import org.ximplementation.Priority;
+
 /**
  * Implement method info.
  * 
@@ -53,7 +55,7 @@ public class ImplementMethodInfo implements Serializable
 	private int[] validityParamIndexes;
 
 	/** priority value */
-	private int priorityValue;
+	private int priorityValue = Priority.DEFAULT;
 
 	/** priority method */
 	private Method priorityMethod;
