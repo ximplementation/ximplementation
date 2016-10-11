@@ -40,12 +40,11 @@ import java.lang.annotation.Target;
  * </p>
  * <p>
  * If a parameter of an {@code @Implement} <i>implement method</i> is annotated
- * with {@linkplain ParamIndex @ParamIndex} , then its value will be set to the
- * specified {@linkplain ParamIndex#value()} index parameter value of the
- * <i>implementee method</i> when invoking. If not annotated with
- * {@linkplain ParamIndex @ParamIndex}, its value will be set to the
- * corresponding index parameter value of the <i>implementee method</i> when
- * invoking.
+ * with {@linkplain Index @Index} , then its value will be set to the specified
+ * {@linkplain Index#value()} index parameter value of the <i>implementee
+ * method</i> when invoking. If not annotated with {@linkplain Index @Index},
+ * its value will be set to the corresponding index parameter value of the
+ * <i>implementee method</i> when invoking.
  * </p>
  * <p>
  * There may be many <i>implement method</i>s for one <i>implementee method</i>,
@@ -131,7 +130,7 @@ import java.lang.annotation.Target;
  * 	}
  * 
  * 	&#64;Implement("handle")
- * 	public void handle1(@ParamIndex(1) int b)
+ * 	public void handle1(@Index(1) int b)
  * 	{
  * 	}
  * }
@@ -149,7 +148,7 @@ import java.lang.annotation.Target;
  * @see Implementor
  * @see Priority
  * @see Validity
- * @see ParamIndex
+ * @see Index
  * @see Refered
  */
 @Retention(RetentionPolicy.RUNTIME)

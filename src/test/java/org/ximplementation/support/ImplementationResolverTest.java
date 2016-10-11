@@ -36,7 +36,7 @@ import org.junit.rules.ExpectedException;
 import org.ximplementation.Implement;
 import org.ximplementation.Implementor;
 import org.ximplementation.NotImplement;
-import org.ximplementation.ParamIndex;
+import org.ximplementation.Index;
 import org.ximplementation.Priority;
 import org.ximplementation.Refered;
 import org.ximplementation.Validity;
@@ -1190,7 +1190,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 
 		public static class Implementor2
 		{
-			public Integer plus(@ParamIndex(2) Integer a, Integer b)
+			public Integer plus(@Index(2) Integer a, Integer b)
 			{
 				return null;
 			}
@@ -1246,7 +1246,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 
 		public static class Implementor9
 		{
-			public Integer plus(@ParamIndex(1) Integer b)
+			public Integer plus(@Index(1) Integer b)
 			{
 				return null;
 			}
@@ -1490,12 +1490,12 @@ public class ImplementationResolverTest extends AbstractTestSupport
 			
 		}
 
-		public void test1(@ParamIndex(1) int a, @ParamIndex(0) int b, int c)
+		public void test1(@Index(1) int a, @Index(0) int b, int c)
 		{
 
 		}
 
-		public void test2(@ParamIndex(1) int a, int b, int c)
+		public void test2(@Index(1) int a, int b, int c)
 		{
 
 		}

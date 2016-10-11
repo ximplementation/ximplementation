@@ -32,7 +32,7 @@ import java.util.WeakHashMap;
 import org.ximplementation.Implement;
 import org.ximplementation.Implementor;
 import org.ximplementation.NotImplement;
-import org.ximplementation.ParamIndex;
+import org.ximplementation.Index;
 import org.ximplementation.Priority;
 import org.ximplementation.Refered;
 import org.ximplementation.Validity;
@@ -807,7 +807,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Resolve {@linkplain ParamIndex} array of the method.
+	 * Resolve {@linkplain Index} array of the method.
 	 * 
 	 * @param clazz
 	 * @param method
@@ -825,13 +825,13 @@ public class ImplementationResolver
 		{
 			Annotation[] paramAnnotations = paramAnnotationss[i];
 
-			ParamIndex paramIndexAnno = null;
+			Index paramIndexAnno = null;
 
 			for (Annotation paramAnnotation : paramAnnotations)
 			{
-				if (paramAnnotation.annotationType().equals(ParamIndex.class))
+				if (paramAnnotation.annotationType().equals(Index.class))
 				{
-					paramIndexAnno = (ParamIndex) paramAnnotation;
+					paramIndexAnno = (Index) paramAnnotation;
 
 					break;
 				}

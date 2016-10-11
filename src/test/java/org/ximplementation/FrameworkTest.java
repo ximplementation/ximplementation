@@ -122,7 +122,7 @@ public class FrameworkTest
 			return MY_RE;
 		}
 
-		public boolean isValid(@ParamIndex(1) T b)
+		public boolean isValid(@Index(1) T b)
 		{
 			return B.equals(b);
 		}
@@ -148,7 +148,7 @@ public class FrameworkTest
 				.getSimpleName();
 
 		@Implement("handle")
-		public String handle(@ParamIndex(1) Double b)
+		public String handle(@Index(1) Double b)
 		{
 			return MY_RE;
 		}

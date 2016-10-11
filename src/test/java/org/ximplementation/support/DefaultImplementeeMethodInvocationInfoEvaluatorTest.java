@@ -30,7 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.ximplementation.Implement;
 import org.ximplementation.Implementor;
-import org.ximplementation.ParamIndex;
+import org.ximplementation.Index;
 import org.ximplementation.Priority;
 import org.ximplementation.Validity;
 
@@ -728,7 +728,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 		public static class Implementor4
 		{
 			@Implement
-			public Number plus(@ParamIndex(1) Integer b)
+			public Number plus(@Index(1) Integer b)
 			{
 				return null;
 			}

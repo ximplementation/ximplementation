@@ -22,9 +22,9 @@ import java.lang.annotation.Target;
 /**
  * Parameter index annotation.
  * <p>
- * This annotation indicate that the parameter value should be set to specified
- * index value of the corresponding <i>implementee method</i> parameter values
- * while its method invocation.
+ * This annotation indicate that the method parameter value should be set to
+ * specified index parameter value of the <i>implementee method</i> when
+ * invoking.
  * </p>
  * <p>
  * This annotation is useful if you don't want your <i>implement method</i>,
@@ -44,10 +44,10 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.PARAMETER })
-public @interface ParamIndex
+public @interface Index
 {
 	/**
-	 * The index of the corresponding <i>implementee method</i> parameter.
+	 * The index of the <i>implementee method</i> parameter.
 	 * <p>
 	 * The first <i>implementee method</i> parameter index is {@code 0}.
 	 * </p>
