@@ -39,12 +39,9 @@ import java.lang.annotation.Target;
  * method</i>s in one <i>implementor</i> for the same <i>implementee method</i>.
  * </p>
  * <p>
- * If a parameter of an {@code @Implement} <i>implement method</i> is annotated
- * with {@linkplain Index @Index} , then its value will be set to the specified
- * {@linkplain Index#value()} index parameter value of the <i>implementee
- * method</i> when invoking. If not annotated with {@linkplain Index @Index},
- * its value will be set to the corresponding index parameter value of the
- * <i>implementee method</i> when invoking.
+ * <i>Implement method</i> parameters can be annotated with
+ * {@linkplain Index @Index} , for setting the parameter value to specified
+ * index parameter value of the <i>implementee method</i> when invoking.
  * </p>
  * <p>
  * There may be many <i>implement method</i>s for one <i>implementee method</i>,

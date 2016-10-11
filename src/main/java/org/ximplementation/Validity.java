@@ -28,12 +28,19 @@ import java.lang.annotation.Target;
  * <i>implementee method</i> invocation.
  * </p>
  * <p>
+ * Validity method should return a value of {@code boolean} type, and its
+ * parameters can be annotated with {@linkplain Index @Index} , for setting the
+ * parameter value to specified index parameter value of the <i>implementee
+ * method</i> when invoking.
+ * </p>
+ * <p>
  * This annotation should be annotated on <i>implement method</i>.
  * </p>
  * 
  * @author earthangry@gmail.com
  * @date 2015-12-3
  * @see Implement
+ * @see Index
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })

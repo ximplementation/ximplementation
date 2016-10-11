@@ -27,15 +27,76 @@ import java.lang.annotation.Target;
  * invoking.
  * </p>
  * <p>
- * This annotation is useful if you don't want your <i>implement method</i>,
- * {@linkplain Validity @Validity} method or {@linkplain Priority @Priority}
- * method align to the <i>implementee method</i> parameters strictly, only one
- * or some of them.
+ * If a method parameter is not annotated with {@code @Index}, means that its
+ * value should be set to the corresponding index parameter value of the
+ * <i>implementee method</i> when invoking.
  * </p>
  * <p>
- * This annotation can be annotated on <i>implement method</i> parameters,
- * {@linkplain Validity @Validity} method parameters and
- * {@linkplain Priority @Priority} method parameters of an <i>implementor</i>.
+ * It can be annotated on <i>implement method</i> parameters,
+ * {@linkplain Validity @Validity} target method parameters and
+ * {@linkplain Priority @Priority} target method parameters of an
+ * <i>implementor</i>, and is useful if you don't want them align to the
+ * <i>implementee method</i> parameters strictly, only one or some of them.
+ * </p>
+ * <p>
+ * Examples:
+ * </p>
+ * <code>
+ * 
+ * <pre>
+ * public interface Foo
+ * {
+ * 	void handle(int a, int b);
+ * }
+ * 
+ * &#64;Implementor(Foo.class)
+ * public class Bar0
+ * {
+ * 	&#64;Implement
+ * 	public void handle(int a)
+ * 	{
+ * 	}
+ * }
+ * 
+ * &#64;Implementor(Foo.class)
+ * public class Bar1
+ * {
+ * 	&#64;Implement
+ * 	public void handle(&#64;Index(1) int b)
+ * 	{
+ * 	}
+ * }
+ * 
+ * &#64;Implementor(Foo.class)
+ * public class Bar2
+ * {
+ * 	&#64;Implement
+ * 	&#64;Priority(method = "getPriority")
+ * 	&#64;Validity("isValid")
+ * 	public void handle(int a, int b)
+ * 	{
+ * 	}
+ * 
+ * 	public int getPriority(int a)
+ * 	{
+ * 		return 1;
+ * 	}
+ * 
+ * 	public boolean isValid(&#64;Index(1) int b, &#64;Index(0) int a)
+ * 	{
+ * 		return (a > 0);
+ * 	}
+ * }
+ * </pre>
+ * 
+ * <code>
+ * <p>
+ * Here, if {@code Foo.handle} invocation parameter array is {@code [11, 22]},
+ * then the {@code Bar0.handle} parameter array is {@code [11]} if invoked, the
+ * {@code Bar1.handle} parameter array is {@code [22]} if invoked,
+ * {@code Bar2.handle} parameter array is {@code [11, 22]} if invoked,
+ * {@code Bar2.getPriority} parameter array is {@code [11]} if invoked,
+ * {@code Bar2.isValid} parameter array is {@code [22, 11]} if invoked.
  * </p>
  * 
  * @author earthangry@gmail.com
