@@ -4,10 +4,11 @@ Ximplementation lets you write implementation freely based on Java annotation.
 It has two core annotations:
 
 * `@Implementor`  
-This annotation indicates that the class is an implementation of some classes, just as the 'implements' and 'extends' keywords.
+This annotation is annotated on class, indicating that the class is an implementation of some classes, just as the `implements` and `extends` keywords.
 
 * `@Implement`  
-This annotation indicates that the method is an implementation method, just as the '@Overriden' annotation.
+This annotation is annotated on method in `@Implementor` class, indicating that the method is an implement method, just as the `@Overriden` annotation.
+
 
 ## Example
 Suppose there is an interface:
@@ -69,7 +70,7 @@ Then, you can get a `Service` instance by:
 The `serivce.plus` method invocation will be delegated to `ServiceImplPlusInteger.plus` method if the parameter type is `Integer`, to `ServiceImplDefault.plus` method otherwise; and the `serivce.minus` method will be delegated to `ServiceImplMinusInteger.minus` method if the parameter type is `Integer`, to `ServiceImplDefault.minus` method otherwise.
 
 ## What it can do
-Generally, it makes you able to change implementation of dependency without creating new dependency chain.
+Generally, it makes you able to change implementation of dependency dynamically without creating new dependency chain.
 
 For example :
 
