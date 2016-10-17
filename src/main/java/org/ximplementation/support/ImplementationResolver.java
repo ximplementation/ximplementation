@@ -31,8 +31,8 @@ import java.util.WeakHashMap;
 
 import org.ximplementation.Implement;
 import org.ximplementation.Implementor;
-import org.ximplementation.NotImplement;
 import org.ximplementation.Index;
+import org.ximplementation.NotImplement;
 import org.ximplementation.Priority;
 import org.ximplementation.Refered;
 import org.ximplementation.Validity;
@@ -404,7 +404,8 @@ public class ImplementationResolver
 	{
 		int modifier = implementeeMethod.getModifiers();
 
-		if (Modifier.isStatic(modifier) || !Modifier.isPublic(modifier))
+		// public,protected,default methods must be allowed
+		if (Modifier.isStatic(modifier) || Modifier.isPrivate(modifier))
 			return false;
 
 		// exclude synthetic methods, compiler may generate odd methods
@@ -518,8 +519,10 @@ public class ImplementationResolver
 	protected boolean maybeImplementMethod(Class<?> implementor, Method implementMethod)
 	{
 		int modifier = implementMethod.getModifiers();
-	
-		if (Modifier.isStatic(modifier) || !Modifier.isPublic(modifier))
+
+		// public,protected,default methods must be allowed, see
+		// #isImplementeeMethod
+		if (Modifier.isStatic(modifier) || Modifier.isPrivate(modifier))
 			return false;
 
 		// exclude synthetic methods, compiler may generate odd methods

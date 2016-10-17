@@ -35,8 +35,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.ximplementation.Implement;
 import org.ximplementation.Implementor;
-import org.ximplementation.NotImplement;
 import org.ximplementation.Index;
+import org.ximplementation.NotImplement;
 import org.ximplementation.Priority;
 import org.ximplementation.Refered;
 import org.ximplementation.Validity;
@@ -617,14 +617,14 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		assertTrue(this.implementationResolver.isImplementeeMethod(implementee,
 				getMethodByName(implementee, "implementeeMethod")));
 
-		assertFalse(this.implementationResolver.isImplementeeMethod(implementee,
-				getMethodByName(implementee, "notImplementeeMethodProtected")));
+		assertTrue(this.implementationResolver.isImplementeeMethod(implementee,
+				getMethodByName(implementee, "implementeeMethodProtected")));
+
+		assertTrue(this.implementationResolver.isImplementeeMethod(implementee,
+				getMethodByName(implementee, "implementeeMethodDefault")));
 
 		assertFalse(this.implementationResolver.isImplementeeMethod(implementee,
 				getMethodByName(implementee, "notImplementeeMethodPrivate")));
-
-		assertFalse(this.implementationResolver.isImplementeeMethod(implementee,
-				getMethodByName(implementee, "notImplementeeMethodDefault")));
 
 		assertFalse(this.implementationResolver.isImplementeeMethod(implementee,
 				getMethodByName(implementee, "hashCode")));
@@ -640,16 +640,16 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		{
 		}
 
-		protected void notImplementeeMethodProtected()
+		protected void implementeeMethodProtected()
+		{
+		}
+
+		void implementeeMethodDefault()
 		{
 		}
 
 		@SuppressWarnings("unused")
 		private void notImplementeeMethodPrivate()
-		{
-		}
-
-		void notImplementeeMethodDefault()
 		{
 		}
 	}
@@ -891,14 +891,14 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		assertTrue(this.implementationResolver.maybeImplementMethod(implement,
 				getMethodByName(implement, "implementMethod")));
 
-		assertFalse(this.implementationResolver.maybeImplementMethod(implement,
-				getMethodByName(implement, "notImplementMethodProtected")));
+		assertTrue(this.implementationResolver.maybeImplementMethod(implement,
+				getMethodByName(implement, "implementMethodProtected")));
+
+		assertTrue(this.implementationResolver.maybeImplementMethod(implement,
+				getMethodByName(implement, "implementMethodDefault")));
 
 		assertFalse(this.implementationResolver.maybeImplementMethod(implement,
 				getMethodByName(implement, "notImplementMethodPrivate")));
-
-		assertFalse(this.implementationResolver.maybeImplementMethod(implement,
-				getMethodByName(implement, "notImplementMethodDefault")));
 
 		assertFalse(this.implementationResolver.maybeImplementMethod(implement,
 				getMethodByName(implement, "notImplementAnno")));
@@ -917,16 +917,16 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		{
 		}
 
-		protected void notImplementMethodProtected()
+		protected void implementMethodProtected()
+		{
+		}
+
+		void implementMethodDefault()
 		{
 		}
 
 		@SuppressWarnings("unused")
 		private void notImplementMethodPrivate()
-		{
-		}
-
-		void notImplementMethodDefault()
 		{
 		}
 
