@@ -23,7 +23,7 @@ package org.ximplementation.support;
  * 
  * @author earthangry@gmail.com
  * @date 2015-12-3
- *
+ * @see ProxyImplementeeBeanBuilder
  */
 public interface ProxyImplementee
 {

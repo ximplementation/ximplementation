@@ -19,10 +19,14 @@ import java.lang.reflect.Method;
 
 /**
  * Implement info of an <i>implementee method</i>.
+ * <p>
+ * It contains an array of {@linkplain ImplementMethodInfo}s, which each element
+ * describes the <i>implement method</i> info of the <i>implementee method</i>.
+ * </p>
  * 
  * @author earthangry@gmail.com
  * @date 2015-12-5
- *
+ * @see ImplementMethodInfo
  */
 public class ImplementInfo implements Serializable
 {

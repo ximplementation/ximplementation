@@ -21,7 +21,7 @@ import java.util.Collection;
  * 
  * @author earthangry@gmail.com
  * @date 2016-8-15
- *
+ * @see ImplementeeBeanBuilder
  */
 public interface ImplementorBeanFactory
 {

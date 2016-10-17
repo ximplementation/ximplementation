@@ -22,6 +22,10 @@ import org.ximplementation.Priority;
 
 /**
  * Implement method info.
+ * <p>
+ * It describes an <i>implement method</i> info of a specified <i>implementee
+ * method</i>.
+ * </p>
  * 
  * @author earthangry@gmail.com
  * @date 2015-12-5

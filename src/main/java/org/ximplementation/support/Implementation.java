@@ -19,11 +19,21 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 /**
- * Implement information for an <i>implementee</i>.
+ * Implementation info for an <i>implementee</i>.
+ * <p>
+ * It contains an array of {@linkplain ImplementInfo}s, which each element
+ * contains an <i>implementee method</i> and all of its <i>implement method</i>
+ * s.
+ * </p>
+ * <p>
+ * Instances of this class can be created by {@linkplain ImplementationResolver}
+ * .
+ * </p>
  * 
  * @author earthangry@gmail.com
  * @date 2015-12-5
- *
+ * @see ImplementInfo
+ * @see ImplementationResolver
  */
 public class Implementation<T> implements Serializable
 {
