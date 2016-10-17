@@ -442,7 +442,7 @@ public class ImplementationResolver
 		Class<?>[] myImplementees = implementorAno.value();
 		for (Class<?> _myImplementee : myImplementees)
 		{
-			if (implementee.isAssignableFrom(_myImplementee))
+			if (isImplementor(implementee, _myImplementee))
 				return true;
 		}
 

@@ -665,6 +665,13 @@ public class ImplementationResolverTest extends AbstractTestSupport
 				IsImplementorTest.Implementor1.class));
 		assertTrue(this.implementationResolver.isImplementor(implementee,
 				IsImplementorTest.Implementor2.class));
+		assertTrue(this.implementationResolver.isImplementor(
+				IsImplementorTest.Implementor1.class,
+				IsImplementorTest.Implementor3.class));
+		assertTrue(this.implementationResolver.isImplementor(implementee,
+				IsImplementorTest.Implementor3.class));
+		assertTrue(this.implementationResolver.isImplementor(implementee,
+				IsImplementorTest.Implementor4.class));
 		assertFalse(this.implementationResolver.isImplementor(implementee,
 				IsImplementorTest.NotImplementor.class));
 	}
@@ -690,6 +697,16 @@ public class ImplementationResolverTest extends AbstractTestSupport
 
 		@Implementor({ Implementee0.class })
 		public static class Implementor2
+		{
+		}
+
+		@Implementor({ Implementor1.class })
+		public static class Implementor3
+		{
+		}
+
+		@Implementor({ Implementor3.class })
+		public static class Implementor4
 		{
 		}
 
