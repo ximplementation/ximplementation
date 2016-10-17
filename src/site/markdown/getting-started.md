@@ -65,4 +65,4 @@ Invoking methods :
 	service.plus(1, 2);
 	service.minus(1, 2);
 
-The `service.plus(1.0F, 2.0F)` and `service.minus(1.0F, 2.0F)` will be delegated to the `ServiceImplPlusInteger` instance, the `service.plus(1, 2)` will be delegated to the `ServiceImplPlusInteger` instance, and the `service.minus(1, 2)` will be delegated to the `ServiceImplMinusInteger` instance.
+The `service.plus(1.0F, 2.0F)` and `service.minus(1.0F, 2.0F)` will be delegated to the `ServiceImplDefault` instance, the `service.plus(1, 2)` will be delegated to the `ServiceImplPlusInteger` instance, and the `service.minus(1, 2)` will be delegated to the `ServiceImplMinusInteger` instance.
