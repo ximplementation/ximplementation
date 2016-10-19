@@ -39,6 +39,10 @@ import org.ximplementation.Validity;
 
 /**
  * {@linkplain Implementation} resolver.
+ * <p>
+ * It resolves all methods in the given <i>implementee</i> which are not
+ * {@code private}, not {@code static}, and not declared in {@linkplain Object}.
+ * </p>
  * 
  * @author earthangry@gmail.com
  * @date 2015-12-5
