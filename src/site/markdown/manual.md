@@ -53,7 +53,7 @@ This annotation indicate that the method has been identified by a name, and can 
 See the API documentation [Here](apidocs/org/ximplementation/Refered.html) for more.
 
 ## Resolving and Instantiation
-The [ImplementationResolver](apidocs/org/ximplementation/support/ImplementationResolver.html) is the main class for resolving implementations, it resolving a given <i>implementee</i> and its <i>implementor</i>s, then generating an [Implementation](apidocs/org/ximplementation/support/Implementation.html) instance which contains the implementation info for that <i>implementee</i>.
+The [ImplementationResolver](apidocs/org/ximplementation/support/ImplementationResolver.html) is the main class for resolving implementations, it resolving a given <i>implementee</i> and its <i>implementor</i>s, then creating an [Implementation](apidocs/org/ximplementation/support/Implementation.html) instance which contains the implementation info for that <i>implementee</i>.
 
 The [ImplementeeBeanBuilder](apidocs/org/ximplementation/support/ImplementeeBeanBuilder.html) is an interface for building <i>implementee</i> instances, it building an instance of an  <i>implementee</i> by its [Implementation](apidocs/org/ximplementation/support/Implementation.html) and an [ImplementorBeanFactory](apidocs/org/ximplementation/support/ImplementorBeanFactory.html).The [ProxyImplementeeBeanBuilder](apidocs/org/ximplementation/support/ProxyImplementeeBeanBuilder.html) is an concrete `ImplementeeBeanBuilder` based on JDK Proxy.
 
