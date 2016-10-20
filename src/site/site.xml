@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-	<!--
-	<poweredBy>
-		<logo name="" href="" img="" />
-	</poweredBy>
-	-->
 	<skin>
 		<groupId>org.apache.maven.skins</groupId>
 		<artifactId>maven-fluido-skin</artifactId>
@@ -18,5 +13,6 @@
 			<item name="API" href="apidocs/index.html"/>
 		</menu>
 		<footer></footer>
+		<!--<footer>&lt;a href="https://github.com/earthangry/ximplementation"&gt;${project.name}&lt;/a&gt;</footer>-->
 	</body>
 </project>
