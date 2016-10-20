@@ -17,28 +17,28 @@ package org.ximplementation.support;
 import java.lang.reflect.Method;
 
 /**
- * The {@linkplain ImplementeeMethodInvocationInfo} evaluator.
+ * Factory for getting the {@linkplain ImplementeeMethodInvocation}.
  * 
  * @author earthangry@gmail.com
  * @date 2016-8-15
- *
+ * @see ProxyImplementeeBeanBuilder
+ * @see ProxyImplementeeInvocationSupport
  */
-public interface ImplementeeMethodInvocationInfoEvaluator
+public interface ImplementeeMethodInvocationFactory
 {
 	/**
-	 * Evaluate {@linkplain ImplementeeMethodInvocationInfo}.
-	 * <p>
-	 * It should returns {@code null} if no result.
-	 * </p>
+	 * Gets the {@linkplain ImplementeeMethodInvocation} for specified
+	 * <i>implementee</i> method invocation.
 	 * 
 	 * @param implementation
 	 * @param implementeeMethod
 	 * @param implementeeMethodParams
 	 * @param implementorBeanFactory
-	 * @return
+	 * @return The {@linkplain ImplementeeMethodInvocation} instance,
+	 *         {@code null} if no.
 	 * @throws Throwable
 	 */
-	ImplementeeMethodInvocationInfo evaluate(
+	ImplementeeMethodInvocation get(
 			Implementation<?> implementation,
 			Method implementeeMethod, Object[] implementeeMethodParams,
 			ImplementorBeanFactory implementorBeanFactory)

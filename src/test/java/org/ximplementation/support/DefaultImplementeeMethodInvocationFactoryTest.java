@@ -33,31 +33,32 @@ import org.ximplementation.Implementor;
 import org.ximplementation.Index;
 import org.ximplementation.Priority;
 import org.ximplementation.Validity;
+import org.ximplementation.support.DefaultImplementeeMethodInvocationFactory.SimpleImplementeeMethodInvocation;
 
 /**
- * {@linkplain DefaultImplementeeMethodInvocationInfoEvaluator} unit tests.
+ * {@linkplain DefaultImplementeeMethodInvocationFactory} unit tests.
  * 
  * @author earthangry@gmail.com
  * @date 2016-8-25
  *
  */
-public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
+public class DefaultImplementeeMethodInvocationFactoryTest
 		extends AbstractTestSupport
 {
-	private DefaultImplementeeMethodInvocationInfoEvaluator defaultImplementeeMethodInvocationInfoEvaluator;
+	private DefaultImplementeeMethodInvocationFactory defaultImplementeeMethodInvocationFactory;
 	private ImplementationResolver implementationResolver;
 
 	@Before
 	public void setUp() throws Exception
 	{
-		this.defaultImplementeeMethodInvocationInfoEvaluator = new DefaultImplementeeMethodInvocationInfoEvaluator();
+		this.defaultImplementeeMethodInvocationFactory = new DefaultImplementeeMethodInvocationFactory();
 		this.implementationResolver = new ImplementationResolver();
 	}
 
 	@After
 	public void tearDown() throws Exception
 	{
-		this.defaultImplementeeMethodInvocationInfoEvaluator = null;
+		this.defaultImplementeeMethodInvocationFactory = null;
 		this.implementationResolver = null;
 	}
 
@@ -75,8 +76,8 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 			implementorBeansMap.put(EvaluateTest.Implementor2.class,
 					Arrays.asList(new EvaluateTest.Implementor2()));
 
-			assertNull(this.defaultImplementeeMethodInvocationInfoEvaluator
-					.evaluate(
+			assertNull(this.defaultImplementeeMethodInvocationFactory
+					.get(
 							this.implementationResolver.resolve(implementee,
 									EvaluateTest.Implementor1.class,
 									EvaluateTest.Implementor2.class),
@@ -90,8 +91,8 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 			Class<?> implementee = EvaluateTest.Implementee.class;
 			Method implementeeMethod = getMethodByName(implementee, "plus");
 
-			assertNull(this.defaultImplementeeMethodInvocationInfoEvaluator
-					.evaluate(
+			assertNull(this.defaultImplementeeMethodInvocationFactory
+					.get(
 							this.implementationResolver.resolve(implementee,
 									EvaluateTest.Implementor0.class,
 									EvaluateTest.Implementor1.class),
@@ -110,8 +111,8 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 			implementorBeansMap.put(EvaluateTest.Implementor2.class,
 					Arrays.asList());
 
-			assertNull(this.defaultImplementeeMethodInvocationInfoEvaluator
-					.evaluate(
+			assertNull(this.defaultImplementeeMethodInvocationFactory
+					.get(
 							this.implementationResolver.resolve(implementee,
 									EvaluateTest.Implementor0.class,
 									EvaluateTest.Implementor1.class),
@@ -130,8 +131,8 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 			implementorBeansMap.put(EvaluateTest.Implementor3.class,
 					Arrays.asList(new EvaluateTest.Implementor3()));
 
-			assertNull(this.defaultImplementeeMethodInvocationInfoEvaluator
-					.evaluate(
+			assertNull(this.defaultImplementeeMethodInvocationFactory
+					.get(
 							this.implementationResolver.resolve(implementee,
 									EvaluateTest.Implementor2.class,
 									EvaluateTest.Implementor3.class),
@@ -157,8 +158,8 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 			implementorBeansMap.put(EvaluateTest.Implementor4.class,
 					Arrays.asList(new EvaluateTest.Implementor4()));
 
-			ImplementeeMethodInvocationInfo implementeeMethodInvocationInfo = this.defaultImplementeeMethodInvocationInfoEvaluator
-					.evaluate(
+			SimpleImplementeeMethodInvocation implementeeMethodInvocationInfo = (SimpleImplementeeMethodInvocation) this.defaultImplementeeMethodInvocationFactory
+					.get(
 							this.implementationResolver.resolve(implementee,
 									EvaluateTest.Implementor0.class,
 									EvaluateTest.Implementor1.class,
@@ -193,8 +194,8 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 			implementorBeansMap.put(EvaluateTest.Implementor5.class,
 					Arrays.asList(new EvaluateTest.Implementor5()));
 
-			ImplementeeMethodInvocationInfo implementeeMethodInvocationInfo = this.defaultImplementeeMethodInvocationInfoEvaluator
-					.evaluate(
+			SimpleImplementeeMethodInvocation implementeeMethodInvocationInfo = (SimpleImplementeeMethodInvocation) this.defaultImplementeeMethodInvocationFactory
+					.get(
 							this.implementationResolver.resolve(implementee,
 									EvaluateTest.Implementor0.class,
 									EvaluateTest.Implementor1.class,
@@ -223,8 +224,8 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 			implementorBeansMap.put(EvaluateTest.Implementor1.class,
 					Arrays.asList(new EvaluateTest.Implementor1()));
 
-			ImplementeeMethodInvocationInfo implementeeMethodInvocationInfo = this.defaultImplementeeMethodInvocationInfoEvaluator
-					.evaluate(
+			SimpleImplementeeMethodInvocation implementeeMethodInvocationInfo = (SimpleImplementeeMethodInvocation) this.defaultImplementeeMethodInvocationFactory
+					.get(
 							this.implementationResolver.resolve(implementee,
 									EvaluateTest.Implementor0.class,
 									EvaluateTest.Implementor1.class),
@@ -344,7 +345,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 
 			implementMethodInfo.setParamTypes(null);
 
-			assertTrue(this.defaultImplementeeMethodInvocationInfoEvaluator
+			assertTrue(this.defaultImplementeeMethodInvocationFactory
 					.isImplementMethodParamValid(
 							implementMethodInfo,
 							new Object[] { 1, 2 }));
@@ -358,7 +359,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 							IsImplementMethodParamValidTest.Implementor0.class,
 							"plus"));
 
-			assertTrue(this.defaultImplementeeMethodInvocationInfoEvaluator
+			assertTrue(this.defaultImplementeeMethodInvocationFactory
 					.isImplementMethodParamValid(implementMethodInfo,
 							new Object[] { 1, 2 }));
 		}
@@ -372,7 +373,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 							IsImplementMethodParamValidTest.Implementor1.class,
 							"plus"));
 
-			assertFalse(this.defaultImplementeeMethodInvocationInfoEvaluator
+			assertFalse(this.defaultImplementeeMethodInvocationFactory
 					.isImplementMethodParamValid(implementMethodInfo,
 							new Object[] { 1 }));
 		}
@@ -385,7 +386,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 							IsImplementMethodParamValidTest.Implementor1.class,
 							"plus"));
 
-			assertFalse(this.defaultImplementeeMethodInvocationInfoEvaluator
+			assertFalse(this.defaultImplementeeMethodInvocationFactory
 					.isImplementMethodParamValid(implementMethodInfo,
 							new Object[] { 1, 2.0D }));
 		}
@@ -397,7 +398,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 							IsImplementMethodParamValidTest.Implementor1.class,
 							"plus"));
 
-			assertTrue(this.defaultImplementeeMethodInvocationInfoEvaluator
+			assertTrue(this.defaultImplementeeMethodInvocationFactory
 					.isImplementMethodParamValid(implementMethodInfo,
 							new Object[] { 1, 2 }));
 		}
@@ -410,7 +411,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 							IsImplementMethodParamValidTest.Implementor2.class,
 							"plus"));
 
-			assertTrue(this.defaultImplementeeMethodInvocationInfoEvaluator
+			assertTrue(this.defaultImplementeeMethodInvocationFactory
 					.isImplementMethodParamValid(implementMethodInfo,
 							new Object[] { 1, 2 }));
 		}
@@ -482,13 +483,13 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 							"plus"));
 
 			assertEquals(-1,
-					this.defaultImplementeeMethodInvocationInfoEvaluator
+					this.defaultImplementeeMethodInvocationFactory
 							.compareImplementMethodInfoPriority(implementation,
 									implementeeMethod, new Object[] { 1, 2 },
 									implementMethodInfo0,
 									implementMethodInfo2));
 
-			assertEquals(1, this.defaultImplementeeMethodInvocationInfoEvaluator
+			assertEquals(1, this.defaultImplementeeMethodInvocationFactory
 					.compareImplementMethodInfoPriority(implementation,
 							implementeeMethod, new Object[] { 1, 2 },
 							implementMethodInfo2, implementMethodInfo0));
@@ -508,7 +509,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 							CompareImplementMethodInfoPriorityTest.Implementor1.class,
 							"plus"));
 
-			assertEquals(0, this.defaultImplementeeMethodInvocationInfoEvaluator
+			assertEquals(0, this.defaultImplementeeMethodInvocationFactory
 					.compareImplementMethodInfoPriority(implementation,
 							implementeeMethod, new Object[] { 1, 2 },
 							implementMethodInfo0, implementMethodInfo1));
@@ -604,7 +605,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 							CompareImplementMethodParamTypePriorityTest.Implementor1.class,
 							"plus"));
 
-			assertEquals(0, this.defaultImplementeeMethodInvocationInfoEvaluator
+			assertEquals(0, this.defaultImplementeeMethodInvocationFactory
 					.compareImplementMethodParamTypePriority(implementation,
 							implementeeMethod, new Object[] { 0, 1, 2 },
 							implementMethodInfo0, implementMethodInfo1));
@@ -625,7 +626,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 							"plus"));
 
 			assertEquals(-1,
-					this.defaultImplementeeMethodInvocationInfoEvaluator
+					this.defaultImplementeeMethodInvocationFactory
 							.compareImplementMethodParamTypePriority(
 									implementation, implementeeMethod,
 									new Object[] { 0, 1, 2 },
@@ -648,7 +649,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 							"plus"));
 
 			assertEquals(2,
-					this.defaultImplementeeMethodInvocationInfoEvaluator
+					this.defaultImplementeeMethodInvocationFactory
 							.compareImplementMethodParamTypePriority(
 									implementation, implementeeMethod,
 									new Object[] { 0, 1, 2 },
@@ -670,7 +671,7 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 							CompareImplementMethodParamTypePriorityTest.Implementor4.class,
 							"plus"));
 
-			assertEquals(0, this.defaultImplementeeMethodInvocationInfoEvaluator
+			assertEquals(0, this.defaultImplementeeMethodInvocationFactory
 					.compareImplementMethodParamTypePriority(implementation,
 							implementeeMethod, new Object[] { 0, 1, 2 },
 							implementMethodInfo0, implementMethodInfo1));
@@ -748,25 +749,25 @@ public class DefaultImplementeeMethodInvocationInfoEvaluatorTest
 				org.ximplementation.support.testpkg.TImplementorDiffPkg1.class);
 
 		// firstSamePkg && secondSamePkg
-		assertEquals(0, this.defaultImplementeeMethodInvocationInfoEvaluator
+		assertEquals(0, this.defaultImplementeeMethodInvocationFactory
 				.compareImplementorPriority(implementation,
 						org.ximplementation.support.testpkg.ipkg.TImplementorSamePkg0.class,
 						org.ximplementation.support.testpkg.ipkg.TImplementorSamePkg1.class));
 
 		// firstSamePkg && !secondSamePkg
-		assertEquals(-1, this.defaultImplementeeMethodInvocationInfoEvaluator
+		assertEquals(-1, this.defaultImplementeeMethodInvocationFactory
 				.compareImplementorPriority(implementation,
 						org.ximplementation.support.testpkg.ipkg.TImplementorSamePkg0.class,
 						org.ximplementation.support.testpkg.TImplementorDiffPkg0.class));
 
 		// !firstSamePkg && secondSamePkg
-		assertEquals(1, this.defaultImplementeeMethodInvocationInfoEvaluator
+		assertEquals(1, this.defaultImplementeeMethodInvocationFactory
 				.compareImplementorPriority(implementation,
 						org.ximplementation.support.testpkg.TImplementorDiffPkg0.class,
 						org.ximplementation.support.testpkg.ipkg.TImplementorSamePkg0.class));
 
 		// !firstSamePkg && !secondSamePkg
-		assertEquals(0, this.defaultImplementeeMethodInvocationInfoEvaluator
+		assertEquals(0, this.defaultImplementeeMethodInvocationFactory
 				.compareImplementorPriority(implementation,
 						org.ximplementation.support.testpkg.TImplementorDiffPkg0.class,
 						org.ximplementation.support.testpkg.TImplementorDiffPkg0.class));

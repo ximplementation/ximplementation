@@ -17,7 +17,7 @@ package org.ximplementation.support.testpkg;
 import org.ximplementation.support.testpkg.ipkg.TImplementee;
 
 /**
- * {@code DefaultImplementeeMethodInvocationInfoEvaluatorTest.compareImplementorPriorityTest()}
+ * {@code DefaultImplementeeMethodInvocationFactoryTest.compareImplementorPriorityTest()}
  * test data.
  * 
  * @author earthangry@gmail.com

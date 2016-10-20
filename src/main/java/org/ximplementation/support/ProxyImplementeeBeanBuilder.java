@@ -31,23 +31,23 @@ import java.lang.reflect.Proxy;
  */
 public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 {
-	private ImplementeeMethodInvocationInfoEvaluator implementeeMethodInvocationInfoEvaluator;
+	private ImplementeeMethodInvocationFactory implementeeMethodInvocationFactory;
 
 	public ProxyImplementeeBeanBuilder()
 	{
 		super();
-		this.implementeeMethodInvocationInfoEvaluator = new DefaultImplementeeMethodInvocationInfoEvaluator();
+		this.implementeeMethodInvocationFactory = new DefaultImplementeeMethodInvocationFactory();
 	}
 
-	public ImplementeeMethodInvocationInfoEvaluator getImplementeeMethodInvocationInfoEvaluator()
+	public ImplementeeMethodInvocationFactory getImplementeeMethodInvocationFactory()
 	{
-		return implementeeMethodInvocationInfoEvaluator;
+		return implementeeMethodInvocationFactory;
 	}
 
-	public void setImplementeeMethodInvocationInfoEvaluator(
-			ImplementeeMethodInvocationInfoEvaluator implementeeMethodInvocationInfoEvaluator)
+	public void setImplementeeMethodInvocationFactory(
+			ImplementeeMethodInvocationFactory implementeeMethodInvocationFactory)
 	{
-		this.implementeeMethodInvocationInfoEvaluator = implementeeMethodInvocationInfoEvaluator;
+		this.implementeeMethodInvocationFactory = implementeeMethodInvocationFactory;
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 				new Class<?>[] { implementee, ProxyImplementee.class },
 				new ProxyImplementeeInvocationHandler(implementation,
 						implementorBeanFactory,
-						this.implementeeMethodInvocationInfoEvaluator));
+						this.implementeeMethodInvocationFactory));
 
 		return proxy;
 	}
@@ -93,10 +93,10 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 		public ProxyImplementeeInvocationHandler(
 				Implementation<?> implementation,
 				ImplementorBeanFactory implementorBeanFactory,
-				ImplementeeMethodInvocationInfoEvaluator implementeeMethodInvocationInfoEvaluator)
+				ImplementeeMethodInvocationFactory implementeeMethodInvocationFactory)
 		{
 			super(implementation, implementorBeanFactory,
-					implementeeMethodInvocationInfoEvaluator);
+					implementeeMethodInvocationFactory);
 		}
 
 		@Override

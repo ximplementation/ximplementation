@@ -12,21 +12,22 @@
   * limitations under the License. 
   */
 
-package org.ximplementation.support.testpkg.ipkg;
+package org.ximplementation.support;
 
 /**
- * {@code DefaultImplementeeMethodInvocationFactoryTest.compareImplementorPriorityTest()}
- * test data.
+ * The invocation of an <i>implementee</i> method.
  * 
  * @author earthangry@gmail.com
- * @date 2016-8-26
- *
+ * @date 2016-8-15
+ * @see ImplementeeMethodInvocationFactory
  */
-public class TImplementorSamePkg0 implements TImplementee
+public interface ImplementeeMethodInvocation
 {
-	@Override
-	public Number plus(Number a, Number b)
-	{
-		return null;
-	}
+	/**
+	 * Inovke this invocation.
+	 * 
+	 * @return The <i>implementee</i> method invocation result.
+	 * @throws Throwable
+	 */
+	Object invoke() throws Throwable;
 }

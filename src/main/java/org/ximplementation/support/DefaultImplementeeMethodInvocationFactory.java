@@ -21,38 +21,41 @@ import org.ximplementation.Priority;
 import org.ximplementation.Validity;
 
 /**
- * Default {@linkplain ImplementeeMethodInvocationInfo} evaluator.
+ * Default {@linkplain ImplementeeMethodInvocationFactory}.
  * <p>
- * It eliminates <i>implement method</i>s whose parameter mismatched or
- * {@linkplain Validity @Validaty} not passed, then evaluating sequentially as
- * the following :
+ * It evaluates the <i>implement method</i> with the max priority, then returns
+ * an {@linkplain SimpleImplementeeMethodInvocation} instance.
+ * </p>
+ * <p>
+ * The <i>implement method</i> evaluating rule is as following:
  * </p>
  * <ol>
- * <li>Returns the one whose method is max {@linkplain Priority @Priority} ;
- * </li>
- * <li>Else, returns the one whose method parameter is closest to the invocation
+ * <li>Ignores all whose parameter type mismatched or
+ * {@linkplain Validity @Validaty} not passed;</li>
+ * <li>Gets the one with max {@linkplain Priority @Priority} ;</li>
+ * <li>Else, gets the one whose method parameter is closest to the invocation
  * parameters;</li>
- * <li>Else, returns the only one which declared {@linkplain Validity @Validaty}
- * ;</li>
- * <li>Else, returns the only one whose <i>implementor</i> is not the same
- * package with the <i>implementee</i>;</li>
- * <li>Else, returns one randomly.</li>
+ * <li>Else, gets the only one which declared {@linkplain Validity @Validaty} ;
+ * </li>
+ * <li>Else, gets the only one whose <i>implementor</i> is not the same nor the
+ * sub package with the <i>implementee</i>;</li>
+ * <li>Else, gets one randomly.</li>
  * </ol>
  * 
  * @author earthangry@gmail.com
  * @date 2016-8-15
  *
  */
-public class DefaultImplementeeMethodInvocationInfoEvaluator
-		implements ImplementeeMethodInvocationInfoEvaluator
+public class DefaultImplementeeMethodInvocationFactory
+		implements ImplementeeMethodInvocationFactory
 {
-	public DefaultImplementeeMethodInvocationInfoEvaluator()
+	public DefaultImplementeeMethodInvocationFactory()
 	{
 		super();
 	}
 
 	@Override
-	public ImplementeeMethodInvocationInfo evaluate(
+	public ImplementeeMethodInvocation get(
 			Implementation<?> implementation, Method implementeeMethod,
 			Object[] implementeeMethodParams,
 			ImplementorBeanFactory implementorBeanFactory) throws Throwable
@@ -137,8 +140,8 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 		}
 
 		return (implementMethodInfo == null ? null
-				: new ImplementeeMethodInvocationInfo(implementMethodInfo,
-						implementorBean));
+				: new SimpleImplementeeMethodInvocation(implementeeMethodParams,
+						implementMethodInfo, implementorBean));
 	}
 
 	/**
@@ -354,5 +357,72 @@ public class DefaultImplementeeMethodInvocationInfoEvaluator
 	protected Class<?> toWrapperType(Class<?> type)
 	{
 		return TypeUtil.toWrapperType(type);
+	}
+
+	protected static class SimpleImplementeeMethodInvocation
+			implements ImplementeeMethodInvocation
+	{
+		private Object[] implementeeMethodParams;
+
+		private ImplementMethodInfo implementMethodInfo;
+
+		private Object implementorBean;
+
+		public SimpleImplementeeMethodInvocation()
+		{
+			super();
+		}
+
+		public SimpleImplementeeMethodInvocation(
+				Object[] implementeeMethodParams,
+				ImplementMethodInfo implementMethodInfo, Object implementorBean
+				)
+		{
+			super();
+			this.implementeeMethodParams = implementeeMethodParams;
+			this.implementMethodInfo = implementMethodInfo;
+			this.implementorBean = implementorBean;
+		}
+
+		public Object[] getImplementeeMethodParams()
+		{
+			return implementeeMethodParams;
+		}
+
+		public void setImplementeeMethodParams(Object[] implementeeMethodParams)
+		{
+			this.implementeeMethodParams = implementeeMethodParams;
+		}
+
+		public ImplementMethodInfo getImplementMethodInfo()
+		{
+			return implementMethodInfo;
+		}
+
+		public void setImplementMethodInfo(
+				ImplementMethodInfo implementMethodInfo)
+		{
+			this.implementMethodInfo = implementMethodInfo;
+		}
+
+		public Object getImplementorBean()
+		{
+			return implementorBean;
+		}
+
+		public void setImplementorBean(Object implementorBean)
+		{
+			this.implementorBean = implementorBean;
+		}
+
+		@Override
+		public Object invoke() throws Throwable
+		{
+			Object[] implementMethodParams = this.implementMethodInfo
+					.getParams(this.implementeeMethodParams);
+
+			return this.implementMethodInfo.getImplementMethod()
+					.invoke(this.implementorBean, implementMethodParams);
+		}
 	}
 }

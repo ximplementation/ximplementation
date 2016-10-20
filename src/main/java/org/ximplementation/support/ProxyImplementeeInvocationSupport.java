@@ -34,7 +34,7 @@ public class ProxyImplementeeInvocationSupport
 
 	protected ImplementorBeanFactory implementorBeanFactory;
 
-	protected ImplementeeMethodInvocationInfoEvaluator implementeeMethodInvocationInfoEvaluator;
+	private ImplementeeMethodInvocationFactory implementeeMethodInvocationFactory;
 
 	public ProxyImplementeeInvocationSupport()
 	{
@@ -43,12 +43,12 @@ public class ProxyImplementeeInvocationSupport
 
 	public ProxyImplementeeInvocationSupport(Implementation<?> implementation,
 			ImplementorBeanFactory implementorBeanFactory,
-			ImplementeeMethodInvocationInfoEvaluator implementeeMethodInvocationInfoEvaluator)
+			ImplementeeMethodInvocationFactory implementeeMethodInvocationFactory)
 	{
 		super();
 		this.implementation = implementation;
 		this.implementorBeanFactory = implementorBeanFactory;
-		this.implementeeMethodInvocationInfoEvaluator = implementeeMethodInvocationInfoEvaluator;
+		this.implementeeMethodInvocationFactory = implementeeMethodInvocationFactory;
 	}
 
 	public Implementation<?> getImplementation()
@@ -72,42 +72,35 @@ public class ProxyImplementeeInvocationSupport
 		this.implementorBeanFactory = implementorBeanFactory;
 	}
 
-	public ImplementeeMethodInvocationInfoEvaluator getImplementeeMethodInvocationInfoEvaluator()
+	public ImplementeeMethodInvocationFactory getImplementeeMethodInvocationFactory()
 	{
-		return implementeeMethodInvocationInfoEvaluator;
+		return implementeeMethodInvocationFactory;
 	}
 
-	public void setImplementeeMethodInvocationInfoEvaluator(
-			ImplementeeMethodInvocationInfoEvaluator implementeeMethodInvocationInfoEvaluator)
+	public void setImplementeeMethodInvocationFactory(
+			ImplementeeMethodInvocationFactory implementeeMethodInvocationFactory)
 	{
-		this.implementeeMethodInvocationInfoEvaluator = implementeeMethodInvocationInfoEvaluator;
+		this.implementeeMethodInvocationFactory = implementeeMethodInvocationFactory;
 	}
 
 	/**
-	 * Invoke the specified method of the <i>implementee</i>.
+	 * Invoke the specified <i>implementee method</i>.
 	 * 
 	 * @param method
 	 * @param args
-	 * @return
+	 * @return The <i>implementee method</i> invocation result.
 	 * @throws Throwable
 	 */
 	public Object invoke(Method method, Object[] args) throws Throwable
 	{
-		ImplementeeMethodInvocationInfo invocationInfo = this.implementeeMethodInvocationInfoEvaluator
-				.evaluate(this.implementation, method, args,
+		ImplementeeMethodInvocation invocation = this.implementeeMethodInvocationFactory
+				.get(this.implementation, method, args,
 						this.implementorBeanFactory);
 
-		if (invocationInfo == null)
+		if (invocation == null)
 			throw new UnsupportedOperationException(
 					"No valid implement method found for [" + method + "]");
 
-		ImplementMethodInfo implementMethodInfo = invocationInfo
-				.getImplementMethodInfo();
-
-		Object implementBean = invocationInfo.getImplementorBean();
-		Method implementMethod = implementMethodInfo.getImplementMethod();
-		Object[] implementMethodParams = implementMethodInfo.getParams(args);
-
-		return implementMethod.invoke(implementBean, implementMethodParams);
+		return invocation.invoke();
 	}
 }
