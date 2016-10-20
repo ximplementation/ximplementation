@@ -20,6 +20,10 @@ import java.lang.reflect.Proxy;
 
 /**
  * Implementee bean builder based on JDK {@linkplain Proxy}.
+ * <p>
+ * All <i>implementee</i> beans it built implements the
+ * {@linkplain ProxyImplementee} interface for token.
+ * </p>
  * 
  * @author earthangry@gmail.com
  * @date 2015-12-3
