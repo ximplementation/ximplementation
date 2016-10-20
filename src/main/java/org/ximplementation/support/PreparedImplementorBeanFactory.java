@@ -95,7 +95,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	 * @param implementor
 	 * @return
 	 */
-	boolean accept(Class<?> implementor)
+	public boolean accept(Class<?> implementor)
 	{
 		return (this.implementorBeansMap.get(implementor) != null);
 	}
@@ -106,7 +106,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	 * @param implementorBean
 	 * @return
 	 */
-	boolean accept(Object implementorBean)
+	public boolean accept(Object implementorBean)
 	{
 		return (this.implementorBeansMap
 				.get(implementorBean.getClass()) != null);
