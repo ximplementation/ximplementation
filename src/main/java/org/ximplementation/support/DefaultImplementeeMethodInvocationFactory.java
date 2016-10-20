@@ -32,7 +32,7 @@ import org.ximplementation.Validity;
  * <ol>
  * <li>Ignores all whose parameter type mismatched or
  * {@linkplain Validity @Validaty} not passed;</li>
- * <li>Gets the one with max {@linkplain Priority @Priority} ;</li>
+ * <li>Gets the one with max {@linkplain Priority @Priority} If there is;</li>
  * <li>Else, gets the one whose method parameter is closest to the invocation
  * parameters;</li>
  * <li>Else, gets the only one which declared {@linkplain Validity @Validaty} ;
