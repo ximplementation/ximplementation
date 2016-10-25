@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
  * <p>
  * This annotation indicate that the method has been identified by a name, and
  * can be referenced by {@linkplain Implement#value() @Implement.value},
- * {@linkplain Priority#method() @Priority.method},
+ * {@linkplain Priority#value() @Priority.value},
  * {@linkplain Validity#value() @Validity.value}.
  * </p>
  * 

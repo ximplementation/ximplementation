@@ -373,7 +373,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		{
 			@Override
 			@Validity("isValid")
-			@Priority(value = 1, method = "getPriority")
+			@Priority(value = "getPriority", priority = 1)
 			public void handle(int a)
 			{
 			}
@@ -553,7 +553,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		public static class Implementor extends Implementee
 		{
 			@Override
-			@Priority(method = "getPriority")
+			@Priority("getPriority")
 			public void handle(int a)
 			{
 			}

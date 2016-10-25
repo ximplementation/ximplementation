@@ -71,7 +71,7 @@ import java.lang.annotation.Target;
  * public class Bar2
  * {
  * 	&#64;Implement
- * 	&#64;Priority(method = "getPriority")
+ * 	&#64;Priority("getPriority")
  * 	&#64;Validity("isValid")
  * 	public void handle(int a, int b)
  * 	{

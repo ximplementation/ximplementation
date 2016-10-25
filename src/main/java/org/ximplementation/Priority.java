@@ -48,16 +48,6 @@ public @interface Priority
 	int DEFAULT = 0;
 
 	/**
-	 * The fixed priority value.
-	 * <p>
-	 * Its default value is {@code 0}。
-	 * </p>
-	 * 
-	 * @return
-	 */
-	int value() default DEFAULT;
-
-	/**
 	 * The identification of the priority method.
 	 * <p>
 	 * It can be any of the following values :
@@ -72,5 +62,15 @@ public @interface Priority
 	 * 
 	 * @return
 	 */
-	String method() default "";
+	String value() default "";
+
+	/**
+	 * The fixed priority value.
+	 * <p>
+	 * Its default value is {@code 0}。
+	 * </p>
+	 * 
+	 * @return
+	 */
+	int priority() default DEFAULT;
 }

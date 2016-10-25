@@ -61,7 +61,7 @@ import java.lang.annotation.Target;
  * <ol>
  * <li>If {@code A} or {@code B} is not annotated with
  * {@linkplain Priority @Priority}, then it will be treated as annotated with
- * {@code @Priority(0)};</li>
+ * {@code @Priority(priority=0)};</li>
  * <li>If the {@linkplain Priority @Priority} result of {@code A} {@code >} the
  * {@linkplain Priority @Priority} result of {@code B}, then {@code A}'s
  * priority {@code >} {@code B}'s priority;</li>
@@ -99,7 +99,7 @@ import java.lang.annotation.Target;
  * public class Bar1
  * {
  * 	&#64;Implement
- * 	&#64;Priority(method = "getPriority")
+ * 	&#64;Priority("getPriority")
  * 	&#64;Validity("isValid")
  * 	public void handle(int a, int b)
  * 	{

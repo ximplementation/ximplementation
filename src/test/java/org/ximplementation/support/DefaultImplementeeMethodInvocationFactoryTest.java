@@ -300,7 +300,7 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 		public static class Implementor4
 		{
 			@Implement
-			@Priority(Integer.MAX_VALUE)
+			@Priority(priority = Integer.MAX_VALUE)
 			public Number plus(Number a, Number b)
 			{
 				return 0;
@@ -311,7 +311,7 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 		public static class Implementor5
 		{
 			@Implement
-			@Priority(method = "getPriority")
+			@Priority("getPriority")
 			public Number plus(Number a, Number b)
 			{
 				return 0;

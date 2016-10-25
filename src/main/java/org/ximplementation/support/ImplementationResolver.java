@@ -349,11 +349,11 @@ public class ImplementationResolver
 
 		if (priority != null)
 		{
-			int priorityValue = priority.value();
+			int priorityValue = priority.priority();
 			Method priorityMethod = null;
 			int[] priorityParamIndexes = null;
 
-			String priorityMethodRef = priority.method();
+			String priorityMethodRef = priority.value();
 
 			if (!priorityMethodRef.isEmpty())
 			{
