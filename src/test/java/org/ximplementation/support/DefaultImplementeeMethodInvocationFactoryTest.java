@@ -589,7 +589,8 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 				CompareImplementMethodParamTypePriorityTest.Implementor1.class,
 				CompareImplementMethodParamTypePriorityTest.Implementor2.class,
 				CompareImplementMethodParamTypePriorityTest.Implementor3.class,
-				CompareImplementMethodParamTypePriorityTest.Implementor4.class);
+				CompareImplementMethodParamTypePriorityTest.Implementor4.class,
+				CompareImplementMethodParamTypePriorityTest.Implementor5.class);
 
 		// firstCloserCount = secondCloserCount
 		{
@@ -657,7 +658,7 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 									implementMethodInfo1));
 		}
 
-		// firstCloserCount - secondCloserCount = 2;
+		// firstCloserCount = secondCloserCount
 		{
 			ImplementMethodInfo implementMethodInfo0 = implementation
 					.getImplementInfo(implementeeMethod)
@@ -676,6 +677,47 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 							implementeeMethod, new Object[] { 0, 1, 2 },
 							implementMethodInfo0, implementMethodInfo1));
 		}
+
+		// firstType.isPrimitive()
+		{
+			ImplementMethodInfo implementMethodInfo0 = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							CompareImplementMethodParamTypePriorityTest.Implementor4.class,
+							"plus"));
+
+			ImplementMethodInfo implementMethodInfo1 = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							CompareImplementMethodParamTypePriorityTest.Implementor5.class,
+							"plus"));
+
+			assertEquals(1, this.defaultImplementeeMethodInvocationFactory
+					.compareImplementMethodParamTypePriority(implementation,
+							implementeeMethod, new Object[] { 0, 1, 2 },
+							implementMethodInfo1, implementMethodInfo0));
+		}
+
+		// secondType.isPrimitive()
+		{
+			ImplementMethodInfo implementMethodInfo0 = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							CompareImplementMethodParamTypePriorityTest.Implementor4.class,
+							"plus"));
+
+			ImplementMethodInfo implementMethodInfo1 = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							CompareImplementMethodParamTypePriorityTest.Implementor5.class,
+							"plus"));
+
+			assertEquals(-1, this.defaultImplementeeMethodInvocationFactory
+					.compareImplementMethodParamTypePriority(implementation,
+							implementeeMethod, new Object[] { 0, 1, 2 },
+							implementMethodInfo0, implementMethodInfo1));
+		}
+
 	}
 
 	public static class CompareImplementMethodParamTypePriorityTest
@@ -730,6 +772,16 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 		{
 			@Implement
 			public Number plus(@Index(1) Integer b)
+			{
+				return null;
+			}
+		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor5
+		{
+			@Implement
+			public Number plus(@Index(1) int b)
 			{
 				return null;
 			}

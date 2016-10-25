@@ -298,14 +298,27 @@ public class DefaultImplementeeMethodInvocationFactory
 			{
 				Class<?> secondType = secondParamTypes[secondParamIndex];
 	
+				// the same closer
 				if (firstType.equals(secondType))
 					;
+				// sub type second is closer
 				else if (firstType.isAssignableFrom(secondType))
 				{
 					secondCloserCount++;
 				}
-				else
+				// sub type first is closer
+				else if (secondType.isAssignableFrom(firstType))
+				{
 					firstCloserCount++;
+				}
+				else
+				{
+					// primitive type is closer
+					if (firstType.isPrimitive())
+						firstCloserCount++;
+					else if (secondType.isPrimitive())
+						secondCloserCount++;
+				}
 			}
 		}
 	
