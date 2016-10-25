@@ -185,6 +185,8 @@ public class TypeUtil
 					typeVariablesMap.put(var, value);
 				}
 			}
+
+			doResolveTypeParams(pt.getRawType(), typeVariablesMap);
 		}
 	}
 
