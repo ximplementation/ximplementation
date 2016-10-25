@@ -415,6 +415,19 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 					.isImplementMethodParamValid(implementMethodInfo,
 							new Object[] { 1, 2 }));
 		}
+
+		// primitive parameter types and null params
+		{
+			ImplementMethodInfo implementMethodInfo = implementation
+					.getImplementInfo(implementeeMethod)
+					.getImplementMethodInfo(getMethodByName(
+							IsImplementMethodParamValidTest.Implementor2.class,
+							"plus"));
+
+			assertFalse(this.defaultImplementeeMethodInvocationFactory
+					.isImplementMethodParamValid(implementMethodInfo,
+							new Object[] { null, 2 }));
+		}
 	}
 
 	public static class IsImplementMethodParamValidTest
