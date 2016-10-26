@@ -1,5 +1,10 @@
 # Manual
 
+## Requirement
+JDK : 1.6+
+
+Dependencies : none
+
 ## Definitions
 An <b><i>implementor</i></b> is a class which implements one or more <b><i>implementee</i></b>s through the `implements` or `extends` keywords or through `@Implementor` annotation.
 
