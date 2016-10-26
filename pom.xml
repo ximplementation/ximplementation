@@ -4,7 +4,7 @@
 	
 	<groupId>org.ximplementation</groupId>
 	<artifactId>ximplementation</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0</version>
 	
 	<name>ximplementation</name>
 	<description>
@@ -56,6 +56,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
+					<locale>en</locale>
 					<encoding>UTF-8</encoding>
 					<charset>UTF-8</charset>
 					<additionalparam>-Xdoclint:none</additionalparam>
