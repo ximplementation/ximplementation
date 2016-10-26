@@ -21,3 +21,9 @@ pre.prettyprint{
 tt{
 	background-color: #F5F5F5;
 }
+hr{
+	margin: 10px 0;
+}
+footer{
+	margin-bottom: 10px;
+}
