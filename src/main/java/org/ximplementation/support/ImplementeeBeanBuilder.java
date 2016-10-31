@@ -24,11 +24,14 @@ package org.ximplementation.support;
 public interface ImplementeeBeanBuilder
 {
 	/**
-	 * Build an <i>implementee</i> bean.
+	 * Build an <i>implementee</i> instance.
 	 * 
 	 * @param implementation
+	 *            The {@code Implementation} about the <i>implementee</i>.
 	 * @param implementorBeanFactory
-	 * @return
+	 *            The {@code ImplementorBeanFactory} about the
+	 *            <i>implementee</i>.
+	 * @return A instance of the <i>implementee</i>.
 	 */
 	<T> T build(Implementation<T> implementation,
 			ImplementorBeanFactory implementorBeanFactory);

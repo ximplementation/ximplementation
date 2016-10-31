@@ -67,11 +67,22 @@ public class ImplementMethodInfo implements Serializable
 	/** priority method parameter indexes */
 	private int[] priorityParamIndexes;
 
+	/**
+	 * Creates an {@code ImplementMethodInfo} instance.
+	 */
 	public ImplementMethodInfo()
 	{
 		super();
 	}
 
+	/**
+	 * Create an {@code ImplementMethodInfo} instance.
+	 * 
+	 * @param implementor
+	 *            The <i>implementor</i>.
+	 * @param implementMethod
+	 *            One of the <i>implement method</i>s in the <i>implementor</i>.
+	 */
 	public ImplementMethodInfo(Class<?> implementor, Method implementMethod)
 	{
 		super();
@@ -79,107 +90,180 @@ public class ImplementMethodInfo implements Serializable
 		this.implementMethod = implementMethod;
 	}
 
+	/**
+	 * Gets the <i>implementor</i>.
+	 * 
+	 * @return
+	 */
 	public Class<?> getImplementor()
 	{
 		return implementor;
 	}
 
+	/**
+	 * Sets the <i>implementor</i>.
+	 * 
+	 * @param implementor
+	 */
 	public void setImplementor(Class<?> implementor)
 	{
 		this.implementor = implementor;
 	}
 
+	/**
+	 * Gets the <i>implement method</i>.
+	 * 
+	 * @return
+	 */
 	public Method getImplementMethod()
 	{
 		return implementMethod;
 	}
 
+	/**
+	 * Sets the <i>implement method</i>.
+	 * 
+	 * @param implementMethod
+	 */
 	public void setImplementMethod(Method implementMethod)
 	{
 		this.implementMethod = implementMethod;
 	}
 
+	/**
+	 * Gets the parameter types about the <i>implement method</i>.
+	 * 
+	 * @return
+	 */
 	public Class<?>[] getParamTypes()
 	{
 		return paramTypes;
 	}
 
+	/**
+	 * Sets the parameter types about the <i>implement method</i>.
+	 * 
+	 * @param paramTypes
+	 */
 	public void setParamTypes(Class<?>[] paramTypes)
 	{
 		this.paramTypes = paramTypes;
 	}
 
+	/**
+	 * Gets the generic parameter types about the <i>implement method</i>.
+	 * 
+	 * @return
+	 */
 	public Type[] getGenericParamTypes()
 	{
 		return genericParamTypes;
 	}
 
+	/**
+	 * Sets the generic parameter types about the <i>implement method</i>.
+	 * 
+	 * @param genericParamTypes
+	 */
 	public void setGenericParamTypes(Type[] genericParamTypes)
 	{
 		this.genericParamTypes = genericParamTypes;
 	}
 
+	/**
+	 * Gets the parameter indexes about the <i>implement method</i>.
+	 * @return
+	 */
 	public int[] getParamIndexes()
 	{
 		return paramIndexes;
 	}
 
+	/**
+	 * Sets the parameter indexes about the <i>implement method</i>.
+	 * 
+	 * @param paramIndexes
+	 */
 	public void setParamIndexes(int[] paramIndexes)
 	{
 		this.paramIndexes = paramIndexes;
 	}
 
 	/**
-	 * Get parameter arrays of this <i>implement method</i> for the specified
-	 * <i>implementee method</i> parameter array.
-	 * <p>
-	 * Returns an array of {@code 0} length if this <i>implement method</i> has
-	 * no parameter.
-	 * </p>
+	 * Gets the parameter array of this <i>implement method</i> for the
+	 * specified <i>implementee method</i> parameter array.
 	 * 
 	 * @param implementeeMethodParams
-	 * @return
+	 *            The <i>implementee method</i> parameter array.
+	 * @return An parameter array for this <i>implement method</i> invocation,
+	 *         {@code 0} length if this <i>implement method</i> has no
+	 *         parameter.
 	 */
 	public Object[] getParams(Object[] implementeeMethodParams)
 	{
 		return copyArrayByIndex(implementeeMethodParams, this.paramIndexes);
 	}
 
+	/**
+	 * Returns if the <i>implement method</i> has a validity method.
+	 * 
+	 * @return {@code true} if yes, {@code false} if no.
+	 */
 	public boolean hasValidityMethod()
 	{
 		return (this.validityMethod != null);
 	}
 
+	/**
+	 * Gets the validity method for the <i>implement method</i>.
+	 * 
+	 * @return
+	 */
 	public Method getValidityMethod()
 	{
 		return validityMethod;
 	}
 
+	/**
+	 * Sets the validity method for the <i>implement method</i>.
+	 * 
+	 * @param validityMethod
+	 */
 	public void setValidityMethod(Method validityMethod)
 	{
 		this.validityMethod = validityMethod;
 	}
 
+	/**
+	 * Gets the validity method parameter indexes about the <i>implement
+	 * method</i>.
+	 * 
+	 * @return
+	 */
 	public int[] getValidityParamIndexes()
 	{
 		return validityParamIndexes;
 	}
 
+	/**
+	 * Sets the validity method parameter indexes about the <i>implement
+	 * method</i>.
+	 * 
+	 * @param validityParamIndexes
+	 */
 	public void setValidityParamIndexes(int[] validityParamIndexes)
 	{
 		this.validityParamIndexes = validityParamIndexes;
 	}
 
 	/**
-	 * Get parameter arrays of the <i>validity method</i> for the specified
+	 * Gets the parameter array of the validity method for the specified
 	 * <i>implementee method</i> parameter array.
-	 * <p>
-	 * Returns an array of {@code 0} length if there is no <i>validity
-	 * method</i>.
-	 * </p>
 	 * 
 	 * @param implementeeMethodParams
-	 * @return
+	 *            The <i>implementee method</i> parameter array.
+	 * @return An parameter array for the validity method invocation, {@code 0}
+	 *         length if the validity method has no parameter.
 	 */
 	public Object[] getValidityParams(Object[] implementeeMethodParams)
 	{
@@ -187,51 +271,86 @@ public class ImplementMethodInfo implements Serializable
 				this.validityParamIndexes);
 	}
 
+	/**
+	 * Gets the fixed priority value for the <i>implement method</i>.
+	 * 
+	 * @return The fixed priority value.
+	 */
 	public int getPriorityValue()
 	{
 		return priorityValue;
 	}
 
+	/**
+	 * Sets the fixed priority value for the <i>implement method</i>.
+	 * 
+	 * @param priorityValue
+	 */
 	public void setPriorityValue(int priorityValue)
 	{
 		this.priorityValue = priorityValue;
 	}
 
+	/**
+	 * Returns if the <i>implement method</i> has a priority method.
+	 * 
+	 * @return {@code true} if yes, {@code false} if no.
+	 */
 	public boolean hasPriorityMethod()
 	{
 		return (this.priorityMethod != null);
 	}
 
+	/**
+	 * Gets the priority method for the <i>implement method</i>.
+	 * 
+	 * @return
+	 */
 	public Method getPriorityMethod()
 	{
 		return priorityMethod;
 	}
 
+	/**
+	 * Sets the priority method for the <i>implement method</i>.
+	 * 
+	 * @param priorityMethod
+	 */
 	public void setPriorityMethod(Method priorityMethod)
 	{
 		this.priorityMethod = priorityMethod;
 	}
 
+	/**
+	 * Gets the priority method parameter indexes about the <i>implement
+	 * method</i>.
+	 * 
+	 * @return
+	 */
 	public int[] getPriorityParamIndexes()
 	{
 		return priorityParamIndexes;
 	}
 
+	/**
+	 * Sets the priority method parameter indexes about the <i>implement
+	 * method</i>.
+	 * 
+	 * @param priorityParamIndexes
+	 */
 	public void setPriorityParamIndexes(int[] priorityParamIndexes)
 	{
 		this.priorityParamIndexes = priorityParamIndexes;
 	}
 
 	/**
-	 * Get parameter arrays of the <i>priority method</i> for the specified
+	 * Get the parameter array of the priority method for the specified
 	 * <i>implementee method</i> parameter array.
-	 * <p>
-	 * Returns an array of {@code 0} length if there is no <i>priority
-	 * method</i>.
-	 * </p>
 	 * 
 	 * @param implementeeMethodParams
-	 * @return
+	 *            The <i>implementee method</i> parameter array.
+	 * @return An parameter array for the priority method invocation, {@code 0}
+	 *         length if the priority method has no parameter.
 	 */
 	public Object[] getPriorityParams(Object[] implementeeMethodParams)
 	{

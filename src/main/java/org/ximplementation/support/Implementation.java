@@ -57,35 +57,53 @@ public class Implementation<T> implements Serializable
 		this.implementInfos = implementInfos;
 	}
 
+	/**
+	 * Gets the <i>implementee</i>.
+	 * 
+	 * @return
+	 */
 	public Class<T> getImplementee()
 	{
 		return implementee;
 	}
 
+	/**
+	 * Sets the <i>implementee</i>.
+	 * 
+	 * @param implementee
+	 */
 	public void setImplementee(Class<T> implementee)
 	{
 		this.implementee = implementee;
 	}
 
+	/**
+	 * Gets the {@code ImplementInfo}s about the <i>implementee</i>.
+	 * 
+	 * @return
+	 */
 	public ImplementInfo[] getImplementInfos()
 	{
 		return implementInfos;
 	}
 
+	/**
+	 * Sets the {@code ImplementInfo}s about the <i>implementee</i>.
+	 * 
+	 * @param implementInfos
+	 */
 	public void setImplementInfos(ImplementInfo[] implementInfos)
 	{
 		this.implementInfos = implementInfos;
 	}
 
 	/**
-	 * Get the {@linkplain ImplementInfo} for a specified <i>implementee</i>
-	 * method.
-	 * <p>
-	 * Returns {@code null} if the <i>implementee</i> method not exists.
-	 * </p>
+	 * Gets the {@code ImplementInfo} for a specified <i>implementee</i> method.
 	 * 
 	 * @param implementeeMethod
-	 * @return
+	 *            The <i>implementee method</i> int the <i>implementee</i>.
+	 * @return The {@code ImplementInfo} for the <i>implementee method</i>,
+	 *         {@code null} if no.
 	 */
 	public ImplementInfo getImplementInfo(Method implementeeMethod)
 	{

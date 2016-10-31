@@ -27,13 +27,11 @@ public interface ImplementorBeanFactory
 {
 	/**
 	 * Get beans of the specified <i>implementor</i>.
-	 * <p>
-	 * It should return {@code null} or an empty {@code Collection} if no beans
-	 * for it.
-	 * </p>
 	 * 
 	 * @param implementor
-	 * @return
+	 *            An <i>implementor</i>.
+	 * @return The beans of the <i>implementor</i>, {@code null} or an empty
+	 *         {@code Collection} if no.
 	 */
 	Collection<?> getImplementorBeans(Class<?> implementor);
 }

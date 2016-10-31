@@ -80,7 +80,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * Get all <i>implementor</i>s.
+	 * Gets all the <i>implementor</i>s.
 	 * 
 	 * @return
 	 */
@@ -93,7 +93,8 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	 * Returns if a specified <i>implementor</i> is acceptable.
 	 * 
 	 * @param implementor
-	 * @return
+	 *            The <i>implementor</i> to be checked.
+	 * @return {@code true} if yes, {@code false} if no.
 	 */
 	public boolean accept(Class<?> implementor)
 	{
@@ -104,7 +105,8 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	 * Returns if a specified <i>implementor</i> bean is acceptable.
 	 * 
 	 * @param implementorBean
-	 * @return
+	 *            The <i>implementor</i> bean to be checked.
+	 * @return {@code true} if yes, {@code false} if no.
 	 */
 	public boolean accept(Object implementorBean)
 	{
@@ -119,7 +121,9 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	 * </p>
 	 * 
 	 * @param implementorBean
-	 * @return
+	 *            The <i>implementor</i> bean to be added.
+	 * @return {@code true} if the <i>implementor</i> bean is acceptable,
+	 *         {@code false} if not.
 	 */
 	public boolean addImplementorBean(Object implementorBean)
 	{

@@ -31,11 +31,17 @@ public interface ImplementeeMethodInvocationFactory
 	 * <i>implementee</i> method invocation.
 	 * 
 	 * @param implementation
+	 *            The {@code Implementation} about the <i>implementee</i>.
 	 * @param implementeeMethod
+	 *            The <i>implementee method</i> to be invoked.
 	 * @param implementeeMethodParams
+	 *            The invocation parameters of the <i>implementee method</i> to
+	 *            be invoked.
 	 * @param implementorBeanFactory
-	 * @return The {@linkplain ImplementeeMethodInvocation} instance,
-	 *         {@code null} if no.
+	 *            The {@code ImplementorBeanFactory} about the
+	 *            <i>implementee</i>.
+	 * @return The {@code ImplementeeMethodInvocation} instance, {@code null} if
+	 *         no.
 	 * @throws Throwable
 	 */
 	ImplementeeMethodInvocation get(

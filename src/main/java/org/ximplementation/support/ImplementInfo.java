@@ -42,12 +42,27 @@ public class ImplementInfo implements Serializable
 		super();
 	}
 
+	/**
+	 * Create an {@code ImplementInfo} instance.
+	 * 
+	 * @param implementeeMethod
+	 *            An <i>implementee method</i>.
+	 */
 	public ImplementInfo(Method implementeeMethod)
 	{
 		super();
 		this.implementeeMethod = implementeeMethod;
 	}
 
+	/**
+	 * Create an {@code ImplementInfo} instance.
+	 * 
+	 * @param implementeeMethod
+	 *            An <i>implementee method</i>.
+	 * @param implementMethodInfos
+	 *            The {@code ImplementMethodInfo}s about the <i>implementee
+	 *            method</i>.
+	 */
 	public ImplementInfo(Method implementeeMethod, ImplementMethodInfo[] implementMethodInfos)
 	{
 		super();
@@ -55,21 +70,41 @@ public class ImplementInfo implements Serializable
 		this.implementMethodInfos = implementMethodInfos;
 	}
 
+	/**
+	 * Gets the <i>implementee method</i>.
+	 * 
+	 * @return
+	 */
 	public Method getImplementeeMethod()
 	{
 		return implementeeMethod;
 	}
 
+	/**
+	 * Sets the <i>implementee method</i>.
+	 * 
+	 * @param implementeeMethod
+	 */
 	public void setImplementeeMethod(Method implementeeMethod)
 	{
 		this.implementeeMethod = implementeeMethod;
 	}
 
+	/**
+	 * Gets the {@code ImplementMethodInfo}s.
+	 * 
+	 * @return
+	 */
 	public ImplementMethodInfo[] getImplementMethodInfos()
 	{
 		return implementMethodInfos;
 	}
 
+	/**
+	 * Sets the {@code ImplementMethodInfo}s.
+	 * 
+	 * @param implementMethodInfos
+	 */
 	public void setImplementMethodInfos(ImplementMethodInfo[] implementMethodInfos)
 	{
 		this.implementMethodInfos = implementMethodInfos;
@@ -78,7 +113,7 @@ public class ImplementInfo implements Serializable
 	/**
 	 * Returns if it has implement method info.
 	 * 
-	 * @return
+	 * @return {@code true} if yes, {@code false} if no.
 	 */
 	public boolean hasImplementMethodInfo()
 	{
@@ -87,14 +122,13 @@ public class ImplementInfo implements Serializable
 	}
 
 	/**
-	 * Returns the {@linkplain ImplementMethodInfo} for a specified <i>implement
+	 * Gets the {@code ImplementMethodInfo} for a specified <i>implement
 	 * method</i>.
-	 * <p>
-	 * Returns {@code null} if no.
-	 * </p>
 	 * 
 	 * @param implementMethod
-	 * @return
+	 *            The <i>implement method</i>.
+	 * @return The {@code ImplementMethodInfo} about the <i>implement method</i>
+	 *         , {@code null} if no.
 	 */
 	public ImplementMethodInfo getImplementMethodInfo(Method implementMethod)
 	{

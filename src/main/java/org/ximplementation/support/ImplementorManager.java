@@ -47,10 +47,10 @@ public class ImplementorManager
 	}
 
 	/**
-	 * Is only resolve {@code implements} (exclude {@code extends}) language
-	 * <i>implementee</i>.
+	 * Returns if only resolve {@code 'implements'} (exclude {@code 'extends'})
+	 * language <i>implementee</i>.
 	 * 
-	 * @return
+	 * @return {@code true} if yes, {@code false} if no.
 	 */
 	public boolean isOnlyInterfaceForLang()
 	{
@@ -63,7 +63,7 @@ public class ImplementorManager
 	}
 
 	/**
-	 * Get all <i>implementee</i>s.
+	 * Gets all <i>implementee</i>s.
 	 * 
 	 * @return
 	 */
@@ -73,7 +73,7 @@ public class ImplementorManager
 	}
 
 	/**
-	 * Get <i>implementor</i> set for the specified <i>implementee</i>.
+	 * Gets <i>implementor</i> set for the specified <i>implementee</i>.
 	 * 
 	 * @param implementee
 	 * @return

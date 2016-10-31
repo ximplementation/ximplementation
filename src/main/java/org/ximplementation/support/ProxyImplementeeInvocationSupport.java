@@ -87,14 +87,16 @@ public class ProxyImplementeeInvocationSupport
 	 * Invoke the specified <i>implementee method</i>.
 	 * 
 	 * @param method
-	 * @param args
+	 *            The <i>implementee method</i> to be invoked.
+	 * @param parameters
+	 *            The parameters of the <i>implementee method</i>.
 	 * @return The <i>implementee method</i> invocation result.
 	 * @throws Throwable
 	 */
-	public Object invoke(Method method, Object[] args) throws Throwable
+	public Object invoke(Method method, Object[] parameters) throws Throwable
 	{
 		ImplementeeMethodInvocation invocation = this.implementeeMethodInvocationFactory
-				.get(this.implementation, method, args,
+				.get(this.implementation, method, parameters,
 						this.implementorBeanFactory);
 
 		if (invocation == null)

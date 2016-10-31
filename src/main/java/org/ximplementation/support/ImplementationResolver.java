@@ -63,12 +63,15 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Resolve {@linkplain Implementation} for an <i>implementee</i> and its
+	 * Resolves the {@code Implementation} for an <i>implementee</i> and its
 	 * <i>implementor</i>s.
 	 * 
 	 * @param implementee
+	 *            The <i>implementee</i> to be resolved.
 	 * @param implementors
-	 * @return
+	 *            The <i>implementor</i>s about the <i>implementee</i>.
+	 * @return The {@code Implementation} for the <i>implementee</i> and its
+	 *         <i>implementor</i>s.
 	 * @throws ImplementationResolveException
 	 */
 	public <T> Implementation<T> resolve(Class<T> implementee,
@@ -82,12 +85,15 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Resolve {@linkplain Implementation} for an <i>implementee</i> and its
+	 * Resolves the {@code Implementation} for an <i>implementee</i> and its
 	 * <i>implementor</i>s.
 	 * 
 	 * @param implementee
+	 *            The <i>implementee</i> to be resolved.
 	 * @param implementors
-	 * @return
+	 *            The <i>implementor</i>s about the <i>implementee</i>.
+	 * @return The {@code Implementation} for the <i>implementee</i> and its
+	 *         <i>implementor</i>s.
 	 * @throws ImplementationResolveException
 	 */
 	public <T> Implementation<T> resolve(Class<T> implementee,
