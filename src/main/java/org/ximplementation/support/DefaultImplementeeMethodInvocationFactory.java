@@ -145,7 +145,7 @@ public class DefaultImplementeeMethodInvocationFactory
 	}
 
 	/**
-	 * Find {@linkplain ImplementInfo}。
+	 * Find {@linkplain ImplementInfo}.
 	 * 
 	 * @param implementation
 	 * @param implementeeMethod

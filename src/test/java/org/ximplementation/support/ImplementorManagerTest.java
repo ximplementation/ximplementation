@@ -51,9 +51,9 @@ public class ImplementorManagerTest extends AbstractTestSupport
 			ImplementorManager implementorManager = new ImplementorManager();
 
 			implementorManager
-					.addImplementor(AddImplementorTest.Implementor0.class);
+					.add(AddImplementorTest.Implementor0.class);
 			implementorManager
-					.addImplementor(AddImplementorTest.Implementor1.class);
+					.add(AddImplementorTest.Implementor1.class);
 
 			HashSet<Class<?>> expected = new HashSet<Class<?>>();
 			expected.add(AddImplementorTest.Implementee0.class);
@@ -71,7 +71,7 @@ public class ImplementorManagerTest extends AbstractTestSupport
 				expectedImplementors.add(AddImplementorTest.Implementor1.class);
 
 				assertEquals(expectedImplementors,
-						implementorManager.getImplementors(
+						implementorManager.get(
 								AddImplementorTest.Implementee0.class));
 			}
 
@@ -81,7 +81,7 @@ public class ImplementorManagerTest extends AbstractTestSupport
 				expectedImplementors.add(AddImplementorTest.Implementor1.class);
 
 				assertEquals(expectedImplementors,
-						implementorManager.getImplementors(
+						implementorManager.get(
 								AddImplementorTest.Implementee1.class));
 			}
 
@@ -90,7 +90,7 @@ public class ImplementorManagerTest extends AbstractTestSupport
 				expectedImplementors.add(AddImplementorTest.Implementor0.class);
 
 				assertEquals(expectedImplementors,
-						implementorManager.getImplementors(
+						implementorManager.get(
 								AddImplementorTest.Implementee2.class));
 			}
 		}
@@ -101,9 +101,9 @@ public class ImplementorManagerTest extends AbstractTestSupport
 			implementorManager.setOnlyInterfaceForLang(false);
 
 			implementorManager
-					.addImplementor(AddImplementorTest.Implementor0.class);
+					.add(AddImplementorTest.Implementor0.class);
 			implementorManager
-					.addImplementor(AddImplementorTest.Implementor1.class);
+					.add(AddImplementorTest.Implementor1.class);
 
 			HashSet<Class<?>> expected = new HashSet<Class<?>>();
 			expected.add(AddImplementorTest.Implementee0.class);
@@ -122,7 +122,7 @@ public class ImplementorManagerTest extends AbstractTestSupport
 				expectedImplementors.add(AddImplementorTest.Implementor1.class);
 
 				assertEquals(expectedImplementors,
-						implementorManager.getImplementors(
+						implementorManager.get(
 								AddImplementorTest.Implementee0.class));
 			}
 
@@ -132,7 +132,7 @@ public class ImplementorManagerTest extends AbstractTestSupport
 				expectedImplementors.add(AddImplementorTest.Implementor1.class);
 
 				assertEquals(expectedImplementors,
-						implementorManager.getImplementors(
+						implementorManager.get(
 								AddImplementorTest.Implementee1.class));
 			}
 
@@ -141,7 +141,7 @@ public class ImplementorManagerTest extends AbstractTestSupport
 				expectedImplementors.add(AddImplementorTest.Implementor0.class);
 
 				assertEquals(expectedImplementors,
-						implementorManager.getImplementors(
+						implementorManager.get(
 								AddImplementorTest.Implementee2.class));
 			}
 
@@ -150,7 +150,7 @@ public class ImplementorManagerTest extends AbstractTestSupport
 				expectedImplementors.add(AddImplementorTest.Implementor0.class);
 
 				assertEquals(expectedImplementors,
-						implementorManager.getImplementors(
+						implementorManager.get(
 								AddImplementorTest.AbstractImplementee.class));
 			}
 		}

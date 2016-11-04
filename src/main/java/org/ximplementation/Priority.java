@@ -67,7 +67,7 @@ public @interface Priority
 	/**
 	 * The fixed priority value.
 	 * <p>
-	 * Its default value is {@code 0}。
+	 * Its default value is {@code 0}.
 	 * </p>
 	 * 
 	 * @return

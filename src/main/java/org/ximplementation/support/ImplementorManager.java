@@ -26,7 +26,11 @@ import org.ximplementation.Implement;
 import org.ximplementation.Implementor;
 
 /**
- * The <i>implementor</i> manager。
+ * The <i>implementor</i> manager.
+ * <p>
+ * It managers a collection of <i>implementor</i>s which indexed by
+ * <i>implementee</i>s.
+ * </p>
  * 
  * @author earthangry@gmail.com
  * @date 2015-12-7
@@ -38,8 +42,9 @@ public class ImplementorManager
 
 	private Map<Class<?>, Set<Class<?>>> implementorsMap;
 
-	private boolean onlyInterfaceForLang = true;
-
+	/**
+	 * Create an empty {@code ImplementorManager}.
+	 */
 	public ImplementorManager()
 	{
 		super();
@@ -47,23 +52,20 @@ public class ImplementorManager
 	}
 
 	/**
-	 * Returns if only resolve {@code 'implements'} (exclude {@code 'extends'})
-	 * language <i>implementee</i>.
+	 * Create an {@code ImplementorManager} with an <i>implementor</i> map.
 	 * 
-	 * @return {@code true} if yes, {@code false} if no.
+	 * @param implementorsMap
+	 *            The <i>implementor</i>s map, the key is <i>implementee</i>,
+	 *            the value is the <i>implementor</i> set of it.
 	 */
-	public boolean isOnlyInterfaceForLang()
+	public ImplementorManager(Map<Class<?>, Set<Class<?>>> implementorsMap)
 	{
-		return onlyInterfaceForLang;
-	}
-
-	public void setOnlyInterfaceForLang(boolean onlyInterfaceForLang)
-	{
-		this.onlyInterfaceForLang = onlyInterfaceForLang;
+		super();
+		this.implementorsMap = implementorsMap;
 	}
 
 	/**
-	 * Gets all <i>implementee</i>s.
+	 * Get all <i>implementee</i>s.
 	 * 
 	 * @return
 	 */
@@ -73,12 +75,13 @@ public class ImplementorManager
 	}
 
 	/**
-	 * Gets <i>implementor</i> set for the specified <i>implementee</i>.
+	 * Get <i>implementor</i> set for the specified <i>implementee</i>.
 	 * 
 	 * @param implementee
-	 * @return
+	 *            The <i>implementee</i>.
+	 * @return The <i>implementor</i> set, {@code null} if none.
 	 */
-	public Set<Class<?>> getImplementors(Class<?> implementee)
+	public Set<Class<?>> get(Class<?> implementee)
 	{
 		return this.implementorsMap.get(implementee);
 	}
@@ -86,55 +89,275 @@ public class ImplementorManager
 	/**
 	 * Add <i>implementor</i>s.
 	 * <p>
-	 * All <i>implementee</i>s will be resolved for each.
+	 * All <i>implementee</i>s will be resolved for each <i>implementor</i>.
 	 * </p>
 	 * 
 	 * @param implementors
+	 *            The <i>implementor</i>s to be added.
 	 */
-	public void addImplementor(Class<?>... implementors)
+	public void add(Class<?>... implementors)
 	{
-		Set<Class<?>> implementees = new HashSet<Class<?>>();
+		doAddImplementor(implementors);
+	}
+
+	/**
+	 * Add <i>implementor</i>s.
+	 * <p>
+	 * All <i>implementee</i>s will be resolved for each <i>implementor</i>.
+	 * </p>
+	 * 
+	 * @param implementors
+	 *            The <i>implementor</i>s to be added.
+	 */
+	public void add(Set<Class<?>> implementors)
+	{
+		Class<?>[] implementorArray = toArray(implementors);
+	
+		doAddImplementor(implementorArray);
+	}
+
+	/**
+	 * Add <i>implementor</i>s for the specified <i>implementee</i>.
+	 * 
+	 * @param implementee
+	 *            The <i>implementee</i>.
+	 * @param implementors
+	 *            The <i>implementor</i>s to be added.
+	 */
+	public void add(Class<?> implementee, Class<?>... implementors)
+	{
+		doAddImplementor(implementee, implementors);
+	}
+
+	/**
+	 * Add <i>implementor</i>s for the specified <i>implementee</i>.
+	 * 
+	 * @param implementee
+	 *            The <i>implementee</i>.
+	 * @param implementors
+	 *            The <i>implementor</i>s to be added.
+	 */
+	public void add(Class<?> implementee, Set<Class<?>> implementors)
+	{
+		Class<?>[] implementorArray = toArray(implementors);
+
+		doAddImplementor(implementee, implementorArray);
+	}
+
+	/**
+	 * Remove all <i>implementor</i>s for the <i>implementee</i>.
+	 * 
+	 * @param implementee
+	 *            The <i>implementee</i> to be removed.
+	 */
+	public void remove(Class<?> implementee)
+	{
+		this.implementorsMap.remove(implementee);
+	}
+
+	/**
+	 * Remove the specified <i>implementor</i>s for the <i>implementee</i>.
+	 * 
+	 * @param implementee
+	 *            The <i>implementee</i> to be removed.
+	 * @param implementors
+	 *            The <i>implementor</i>s to be removed.
+	 */
+	public void remove(Class<?> implementee, Class<?>... implementors)
+	{
+		Set<Class<?>> myImplementors = this.implementorsMap.get(implementee);
+
+		if (myImplementors == null || myImplementors.isEmpty())
+			return;
 
 		for (Class<?> implementor : implementors)
 		{
-			resolveImplementees(implementor, implementees,
-					this.onlyInterfaceForLang);
-
-			for (Class<?> implementee : implementees)
-			{
-				Set<Class<?>> myImplementors = this.implementorsMap
-						.get(implementee);
-
-				if (myImplementors == null)
-				{
-					myImplementors = new HashSet<Class<?>>();
-					this.implementorsMap.put(implementee, myImplementors);
-				}
-
-				myImplementors.add(implementor);
-			}
-
-			implementees.clear();
+			myImplementors.remove(implementor);
 		}
 	}
 
 	/**
-	 * Resolve all <i>implementee</i>s for the <i>implementor</i>, and write
+	 * Remove the specified <i>implementor</i>s for the <i>implementee</i>.
+	 * 
+	 * @param implementee
+	 *            The <i>implementee</i> to be removed.
+	 * @param implementors
+	 *            The <i>implementor</i>s to be removed.
+	 */
+	public void remove(Class<?> implementee, Set<Class<?>> implementors)
+	{
+		Set<Class<?>> myImplementors = this.implementorsMap.get(implementee);
+
+		if (myImplementors == null || myImplementors.isEmpty())
+			return;
+
+		for (Class<?> implementor : implementors)
+		{
+			myImplementors.remove(implementor);
+		}
+	}
+
+	/**
+	 * Remove the <i>implementor</i> from all of its <i>implementee</i>s for
+	 * each in the <i>implementor</i>s.
+	 * 
+	 * @param implementors
+	 *            The <i>implementor</i>s to be removed.
+	 */
+	public void clear(Class<?>... implementors)
+	{
+		doClear(implementors);
+	}
+
+	/**
+	 * Remove the <i>implementor</i> from all of its <i>implementee</i>s for
+	 * each in the <i>implementor</i>s.
+	 * 
+	 * @param implementors
+	 *            The <i>implementor</i>s to be removed.
+	 */
+	public void clear(Set<Class<?>> implementors)
+	{
+		Class<?>[] implementorArray = toArray(implementors);
+
+		doClear(implementorArray);
+	}
+
+	/**
+	 * Do add <i>implementor</i>s.
+	 * 
+	 * @param implementors
+	 */
+	protected void doAddImplementor(Class<?>... implementors)
+	{
+		for (Class<?> implementor : implementors)
+		{
+			Set<Class<?>> implementees = doResolveImplementees(implementor);
+
+			for (Class<?> implementee : implementees)
+			{
+				doAddImplementor(implementee, implementor);
+			}
+		}
+	}
+
+	/**
+	 * Do add <i>implementor</i>s.
+	 * 
+	 * @param implementee
+	 * @param implementors
+	 */
+	protected void doAddImplementor(Class<?> implementee,
+			Class<?>... implementors)
+	{
+		Set<Class<?>> myImplementors = this.implementorsMap.get(implementee);
+
+		if (myImplementors == null)
+		{
+			myImplementors = new HashSet<Class<?>>();
+			this.implementorsMap.put(implementee, myImplementors);
+		}
+
+		for (Class<?> implementor : implementors)
+		{
+			myImplementors.add(implementor);
+		}
+	}
+
+	/**
+	 * Do add <i>implementor</i>.
+	 * 
+	 * @param implementee
+	 * @param implementor
+	 */
+	protected void doAddImplementor(Class<?> implementee, Class<?> implementor)
+	{
+		Set<Class<?>> myImplementors = this.implementorsMap.get(implementee);
+
+		if (myImplementors == null)
+		{
+			myImplementors = new HashSet<Class<?>>();
+			this.implementorsMap.put(implementee, myImplementors);
+		}
+
+		myImplementors.add(implementor);
+	}
+
+	/**
+	 * Do clear <i>implementor</i>s.
+	 * 
+	 * @param implementors
+	 */
+	protected void doClear(Class<?>... implementors)
+	{
+		for (Class<?> implementor : implementors)
+		{
+			Set<Class<?>> implementees = doResolveImplementees(implementor);
+
+			for (Class<?> implementee : implementees)
+			{
+				remove(implementee, implementor);
+			}
+		}
+	}
+
+	/**
+	 * Resolve all <i>implementee</i>s about the <i>implementor</i>.
+	 * 
+	 * @param implementor
+	 * @return
+	 */
+	protected Set<Class<?>> doResolveImplementees(Class<?> implementor)
+	{
+		return resolveImplementees(implementor);
+	}
+
+	/**
+	 * Class set to array.
+	 * 
+	 * @param classes
+	 * @return
+	 */
+	protected Class<?>[] toArray(Set<Class<?>> classes)
+	{
+		Class<?>[] classArray = new Class<?>[classes.size()];
+		classes.toArray(classArray);
+
+		return classArray;
+	}
+
+	/**
+	 * Resolve all <i>implementee</i>s about the <i>implementor</i>, then
+	 * returns them as a set.
+	 * 
+	 * @param implementor
+	 *            The <i>implementor</i> to be resolved.
+	 * @return The <i>implementee</i> set.
+	 */
+	public static Set<Class<?>> resolveImplementees(Class<?> implementor)
+	{
+		Set<Class<?>> implementees = new HashSet<Class<?>>();
+
+		resolveImplementees(implementor, implementees);
+
+		return implementees;
+	}
+
+	/**
+	 * Resolve all <i>implementee</i>s about the <i>implementor</i>, and write
 	 * them into {@code implementees} set.
 	 * 
 	 * @param implementor
 	 * @param implementees
-	 * @param onlyInterfaceForLang
 	 */
-	protected void resolveImplementees(Class<?> implementor,
-			Set<Class<?>> implementees, boolean onlyInterfaceForLang)
+	protected static void resolveImplementees(Class<?> implementor,
+			Set<Class<?>> implementees)
 	{
 		Queue<Class<?>> beSupereds = new LinkedList<Class<?>>();
 
 		Class<?>[] annoImplementees = getAnnotationImplementees(
 				implementor);
-		Class<?>[] directSupers = getDiectLangSuperClasses(implementor,
-				onlyInterfaceForLang);
+		Class<?>[] directSupers = getDiectLangSuperClasses(implementor);
 
 		if (annoImplementees != null && annoImplementees.length > 0)
 			beSupereds.addAll(Arrays.asList(annoImplementees));
@@ -147,8 +370,7 @@ public class ImplementorManager
 		{
 			implementees.add(beSupered);
 
-			Class<?>[] supers = getDiectLangSuperClasses(beSupered,
-					onlyInterfaceForLang);
+			Class<?>[] supers = getDiectLangSuperClasses(beSupered);
 
 			if (supers != null && supers.length > 0)
 			{
@@ -161,16 +383,14 @@ public class ImplementorManager
 	 * Get super classes for the specified class.
 	 * 
 	 * @param clazz
-	 * @param onlyInterface
 	 * @return
 	 */
-	protected Class<?>[] getDiectLangSuperClasses(Class<?> clazz,
-			boolean onlyInterface)
+	protected static Class<?>[] getDiectLangSuperClasses(Class<?> clazz)
 	{
 		Class<?>[] superClasses = clazz.getInterfaces();
 
 		// ignore Object class
-		if (!onlyInterface && clazz.getSuperclass() != null
+		if (clazz.getSuperclass() != null
 				&& !Object.class.equals(clazz.getSuperclass()))
 		{
 			Class<?>[] _superClasses = new Class<?>[superClasses.length + 1];
@@ -198,7 +418,7 @@ public class ImplementorManager
 	 * @param implementor
 	 * @return
 	 */
-	protected Class<?>[] getAnnotationImplementees(Class<?> implementor)
+	protected static Class<?>[] getAnnotationImplementees(Class<?> implementor)
 	{
 		Class<?>[] implementees = {};
 
