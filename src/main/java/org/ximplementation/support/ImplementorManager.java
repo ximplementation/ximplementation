@@ -66,11 +66,34 @@ public class ImplementorManager
 	}
 
 	/**
+	 * Get the <i>implementor</i>s map.
+	 * 
+	 * @return The <i>implementor</i>s map, the key is <i>implementee</i>, the
+	 *         value is the <i>implementor</i> set of it.
+	 */
+	public Map<Class<?>, Set<Class<?>>> getImplementorsMap()
+	{
+		return implementorsMap;
+	}
+
+	/**
+	 * Set the <i>implementor</i>s map.
+	 * 
+	 * @param implementorsMap
+	 *            The <i>implementor</i>s map, the key is <i>implementee</i>,
+	 *            the value is the <i>implementor</i> set of it.
+	 */
+	public void setImplementorsMap(Map<Class<?>, Set<Class<?>>> implementorsMap)
+	{
+		this.implementorsMap = implementorsMap;
+	}
+
+	/**
 	 * Get all <i>implementee</i>s.
 	 * 
 	 * @return
 	 */
-	public Set<Class<?>> getImplementees()
+	public Set<Class<?>> getAllImplementees()
 	{
 		return this.implementorsMap.keySet();
 	}
@@ -99,7 +122,7 @@ public class ImplementorManager
 	 */
 	public void add(Class<?>... implementors)
 	{
-		doAddImplementor(implementors);
+		doAdd(implementors);
 	}
 
 	/**
@@ -116,7 +139,7 @@ public class ImplementorManager
 	{
 		Class<?>[] implementorArray = toArray(implementors);
 
-		doAddImplementor(implementorArray);
+		doAdd(implementorArray);
 	}
 
 	/**
@@ -129,7 +152,7 @@ public class ImplementorManager
 	 */
 	public void addFor(Class<?> implementee, Class<?>... implementors)
 	{
-		doAddImplementorFor(implementee, implementors);
+		doAddFor(implementee, implementors);
 	}
 
 	/**
@@ -145,7 +168,7 @@ public class ImplementorManager
 	{
 		Class<?>[] implementorArray = toArray(implementors);
 
-		doAddImplementorFor(implementee, implementorArray);
+		doAddFor(implementee, implementorArray);
 	}
 
 	/**
@@ -193,15 +216,7 @@ public class ImplementorManager
 	 */
 	public void removeFor(Class<?> implementee, Class<?>... implementors)
 	{
-		Set<Class<?>> myImplementors = this.implementorsMap.get(implementee);
-
-		if (myImplementors == null || myImplementors.isEmpty())
-			return;
-
-		for (Class<?> implementor : implementors)
-		{
-			myImplementors.remove(implementor);
-		}
+		doRemoveFor(implementee, implementors);
 	}
 
 	/**
@@ -220,10 +235,21 @@ public class ImplementorManager
 		if (myImplementors == null || myImplementors.isEmpty())
 			return;
 
-		for (Class<?> implementor : implementors)
-		{
-			myImplementors.remove(implementor);
-		}
+		myImplementors.removeAll(implementors);
+	}
+
+	/**
+	 * Return if there are <i>implementor</i>s for the <i>implementee</i>.
+	 * 
+	 * @param implementee
+	 *            The <i>implementee</i> to be checked.
+	 * @return {@code true} if yes, {@code false} if no.
+	 */
+	public boolean hasImplementors(Class<?> implementee)
+	{
+		Set<Class<?>> implementors = this.implementorsMap.get(implementee);
+	
+		return (implementors != null && implementors.size() > 0);
 	}
 
 	/**
@@ -231,7 +257,7 @@ public class ImplementorManager
 	 * 
 	 * @param implementors
 	 */
-	protected void doAddImplementor(Class<?>... implementors)
+	protected void doAdd(Class<?>... implementors)
 	{
 		for (Class<?> implementor : implementors)
 		{
@@ -239,7 +265,7 @@ public class ImplementorManager
 
 			for (Class<?> implementee : implementees)
 			{
-				doAddImplementorFor(implementee, implementor);
+				doAddFor(implementee, implementor);
 			}
 		}
 	}
@@ -250,7 +276,7 @@ public class ImplementorManager
 	 * @param implementee
 	 * @param implementors
 	 */
-	protected void doAddImplementorFor(Class<?> implementee,
+	protected void doAddFor(Class<?> implementee,
 			Class<?>... implementors)
 	{
 		Set<Class<?>> myImplementors = this.implementorsMap.get(implementee);
@@ -268,39 +294,34 @@ public class ImplementorManager
 	}
 
 	/**
-	 * Do add <i>implementor</i>.
-	 * 
-	 * @param implementee
-	 * @param implementor
-	 */
-	protected void doAddImplementorFor(Class<?> implementee, Class<?> implementor)
-	{
-		Set<Class<?>> myImplementors = this.implementorsMap.get(implementee);
-
-		if (myImplementors == null)
-		{
-			myImplementors = new HashSet<Class<?>>();
-			this.implementorsMap.put(implementee, myImplementors);
-		}
-
-		myImplementors.add(implementor);
-	}
-
-	/**
 	 * Do remove <i>implementor</i>s.
 	 * 
 	 * @param implementors
 	 */
 	protected void doRemove(Class<?>... implementors)
 	{
+		for (Class<?> implementee : this.implementorsMap.keySet())
+		{
+			doRemoveFor(implementee, implementors);
+		}
+	}
+
+	/**
+	 * Do remove <i>implementor</i>s.
+	 * 
+	 * @param implementee
+	 * @param implementors
+	 */
+	protected void doRemoveFor(Class<?> implementee, Class<?>... implementors)
+	{
+		Set<Class<?>> myImplementors = this.implementorsMap.get(implementee);
+
+		if (myImplementors == null || myImplementors.isEmpty())
+			return;
+
 		for (Class<?> implementor : implementors)
 		{
-			Set<Class<?>> implementees = doResolveImplementees(implementor);
-
-			for (Class<?> implementee : implementees)
-			{
-				removeFor(implementee, implementor);
-			}
+			myImplementors.remove(implementor);
 		}
 	}
 
@@ -393,8 +414,7 @@ public class ImplementorManager
 		Class<?>[] superClasses = clazz.getInterfaces();
 
 		// ignore Object class
-		if (clazz.getSuperclass() != null
-				&& !Object.class.equals(clazz.getSuperclass()))
+		if (clazz.getSuperclass() != null)
 		{
 			Class<?>[] _superClasses = new Class<?>[superClasses.length + 1];
 
