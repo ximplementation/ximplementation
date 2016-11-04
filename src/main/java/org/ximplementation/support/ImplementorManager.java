@@ -15,6 +15,7 @@
 package org.ximplementation.support;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -89,7 +90,8 @@ public class ImplementorManager
 	/**
 	 * Add <i>implementor</i>s.
 	 * <p>
-	 * All <i>implementee</i>s will be resolved for each <i>implementor</i>.
+	 * All <i>implementee</i>s will be resolved and indexed for each
+	 * <i>implementor</i>.
 	 * </p>
 	 * 
 	 * @param implementors
@@ -103,67 +105,93 @@ public class ImplementorManager
 	/**
 	 * Add <i>implementor</i>s.
 	 * <p>
-	 * All <i>implementee</i>s will be resolved for each <i>implementor</i>.
+	 * All <i>implementee</i>s will be resolved and indexed for each
+	 * <i>implementor</i>.
 	 * </p>
 	 * 
 	 * @param implementors
 	 *            The <i>implementor</i>s to be added.
 	 */
-	public void add(Set<Class<?>> implementors)
+	public void add(Collection<? extends Class<?>> implementors)
 	{
 		Class<?>[] implementorArray = toArray(implementors);
-	
+
 		doAddImplementor(implementorArray);
 	}
 
 	/**
-	 * Add <i>implementor</i>s for the specified <i>implementee</i>.
+	 * Add <i>implementor</i>s only for the specified <i>implementee</i>.
 	 * 
 	 * @param implementee
 	 *            The <i>implementee</i>.
 	 * @param implementors
 	 *            The <i>implementor</i>s to be added.
 	 */
-	public void add(Class<?> implementee, Class<?>... implementors)
+	public void addFor(Class<?> implementee, Class<?>... implementors)
 	{
-		doAddImplementor(implementee, implementors);
+		doAddImplementorFor(implementee, implementors);
 	}
 
 	/**
-	 * Add <i>implementor</i>s for the specified <i>implementee</i>.
+	 * Add <i>implementor</i>s only for the specified <i>implementee</i>.
 	 * 
 	 * @param implementee
 	 *            The <i>implementee</i>.
 	 * @param implementors
 	 *            The <i>implementor</i>s to be added.
 	 */
-	public void add(Class<?> implementee, Set<Class<?>> implementors)
+	public void addFor(Class<?> implementee,
+			Collection<? extends Class<?>> implementors)
 	{
 		Class<?>[] implementorArray = toArray(implementors);
 
-		doAddImplementor(implementee, implementorArray);
+		doAddImplementorFor(implementee, implementorArray);
 	}
 
 	/**
-	 * Remove all <i>implementor</i>s for the <i>implementee</i>.
+	 * Remove the <i>implementor</i> from all of its <i>implementee</i>s.
+	 * 
+	 * @param implementors
+	 *            The <i>implementor</i>s to be removed.
+	 */
+	public void remove(Class<?>... implementors)
+	{
+		doRemove(implementors);
+	}
+
+	/**
+	 * Remove the <i>implementor</i> from all of its <i>implementee</i>s.
+	 * 
+	 * @param implementors
+	 *            The <i>implementor</i>s to be removed.
+	 */
+	public void remove(Collection<? extends Class<?>> implementors)
+	{
+		Class<?>[] implementorArray = toArray(implementors);
+	
+		doRemove(implementorArray);
+	}
+
+	/**
+	 * Remove all <i>implementor</i>s only for the <i>implementee</i>.
 	 * 
 	 * @param implementee
 	 *            The <i>implementee</i> to be removed.
 	 */
-	public void remove(Class<?> implementee)
+	public void removeFor(Class<?> implementee)
 	{
 		this.implementorsMap.remove(implementee);
 	}
 
 	/**
-	 * Remove the specified <i>implementor</i>s for the <i>implementee</i>.
+	 * Remove the specified <i>implementor</i>s only for the <i>implementee</i>.
 	 * 
 	 * @param implementee
 	 *            The <i>implementee</i> to be removed.
 	 * @param implementors
 	 *            The <i>implementor</i>s to be removed.
 	 */
-	public void remove(Class<?> implementee, Class<?>... implementors)
+	public void removeFor(Class<?> implementee, Class<?>... implementors)
 	{
 		Set<Class<?>> myImplementors = this.implementorsMap.get(implementee);
 
@@ -177,14 +205,15 @@ public class ImplementorManager
 	}
 
 	/**
-	 * Remove the specified <i>implementor</i>s for the <i>implementee</i>.
+	 * Remove the specified <i>implementor</i>s only for the <i>implementee</i>.
 	 * 
 	 * @param implementee
 	 *            The <i>implementee</i> to be removed.
 	 * @param implementors
 	 *            The <i>implementor</i>s to be removed.
 	 */
-	public void remove(Class<?> implementee, Set<Class<?>> implementors)
+	public void removeFor(Class<?> implementee,
+			Collection<? extends Class<?>> implementors)
 	{
 		Set<Class<?>> myImplementors = this.implementorsMap.get(implementee);
 
@@ -195,32 +224,6 @@ public class ImplementorManager
 		{
 			myImplementors.remove(implementor);
 		}
-	}
-
-	/**
-	 * Remove the <i>implementor</i> from all of its <i>implementee</i>s for
-	 * each in the <i>implementor</i>s.
-	 * 
-	 * @param implementors
-	 *            The <i>implementor</i>s to be removed.
-	 */
-	public void clear(Class<?>... implementors)
-	{
-		doClear(implementors);
-	}
-
-	/**
-	 * Remove the <i>implementor</i> from all of its <i>implementee</i>s for
-	 * each in the <i>implementor</i>s.
-	 * 
-	 * @param implementors
-	 *            The <i>implementor</i>s to be removed.
-	 */
-	public void clear(Set<Class<?>> implementors)
-	{
-		Class<?>[] implementorArray = toArray(implementors);
-
-		doClear(implementorArray);
 	}
 
 	/**
@@ -236,7 +239,7 @@ public class ImplementorManager
 
 			for (Class<?> implementee : implementees)
 			{
-				doAddImplementor(implementee, implementor);
+				doAddImplementorFor(implementee, implementor);
 			}
 		}
 	}
@@ -247,7 +250,7 @@ public class ImplementorManager
 	 * @param implementee
 	 * @param implementors
 	 */
-	protected void doAddImplementor(Class<?> implementee,
+	protected void doAddImplementorFor(Class<?> implementee,
 			Class<?>... implementors)
 	{
 		Set<Class<?>> myImplementors = this.implementorsMap.get(implementee);
@@ -270,7 +273,7 @@ public class ImplementorManager
 	 * @param implementee
 	 * @param implementor
 	 */
-	protected void doAddImplementor(Class<?> implementee, Class<?> implementor)
+	protected void doAddImplementorFor(Class<?> implementee, Class<?> implementor)
 	{
 		Set<Class<?>> myImplementors = this.implementorsMap.get(implementee);
 
@@ -284,11 +287,11 @@ public class ImplementorManager
 	}
 
 	/**
-	 * Do clear <i>implementor</i>s.
+	 * Do remove <i>implementor</i>s.
 	 * 
 	 * @param implementors
 	 */
-	protected void doClear(Class<?>... implementors)
+	protected void doRemove(Class<?>... implementors)
 	{
 		for (Class<?> implementor : implementors)
 		{
@@ -296,7 +299,7 @@ public class ImplementorManager
 
 			for (Class<?> implementee : implementees)
 			{
-				remove(implementee, implementor);
+				removeFor(implementee, implementor);
 			}
 		}
 	}
@@ -313,12 +316,12 @@ public class ImplementorManager
 	}
 
 	/**
-	 * Class set to array.
+	 * Class collection to array.
 	 * 
 	 * @param classes
 	 * @return
 	 */
-	protected Class<?>[] toArray(Set<Class<?>> classes)
+	protected Class<?>[] toArray(Collection<? extends Class<?>> classes)
 	{
 		Class<?>[] classArray = new Class<?>[classes.size()];
 		classes.toArray(classArray);
@@ -351,7 +354,7 @@ public class ImplementorManager
 	 * @param implementees
 	 */
 	protected static void resolveImplementees(Class<?> implementor,
-			Set<Class<?>> implementees)
+			Collection<Class<?>> implementees)
 	{
 		Queue<Class<?>> beSupereds = new LinkedList<Class<?>>();
 

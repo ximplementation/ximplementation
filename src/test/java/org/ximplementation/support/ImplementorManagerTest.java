@@ -50,8 +50,7 @@ public class ImplementorManagerTest extends AbstractTestSupport
 		{
 			ImplementorManager implementorManager = new ImplementorManager();
 
-			implementorManager
-					.add(AddImplementorTest.Implementor0.class);
+			implementorManager.add(AddImplementorTest.Implementor0.class);
 			implementorManager
 					.add(AddImplementorTest.Implementor1.class);
 
