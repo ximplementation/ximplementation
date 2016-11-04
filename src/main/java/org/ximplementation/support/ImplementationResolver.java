@@ -63,7 +63,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Resolves the {@code Implementation} for an <i>implementee</i> and its
+	 * Resolve the {@code Implementation} for an <i>implementee</i> and its
 	 * <i>implementor</i>s.
 	 * 
 	 * @param implementee
@@ -85,7 +85,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Resolves the {@code Implementation} for an <i>implementee</i> and its
+	 * Resolve the {@code Implementation} for an <i>implementee</i> and its
 	 * <i>implementor</i>s.
 	 * 
 	 * @param implementee
@@ -407,7 +407,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Returns if the method is a legal <i>implementee</i> method.
+	 * Return if the method is a legal <i>implementee</i> method.
 	 * 
 	 * @param implementee
 	 * @param implementeeMethod
@@ -435,7 +435,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Returns if the {@code implementor} is <i>implementor</i> of the
+	 * Return if the {@code implementor} is <i>implementor</i> of the
 	 * {@code implementee}.
 	 * 
 	 * @param implementee
@@ -463,7 +463,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Returns if the {@code implementMethod} is <i>implement method</i> of the
+	 * Return if the {@code implementMethod} is <i>implement method</i> of the
 	 * {@code implementeeMethod}.
 	 * 
 	 * @param implementee
@@ -523,7 +523,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Returns if the {@code implementMethod} may be an <i>implement method</i>.
+	 * Return if the {@code implementMethod} may be an <i>implement method</i>.
 	 * 
 	 * @param implementor
 	 * @param implementMethod
@@ -553,7 +553,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Returns if the {@code subMethod} is overridden method of the
+	 * Return if the {@code subMethod} is overridden method of the
 	 * {@code superMethod}.
 	 * 
 	 * @param superClass
@@ -621,7 +621,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Returns if the {@code implementMethod} method is invocation feasible to
+	 * Return if the {@code implementMethod} method is invocation feasible to
 	 * the {@code implementeeMethod} method.
 	 * <p>
 	 * Method {@code A} is invocation feasible to method {@code B} if :
@@ -687,7 +687,7 @@ public class ImplementationResolver
 	/**
 	 * Find refered method.
 	 * <p>
-	 * Returns {@code null} if not found.
+	 * Return {@code null} if not found.
 	 * </p>
 	 * 
 	 * @param clazz
@@ -783,7 +783,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Returns if the specified string is part of method signature.
+	 * Return if the specified string is part of method signature.
 	 * 
 	 * @param sp
 	 * @return
@@ -794,7 +794,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Returns if the specified string matches the method signature.
+	 * Return if the specified string matches the method signature.
 	 * 
 	 * @param methodSignature
 	 * @param part
@@ -809,7 +809,7 @@ public class ImplementationResolver
 	/**
 	 * Get refered name of the method.
 	 * <p>
-	 * Returns {@code null} if the method is not {@linkplain Refered} annotated.
+	 * Return {@code null} if the method is not {@linkplain Refered} annotated.
 	 * </p>
 	 * 
 	 * @param method
@@ -920,7 +920,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Returns if the type parameter in super class is overridden-equals with
+	 * Return if the type parameter in super class is overridden-equals with
 	 * the type parameter in sub class.
 	 * 
 	 * @param superTypeParam

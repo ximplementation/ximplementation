@@ -65,7 +65,7 @@ public class SimpleImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * Build an instance by <i>implementor</i> beans map.
+	 * Create an instance by <i>implementor</i> beans map.
 	 * 
 	 * @param implementorBeansMap
 	 *            The <i>implementor</i> beans map to be built.
@@ -78,7 +78,7 @@ public class SimpleImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * Build an instance by <i>implementor</i> beans array.
+	 * Create an instance by <i>implementor</i> beans array.
 	 * 
 	 * @param implementorBeans
 	 *            The <i>implementor</i> beans to be built.

@@ -36,7 +36,7 @@ public class TypeUtil
 	}
 
 	/**
-	 * Returns the wrapper type of the specified type if it is a primitive,
+	 * Return the wrapper type of the specified type if it is a primitive,
 	 * returns itself if not.
 	 * 
 	 * @param type
@@ -191,7 +191,7 @@ public class TypeUtil
 	}
 
 	/**
-	 * Returns the final type of a specified {@linkplain TypeVariable}.
+	 * Return the final type of a specified {@linkplain TypeVariable}.
 	 * <p>
 	 * For example, it will returns {@code Integer} for {@code T} of the
 	 * following map :
@@ -228,7 +228,7 @@ public class TypeUtil
 	}
 
 	/**
-	 * Returns if the type parameter in super class is overridden-equals with
+	 * Return if the type parameter in super class is overridden-equals with
 	 * the type parameter in sub class.
 	 * <p>
 	 * See JLS chapters about overridden.
@@ -349,7 +349,7 @@ public class TypeUtil
 	}
 
 	/**
-	 * Returns if the two objects are equals for null resolved.
+	 * Return if the two objects are equals for null resolved.
 	 * 
 	 * @param a
 	 * @param b

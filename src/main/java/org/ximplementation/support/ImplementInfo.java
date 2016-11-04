@@ -71,7 +71,7 @@ public class ImplementInfo implements Serializable
 	}
 
 	/**
-	 * Gets the <i>implementee method</i>.
+	 * Get the <i>implementee method</i>.
 	 * 
 	 * @return
 	 */
@@ -81,7 +81,7 @@ public class ImplementInfo implements Serializable
 	}
 
 	/**
-	 * Sets the <i>implementee method</i>.
+	 * Set the <i>implementee method</i>.
 	 * 
 	 * @param implementeeMethod
 	 */
@@ -91,7 +91,7 @@ public class ImplementInfo implements Serializable
 	}
 
 	/**
-	 * Gets the {@code ImplementMethodInfo}s.
+	 * Get the {@code ImplementMethodInfo}s.
 	 * 
 	 * @return
 	 */
@@ -101,7 +101,7 @@ public class ImplementInfo implements Serializable
 	}
 
 	/**
-	 * Sets the {@code ImplementMethodInfo}s.
+	 * Set the {@code ImplementMethodInfo}s.
 	 * 
 	 * @param implementMethodInfos
 	 */
@@ -111,7 +111,7 @@ public class ImplementInfo implements Serializable
 	}
 
 	/**
-	 * Returns if it has implement method info.
+	 * Return if it has implement method info.
 	 * 
 	 * @return {@code true} if yes, {@code false} if no.
 	 */
@@ -122,7 +122,7 @@ public class ImplementInfo implements Serializable
 	}
 
 	/**
-	 * Gets the {@code ImplementMethodInfo} for a specified <i>implement
+	 * Get the {@code ImplementMethodInfo} for a specified <i>implement
 	 * method</i>.
 	 * 
 	 * @param implementMethod

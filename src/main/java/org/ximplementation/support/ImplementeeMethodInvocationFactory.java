@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
 public interface ImplementeeMethodInvocationFactory
 {
 	/**
-	 * Gets the {@linkplain ImplementeeMethodInvocation} for specified
+	 * Get the {@linkplain ImplementeeMethodInvocation} for specified
 	 * <i>implementee</i> method invocation.
 	 * 
 	 * @param implementation

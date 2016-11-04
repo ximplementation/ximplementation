@@ -36,7 +36,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	private Map<Class<?>, List<Object>> implementorBeansMap = new HashMap<Class<?>, List<Object>>();
 
 	/**
-	 * Create a instance by <i>implementor</i> set.
+	 * Create an instance by <i>implementor</i> set.
 	 * 
 	 * @param implementors
 	 */
@@ -51,7 +51,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * Create a instance by the <i>implementor</i>s of an
+	 * Create an instance by the <i>implementor</i>s of an
 	 * {@linkplain Implementation}.
 	 * 
 	 * @param implementation
@@ -80,7 +80,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * Gets all the <i>implementor</i>s.
+	 * Get all the <i>implementor</i>s.
 	 * 
 	 * @return
 	 */
@@ -90,7 +90,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * Returns if a specified <i>implementor</i> is acceptable.
+	 * Return if a specified <i>implementor</i> is acceptable.
 	 * 
 	 * @param implementor
 	 *            The <i>implementor</i> to be checked.
@@ -102,7 +102,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * Returns if a specified <i>implementor</i> bean is acceptable.
+	 * Return if a specified <i>implementor</i> bean is acceptable.
 	 * 
 	 * @param implementorBean
 	 *            The <i>implementor</i> bean to be checked.
@@ -117,7 +117,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	/**
 	 * Add an <i>implementor</i> bean.
 	 * <p>
-	 * Returns {@code true} if the bean is acceptable, {@code false} otherwise.
+	 * Return {@code true} if the bean is acceptable, {@code false} otherwise.
 	 * </p>
 	 * 
 	 * @param implementorBean

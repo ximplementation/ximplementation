@@ -158,7 +158,7 @@ public class DefaultImplementeeMethodInvocationFactory
 	}
 
 	/**
-	 * Returns if {@linkplain ImplementMethodInfo#getImplementMethod()}
+	 * Return if {@linkplain ImplementMethodInfo#getImplementMethod()}
 	 * parameter types are valid for the given parameters.
 	 * 
 	 * @param implementMethodInfo
@@ -204,7 +204,7 @@ public class DefaultImplementeeMethodInvocationFactory
 	 * Compare two {@linkplain ImplementMethodInfo}'s priority which both are
 	 * valid to {@code implementeeMethodParams}.
 	 * <p>
-	 * Returns {@code >0} if {@code first} is higher; returns {@code <0} if
+	 * Return {@code >0} if {@code first} is higher; returns {@code <0} if
 	 * {@code second} is higher; returns {@code 0} if they are the same.
 	 * </p>
 	 * 
@@ -248,7 +248,7 @@ public class DefaultImplementeeMethodInvocationFactory
 	 * Compare two {@linkplain ImplementMethodInfo}'s method parameter type
 	 * priority.
 	 * <p>
-	 * Returns {@code >0} if {@code first} is higher; returns {@code <0} if
+	 * Return {@code >0} if {@code first} is higher; returns {@code <0} if
 	 * {@code second} is higher; returns {@code 0} if they are the same.
 	 * </p>
 	 * 
@@ -328,7 +328,7 @@ public class DefaultImplementeeMethodInvocationFactory
 	/**
 	 * Compare two <i>implementor</i>'s priority.
 	 * <p>
-	 * Returns {@code >0} if {@code firstImplementor} is higher; returns
+	 * Return {@code >0} if {@code firstImplementor} is higher; returns
 	 * {@code <0} if {@code secondImplementor} is higher; returns {@code 0} if
 	 * they are the same.
 	 * </p>
@@ -361,7 +361,7 @@ public class DefaultImplementeeMethodInvocationFactory
 	}
 
 	/**
-	 * Returns the wrapper type of the specified type if it is a primitive,
+	 * Return the wrapper type of the specified type if it is a primitive,
 	 * returns itself if not.
 	 * 
 	 * @param type

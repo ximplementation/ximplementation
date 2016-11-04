@@ -58,7 +58,7 @@ public class Implementation<T> implements Serializable
 	}
 
 	/**
-	 * Gets the <i>implementee</i>.
+	 * Get the <i>implementee</i>.
 	 * 
 	 * @return
 	 */
@@ -68,7 +68,7 @@ public class Implementation<T> implements Serializable
 	}
 
 	/**
-	 * Sets the <i>implementee</i>.
+	 * Set the <i>implementee</i>.
 	 * 
 	 * @param implementee
 	 */
@@ -78,7 +78,7 @@ public class Implementation<T> implements Serializable
 	}
 
 	/**
-	 * Gets the {@code ImplementInfo}s about the <i>implementee</i>.
+	 * Get the {@code ImplementInfo}s about the <i>implementee</i>.
 	 * 
 	 * @return
 	 */
@@ -88,7 +88,7 @@ public class Implementation<T> implements Serializable
 	}
 
 	/**
-	 * Sets the {@code ImplementInfo}s about the <i>implementee</i>.
+	 * Set the {@code ImplementInfo}s about the <i>implementee</i>.
 	 * 
 	 * @param implementInfos
 	 */
@@ -98,7 +98,7 @@ public class Implementation<T> implements Serializable
 	}
 
 	/**
-	 * Gets the {@code ImplementInfo} for a specified <i>implementee</i> method.
+	 * Get the {@code ImplementInfo} for a specified <i>implementee</i> method.
 	 * 
 	 * @param implementeeMethod
 	 *            The <i>implementee method</i> int the <i>implementee</i>.

@@ -68,7 +68,7 @@ public class ImplementMethodInfo implements Serializable
 	private int[] priorityParamIndexes;
 
 	/**
-	 * Creates an {@code ImplementMethodInfo} instance.
+	 * Create an {@code ImplementMethodInfo} instance.
 	 */
 	public ImplementMethodInfo()
 	{
@@ -91,7 +91,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Gets the <i>implementor</i>.
+	 * Get the <i>implementor</i>.
 	 * 
 	 * @return
 	 */
@@ -101,7 +101,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Sets the <i>implementor</i>.
+	 * Set the <i>implementor</i>.
 	 * 
 	 * @param implementor
 	 */
@@ -111,7 +111,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Gets the <i>implement method</i>.
+	 * Get the <i>implement method</i>.
 	 * 
 	 * @return
 	 */
@@ -121,7 +121,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Sets the <i>implement method</i>.
+	 * Set the <i>implement method</i>.
 	 * 
 	 * @param implementMethod
 	 */
@@ -131,7 +131,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Gets the parameter types about the <i>implement method</i>.
+	 * Get the parameter types about the <i>implement method</i>.
 	 * 
 	 * @return
 	 */
@@ -141,7 +141,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Sets the parameter types about the <i>implement method</i>.
+	 * Set the parameter types about the <i>implement method</i>.
 	 * 
 	 * @param paramTypes
 	 */
@@ -151,7 +151,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Gets the generic parameter types about the <i>implement method</i>.
+	 * Get the generic parameter types about the <i>implement method</i>.
 	 * 
 	 * @return
 	 */
@@ -161,7 +161,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Sets the generic parameter types about the <i>implement method</i>.
+	 * Set the generic parameter types about the <i>implement method</i>.
 	 * 
 	 * @param genericParamTypes
 	 */
@@ -171,7 +171,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Gets the parameter indexes about the <i>implement method</i>.
+	 * Get the parameter indexes about the <i>implement method</i>.
 	 * @return
 	 */
 	public int[] getParamIndexes()
@@ -180,7 +180,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Sets the parameter indexes about the <i>implement method</i>.
+	 * Set the parameter indexes about the <i>implement method</i>.
 	 * 
 	 * @param paramIndexes
 	 */
@@ -190,7 +190,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Gets the parameter array of this <i>implement method</i> for the
+	 * Get the parameter array of this <i>implement method</i> for the
 	 * specified <i>implementee method</i> parameter array.
 	 * 
 	 * @param implementeeMethodParams
@@ -205,7 +205,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Returns if the <i>implement method</i> has a validity method.
+	 * Return if the <i>implement method</i> has a validity method.
 	 * 
 	 * @return {@code true} if yes, {@code false} if no.
 	 */
@@ -215,7 +215,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Gets the validity method for the <i>implement method</i>.
+	 * Get the validity method for the <i>implement method</i>.
 	 * 
 	 * @return
 	 */
@@ -225,7 +225,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Sets the validity method for the <i>implement method</i>.
+	 * Set the validity method for the <i>implement method</i>.
 	 * 
 	 * @param validityMethod
 	 */
@@ -235,7 +235,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Gets the validity method parameter indexes about the <i>implement
+	 * Get the validity method parameter indexes about the <i>implement
 	 * method</i>.
 	 * 
 	 * @return
@@ -246,7 +246,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Sets the validity method parameter indexes about the <i>implement
+	 * Set the validity method parameter indexes about the <i>implement
 	 * method</i>.
 	 * 
 	 * @param validityParamIndexes
@@ -257,7 +257,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Gets the parameter array of the validity method for the specified
+	 * Get the parameter array of the validity method for the specified
 	 * <i>implementee method</i> parameter array.
 	 * 
 	 * @param implementeeMethodParams
@@ -272,7 +272,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Gets the fixed priority value for the <i>implement method</i>.
+	 * Get the fixed priority value for the <i>implement method</i>.
 	 * 
 	 * @return The fixed priority value.
 	 */
@@ -282,7 +282,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Sets the fixed priority value for the <i>implement method</i>.
+	 * Set the fixed priority value for the <i>implement method</i>.
 	 * 
 	 * @param priorityValue
 	 */
@@ -292,7 +292,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Returns if the <i>implement method</i> has a priority method.
+	 * Return if the <i>implement method</i> has a priority method.
 	 * 
 	 * @return {@code true} if yes, {@code false} if no.
 	 */
@@ -302,7 +302,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Gets the priority method for the <i>implement method</i>.
+	 * Get the priority method for the <i>implement method</i>.
 	 * 
 	 * @return
 	 */
@@ -312,7 +312,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Sets the priority method for the <i>implement method</i>.
+	 * Set the priority method for the <i>implement method</i>.
 	 * 
 	 * @param priorityMethod
 	 */
@@ -322,7 +322,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Gets the priority method parameter indexes about the <i>implement
+	 * Get the priority method parameter indexes about the <i>implement
 	 * method</i>.
 	 * 
 	 * @return
@@ -333,7 +333,7 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Sets the priority method parameter indexes about the <i>implement
+	 * Set the priority method parameter indexes about the <i>implement
 	 * method</i>.
 	 * 
 	 * @param priorityParamIndexes
@@ -361,7 +361,7 @@ public class ImplementMethodInfo implements Serializable
 	/**
 	 * Copy array by indexes.
 	 * <P>
-	 * Returns an array of {@code 0} length if the {@code indexes} is
+	 * Return an array of {@code 0} length if the {@code indexes} is
 	 * {@code null} or empty.
 	 * </P>
 	 * 
