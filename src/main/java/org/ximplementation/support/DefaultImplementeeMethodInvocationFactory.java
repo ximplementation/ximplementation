@@ -84,31 +84,35 @@ public class DefaultImplementeeMethodInvocationFactory
 			if (implementorBeans == null || implementorBeans.isEmpty())
 				continue;
 
+			Method validityMethod = myImplementMethodInfo.getValidityMethod();
 			Object[] validityMethodParams = myImplementMethodInfo
 					.getValidityParams(implementeeMethodParams);
+			Method priorityMethod = myImplementMethodInfo.getPriorityMethod();
 			Object[] priorityMethodParams = myImplementMethodInfo
 					.getPriorityParams(implementeeMethodParams);
 
 			for (Object myImplementorBean : implementorBeans)
 			{
-				if (myImplementMethodInfo.hasValidityMethod())
+				if (validityMethod != null)
 				{
-					Object isValid = myImplementMethodInfo.getValidityMethod()
-							.invoke(myImplementorBean, validityMethodParams);
+					boolean isValid = invokeValidityMethod(implementation,
+							implementeeMethod, myImplementMethodInfo,
+							validityMethod, validityMethodParams,
+							myImplementorBean);
 
-					if (!Boolean.TRUE.equals(isValid))
+					if (!isValid)
 						continue;
 				}
 
 				int myPriority = myImplementMethodInfo.getPriorityValue();
 
-				if (myImplementMethodInfo.hasPriorityMethod())
+				if (priorityMethod != null)
 				{
-					Number myPriorityNmb = (Number) myImplementMethodInfo
-							.getPriorityMethod()
-							.invoke(myImplementorBean, priorityMethodParams);
-					if (myPriorityNmb != null)
-						myPriority = myPriorityNmb.intValue();
+					myPriority = invokePriorityMethod(implementation,
+							implementeeMethod, myImplementMethodInfo,
+							myImplementMethodInfo.getPriorityMethod(),
+							priorityMethodParams,
+							myImplementorBean);
 				}
 
 				boolean replace = false;
@@ -158,8 +162,57 @@ public class DefaultImplementeeMethodInvocationFactory
 	}
 
 	/**
-	 * Return if {@linkplain ImplementMethodInfo#getImplementMethod()}
-	 * parameter types are valid for the given parameters.
+	 * Invoke validity method.
+	 * 
+	 * @param implementation
+	 * @param implementeeMethod
+	 * @param implementMethodInfo
+	 * @param validityMethod
+	 * @param validityParams
+	 * @param implementorBean
+	 * @return
+	 * @throws Throwable
+	 */
+	protected boolean invokeValidityMethod(Implementation<?> implementation,
+			Method implementeeMethod, ImplementMethodInfo implementMethodInfo,
+			Method validityMethod,
+			Object[] validityParams, Object implementorBean) throws Throwable
+	{
+		if (!validityMethod.isAccessible())
+			validityMethod.setAccessible(true);
+
+		return Boolean.TRUE.equals(validityMethod.invoke(implementorBean, validityParams));
+	}
+
+	/**
+	 * Invoke priority method.
+	 * 
+	 * @param implementation
+	 * @param implementeeMethod
+	 * @param implementMethodInfo
+	 * @param priorityMethod
+	 * @param priorityParams
+	 * @param implementorBean
+	 * @return
+	 * @throws Throwable
+	 */
+	protected int invokePriorityMethod(Implementation<?> implementation,
+			Method implementeeMethod, ImplementMethodInfo implementMethodInfo,
+			Method priorityMethod, Object[] priorityParams,
+			Object implementorBean) throws Throwable
+	{
+		if (!priorityMethod.isAccessible())
+			priorityMethod.setAccessible(true);
+
+		Object priority = priorityMethod.invoke(implementorBean,
+				priorityParams);
+
+		return ((Number) priority).intValue();
+	}
+
+	/**
+	 * Return if {@linkplain ImplementMethodInfo#getImplementMethod()} parameter
+	 * types are valid for the given parameters.
 	 * 
 	 * @param implementMethodInfo
 	 * @param implementeeMethodParams

@@ -217,7 +217,7 @@ public class ImplementMethodInfo implements Serializable
 	/**
 	 * Get the validity method for the <i>implement method</i>.
 	 * 
-	 * @return
+	 * @return The validity method, {@code null} if none.
 	 */
 	public Method getValidityMethod()
 	{
@@ -263,7 +263,8 @@ public class ImplementMethodInfo implements Serializable
 	 * @param implementeeMethodParams
 	 *            The <i>implementee method</i> parameter array.
 	 * @return An parameter array for the validity method invocation, {@code 0}
-	 *         length if the validity method has no parameter.
+	 *         length if {@linkplain #getValidityParamIndexes()} is {@code null}
+	 *         .
 	 */
 	public Object[] getValidityParams(Object[] implementeeMethodParams)
 	{
@@ -304,7 +305,7 @@ public class ImplementMethodInfo implements Serializable
 	/**
 	 * Get the priority method for the <i>implement method</i>.
 	 * 
-	 * @return
+	 * @return The priority method, {@code null} if none.
 	 */
 	public Method getPriorityMethod()
 	{
@@ -350,7 +351,8 @@ public class ImplementMethodInfo implements Serializable
 	 * @param implementeeMethodParams
 	 *            The <i>implementee method</i> parameter array.
 	 * @return An parameter array for the priority method invocation, {@code 0}
-	 *         length if the priority method has no parameter.
+	 *         length if {@linkplain #getPriorityParamIndexes()} is {@code null}
+	 *         .
 	 */
 	public Object[] getPriorityParams(Object[] implementeeMethodParams)
 	{

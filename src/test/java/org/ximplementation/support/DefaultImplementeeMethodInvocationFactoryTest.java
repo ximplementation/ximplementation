@@ -63,24 +63,24 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 	}
 
 	@Test
-	public void evaluateTest() throws Throwable
+	public void getTest() throws Throwable
 	{
 		// isImplementMethodParamValid(...) = false
 		{
-			Class<?> implementee = EvaluateTest.Implementee.class;
+			Class<?> implementee = GetTest.Implementee.class;
 			Method implementeeMethod = getMethodByName(implementee, "plus");
 
 			Map<Class<?>, Collection<?>> implementorBeansMap = new HashMap<Class<?>, Collection<?>>();
-			implementorBeansMap.put(EvaluateTest.Implementor1.class,
-					Arrays.asList(new EvaluateTest.Implementor1()));
-			implementorBeansMap.put(EvaluateTest.Implementor2.class,
-					Arrays.asList(new EvaluateTest.Implementor2()));
+			implementorBeansMap.put(GetTest.Implementor1.class,
+					Arrays.asList(new GetTest.Implementor1()));
+			implementorBeansMap.put(GetTest.Implementor2.class,
+					Arrays.asList(new GetTest.Implementor2()));
 
 			assertNull(this.defaultImplementeeMethodInvocationFactory
 					.get(
 							this.implementationResolver.resolve(implementee,
-									EvaluateTest.Implementor1.class,
-									EvaluateTest.Implementor2.class),
+									GetTest.Implementor1.class,
+									GetTest.Implementor2.class),
 							implementeeMethod, new Object[] { 1D, 2D },
 							new SimpleImplementorBeanFactory(
 									implementorBeansMap)));
@@ -88,54 +88,54 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 
 		// implementorBeans == null
 		{
-			Class<?> implementee = EvaluateTest.Implementee.class;
+			Class<?> implementee = GetTest.Implementee.class;
 			Method implementeeMethod = getMethodByName(implementee, "plus");
 
 			assertNull(this.defaultImplementeeMethodInvocationFactory
 					.get(
 							this.implementationResolver.resolve(implementee,
-									EvaluateTest.Implementor0.class,
-									EvaluateTest.Implementor1.class),
+									GetTest.Implementor0.class,
+									GetTest.Implementor1.class),
 							implementeeMethod, new Object[] { 1D, 2D },
 							new SimpleImplementorBeanFactory()));
 		}
 
 		// implementorBeans.isEmpty()
 		{
-			Class<?> implementee = EvaluateTest.Implementee.class;
+			Class<?> implementee = GetTest.Implementee.class;
 			Method implementeeMethod = getMethodByName(implementee, "plus");
 
 			Map<Class<?>, Collection<?>> implementorBeansMap = new HashMap<Class<?>, Collection<?>>();
-			implementorBeansMap.put(EvaluateTest.Implementor1.class,
+			implementorBeansMap.put(GetTest.Implementor1.class,
 					Arrays.asList());
-			implementorBeansMap.put(EvaluateTest.Implementor2.class,
+			implementorBeansMap.put(GetTest.Implementor2.class,
 					Arrays.asList());
 
 			assertNull(this.defaultImplementeeMethodInvocationFactory
 					.get(
 							this.implementationResolver.resolve(implementee,
-									EvaluateTest.Implementor0.class,
-									EvaluateTest.Implementor1.class),
+									GetTest.Implementor0.class,
+									GetTest.Implementor1.class),
 							implementeeMethod, new Object[] { 1D, 2D },
 							new SimpleImplementorBeanFactory()));
 		}
 
-		// myImplementMethodInfo.getValidityMethod().invoke(...) = false
+		// invokeValidityMethod(...) is false
 		{
-			Class<?> implementee = EvaluateTest.Implementee.class;
+			Class<?> implementee = GetTest.Implementee.class;
 			Method implementeeMethod = getMethodByName(implementee, "plus");
 
 			Map<Class<?>, Collection<?>> implementorBeansMap = new HashMap<Class<?>, Collection<?>>();
-			implementorBeansMap.put(EvaluateTest.Implementor2.class,
-					Arrays.asList(new EvaluateTest.Implementor2()));
-			implementorBeansMap.put(EvaluateTest.Implementor3.class,
-					Arrays.asList(new EvaluateTest.Implementor3()));
+			implementorBeansMap.put(GetTest.Implementor2.class,
+					Arrays.asList(new GetTest.Implementor2()));
+			implementorBeansMap.put(GetTest.Implementor3.class,
+					Arrays.asList(new GetTest.Implementor3()));
 
 			assertNull(this.defaultImplementeeMethodInvocationFactory
 					.get(
 							this.implementationResolver.resolve(implementee,
-									EvaluateTest.Implementor2.class,
-									EvaluateTest.Implementor3.class),
+									GetTest.Implementor2.class,
+									GetTest.Implementor3.class),
 							implementeeMethod, new Object[] { -1, 2 },
 							new SimpleImplementorBeanFactory(
 									implementorBeansMap)));
@@ -143,105 +143,105 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 
 		// getPriorityValue() = Integer.MAX_VALUE
 		{
-			Class<?> implementee = EvaluateTest.Implementee.class;
+			Class<?> implementee = GetTest.Implementee.class;
 			Method implementeeMethod = getMethodByName(implementee, "plus");
 
 			Map<Class<?>, Collection<?>> implementorBeansMap = new HashMap<Class<?>, Collection<?>>();
-			implementorBeansMap.put(EvaluateTest.Implementor0.class,
-					Arrays.asList(new EvaluateTest.Implementor0()));
-			implementorBeansMap.put(EvaluateTest.Implementor1.class,
-					Arrays.asList(new EvaluateTest.Implementor1()));
-			implementorBeansMap.put(EvaluateTest.Implementor2.class,
-					Arrays.asList(new EvaluateTest.Implementor2()));
-			implementorBeansMap.put(EvaluateTest.Implementor3.class,
-					Arrays.asList(new EvaluateTest.Implementor3()));
-			implementorBeansMap.put(EvaluateTest.Implementor4.class,
-					Arrays.asList(new EvaluateTest.Implementor4()));
+			implementorBeansMap.put(GetTest.Implementor0.class,
+					Arrays.asList(new GetTest.Implementor0()));
+			implementorBeansMap.put(GetTest.Implementor1.class,
+					Arrays.asList(new GetTest.Implementor1()));
+			implementorBeansMap.put(GetTest.Implementor2.class,
+					Arrays.asList(new GetTest.Implementor2()));
+			implementorBeansMap.put(GetTest.Implementor3.class,
+					Arrays.asList(new GetTest.Implementor3()));
+			implementorBeansMap.put(GetTest.Implementor4.class,
+					Arrays.asList(new GetTest.Implementor4()));
 
 			SimpleImplementeeMethodInvocation implementeeMethodInvocationInfo = (SimpleImplementeeMethodInvocation) this.defaultImplementeeMethodInvocationFactory
 					.get(
 							this.implementationResolver.resolve(implementee,
-									EvaluateTest.Implementor0.class,
-									EvaluateTest.Implementor1.class,
-									EvaluateTest.Implementor2.class,
-									EvaluateTest.Implementor3.class,
-									EvaluateTest.Implementor4.class),
+									GetTest.Implementor0.class,
+									GetTest.Implementor1.class,
+									GetTest.Implementor2.class,
+									GetTest.Implementor3.class,
+									GetTest.Implementor4.class),
 							implementeeMethod, new Object[] { 1, 2 },
 							new SimpleImplementorBeanFactory(
 									implementorBeansMap));
 
-			assertEquals(EvaluateTest.Implementor4.class,
+			assertEquals(GetTest.Implementor4.class,
 					implementeeMethodInvocationInfo.getImplementMethodInfo()
 							.getImplementor());
 			assertTrue(implementeeMethodInvocationInfo
-					.getImplementorBean() instanceof EvaluateTest.Implementor4);
+					.getImplementorBean() instanceof GetTest.Implementor4);
 		}
 
-		// getPriorityMethod().invoke(...) = Integer.MAX_VALUE
+		// invokePriorityMethod(...) = Integer.MAX_VALUE
 		{
-			Class<?> implementee = EvaluateTest.Implementee.class;
+			Class<?> implementee = GetTest.Implementee.class;
 			Method implementeeMethod = getMethodByName(implementee, "plus");
 
 			Map<Class<?>, Collection<?>> implementorBeansMap = new HashMap<Class<?>, Collection<?>>();
-			implementorBeansMap.put(EvaluateTest.Implementor0.class,
-					Arrays.asList(new EvaluateTest.Implementor0()));
-			implementorBeansMap.put(EvaluateTest.Implementor1.class,
-					Arrays.asList(new EvaluateTest.Implementor1()));
-			implementorBeansMap.put(EvaluateTest.Implementor2.class,
-					Arrays.asList(new EvaluateTest.Implementor2()));
-			implementorBeansMap.put(EvaluateTest.Implementor3.class,
-					Arrays.asList(new EvaluateTest.Implementor3()));
-			implementorBeansMap.put(EvaluateTest.Implementor5.class,
-					Arrays.asList(new EvaluateTest.Implementor5()));
+			implementorBeansMap.put(GetTest.Implementor0.class,
+					Arrays.asList(new GetTest.Implementor0()));
+			implementorBeansMap.put(GetTest.Implementor1.class,
+					Arrays.asList(new GetTest.Implementor1()));
+			implementorBeansMap.put(GetTest.Implementor2.class,
+					Arrays.asList(new GetTest.Implementor2()));
+			implementorBeansMap.put(GetTest.Implementor3.class,
+					Arrays.asList(new GetTest.Implementor3()));
+			implementorBeansMap.put(GetTest.Implementor5.class,
+					Arrays.asList(new GetTest.Implementor5()));
 
 			SimpleImplementeeMethodInvocation implementeeMethodInvocationInfo = (SimpleImplementeeMethodInvocation) this.defaultImplementeeMethodInvocationFactory
 					.get(
 							this.implementationResolver.resolve(implementee,
-									EvaluateTest.Implementor0.class,
-									EvaluateTest.Implementor1.class,
-									EvaluateTest.Implementor2.class,
-									EvaluateTest.Implementor3.class,
-									EvaluateTest.Implementor5.class),
+									GetTest.Implementor0.class,
+									GetTest.Implementor1.class,
+									GetTest.Implementor2.class,
+									GetTest.Implementor3.class,
+									GetTest.Implementor5.class),
 							implementeeMethod, new Object[] { 1, 2 },
 							new SimpleImplementorBeanFactory(
 									implementorBeansMap));
 
-			assertEquals(EvaluateTest.Implementor5.class,
+			assertEquals(GetTest.Implementor5.class,
 					implementeeMethodInvocationInfo.getImplementMethodInfo()
 							.getImplementor());
 			assertTrue(implementeeMethodInvocationInfo
-					.getImplementorBean() instanceof EvaluateTest.Implementor5);
+					.getImplementorBean() instanceof GetTest.Implementor5);
 		}
 
 		// compareImplementMethodInfoPriority(...) < 0
 		{
-			Class<?> implementee = EvaluateTest.Implementee.class;
+			Class<?> implementee = GetTest.Implementee.class;
 			Method implementeeMethod = getMethodByName(implementee, "plus");
 
 			Map<Class<?>, Collection<?>> implementorBeansMap = new HashMap<Class<?>, Collection<?>>();
-			implementorBeansMap.put(EvaluateTest.Implementor0.class,
-					Arrays.asList(new EvaluateTest.Implementor0()));
-			implementorBeansMap.put(EvaluateTest.Implementor1.class,
-					Arrays.asList(new EvaluateTest.Implementor1()));
+			implementorBeansMap.put(GetTest.Implementor0.class,
+					Arrays.asList(new GetTest.Implementor0()));
+			implementorBeansMap.put(GetTest.Implementor1.class,
+					Arrays.asList(new GetTest.Implementor1()));
 
 			SimpleImplementeeMethodInvocation implementeeMethodInvocationInfo = (SimpleImplementeeMethodInvocation) this.defaultImplementeeMethodInvocationFactory
 					.get(
 							this.implementationResolver.resolve(implementee,
-									EvaluateTest.Implementor0.class,
-									EvaluateTest.Implementor1.class),
+									GetTest.Implementor0.class,
+									GetTest.Implementor1.class),
 							implementeeMethod, new Object[] { 1, 2 },
 							new SimpleImplementorBeanFactory(
 									implementorBeansMap));
 
-			assertEquals(EvaluateTest.Implementor1.class,
+			assertEquals(GetTest.Implementor1.class,
 					implementeeMethodInvocationInfo.getImplementMethodInfo()
 							.getImplementor());
 			assertTrue(implementeeMethodInvocationInfo
-					.getImplementorBean() instanceof EvaluateTest.Implementor1);
+					.getImplementorBean() instanceof GetTest.Implementor1);
 		}
 	}
 
-	public static class EvaluateTest
+	public static class GetTest
 	{
 		public static interface Implementee
 		{
@@ -320,6 +320,332 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 			public int getPriority()
 			{
 				return Integer.MAX_VALUE;
+			}
+		}
+	}
+
+	@Test
+	public void invokeValidityMethodTest() throws Throwable
+	{
+		// public validity method
+		{
+			Implementation<InvokeValidityMethodTest.Implementee> implementation = this.implementationResolver
+					.resolve(InvokeValidityMethodTest.Implementee.class,
+							InvokeValidityMethodTest.Implementor0.class);
+
+			Method implementeeMethod = getMethodByName(
+					InvokeValidityMethodTest.Implementee.class, "handle");
+
+			ImplementInfo implementInfo = implementation
+					.getImplementInfo(implementeeMethod);
+			ImplementMethodInfo implementMethodInfo = implementInfo
+					.getImplementMethodInfos()[0];
+			Object[] params = {};
+
+			assertFalse(this.defaultImplementeeMethodInvocationFactory
+					.invokeValidityMethod(implementation, implementeeMethod,
+							implementMethodInfo,
+							implementMethodInfo.getValidityMethod(), params,
+							new InvokeValidityMethodTest.Implementor0()));
+		}
+
+		// default validity method
+		{
+			Implementation<InvokeValidityMethodTest.Implementee> implementation = this.implementationResolver
+					.resolve(InvokeValidityMethodTest.Implementee.class,
+							InvokeValidityMethodTest.Implementor1.class);
+
+			Method implementeeMethod = getMethodByName(
+					InvokeValidityMethodTest.Implementee.class, "handle");
+
+			ImplementInfo implementInfo = implementation
+					.getImplementInfo(implementeeMethod);
+			ImplementMethodInfo implementMethodInfo = implementInfo
+					.getImplementMethodInfos()[0];
+			Object[] params = {};
+
+			assertFalse(this.defaultImplementeeMethodInvocationFactory
+					.invokeValidityMethod(implementation, implementeeMethod,
+							implementMethodInfo,
+							implementMethodInfo.getValidityMethod(), params,
+							new InvokeValidityMethodTest.Implementor1()));
+		}
+
+		// protected validity method
+		{
+			Implementation<InvokeValidityMethodTest.Implementee> implementation = this.implementationResolver
+					.resolve(InvokeValidityMethodTest.Implementee.class,
+							InvokeValidityMethodTest.Implementor2.class);
+
+			Method implementeeMethod = getMethodByName(
+					InvokeValidityMethodTest.Implementee.class, "handle");
+
+			ImplementInfo implementInfo = implementation
+					.getImplementInfo(implementeeMethod);
+			ImplementMethodInfo implementMethodInfo = implementInfo
+					.getImplementMethodInfos()[0];
+			Object[] params = {};
+
+			assertFalse(this.defaultImplementeeMethodInvocationFactory
+					.invokeValidityMethod(implementation, implementeeMethod,
+							implementMethodInfo,
+							implementMethodInfo.getValidityMethod(), params,
+							new InvokeValidityMethodTest.Implementor2()));
+		}
+
+		// private validity method
+		{
+			Implementation<InvokeValidityMethodTest.Implementee> implementation = this.implementationResolver
+					.resolve(InvokeValidityMethodTest.Implementee.class,
+							InvokeValidityMethodTest.Implementor3.class);
+
+			Method implementeeMethod = getMethodByName(
+					InvokeValidityMethodTest.Implementee.class, "handle");
+
+			ImplementInfo implementInfo = implementation
+					.getImplementInfo(implementeeMethod);
+			ImplementMethodInfo implementMethodInfo = implementInfo
+					.getImplementMethodInfos()[0];
+			Object[] params = {};
+
+			assertFalse(this.defaultImplementeeMethodInvocationFactory
+					.invokeValidityMethod(implementation, implementeeMethod,
+							implementMethodInfo,
+							implementMethodInfo.getValidityMethod(), params,
+							new InvokeValidityMethodTest.Implementor3()));
+		}
+	}
+
+	protected static class InvokeValidityMethodTest
+	{
+		public static class Implementee
+		{
+			public void handle()
+			{
+			}
+		}
+
+		public static class Implementor0 extends Implementee
+		{
+			@Validity("isValid")
+			@Override
+			public void handle()
+			{
+				super.handle();
+			}
+
+			public boolean isValid()
+			{
+				return false;
+			}
+		}
+
+		public static class Implementor1 extends Implementee
+		{
+			@Validity("isValid")
+			@Override
+			public void handle()
+			{
+				super.handle();
+			}
+
+			boolean isValid()
+			{
+				return false;
+			}
+		}
+
+		public static class Implementor2 extends Implementee
+		{
+			@Validity("isValid")
+			@Override
+			public void handle()
+			{
+				super.handle();
+			}
+
+			protected boolean isValid()
+			{
+				return false;
+			}
+		}
+
+		public static class Implementor3 extends Implementee
+		{
+			@Validity("isValid")
+			@Override
+			public void handle()
+			{
+				super.handle();
+			}
+
+			@SuppressWarnings("unused")
+			private boolean isValid()
+			{
+				return false;
+			}
+		}
+	}
+
+	@Test
+	public void invokePriorityMethodTest() throws Throwable
+	{
+		// public
+		{
+			Implementation<InvokePriorityMethodTest.Implementee> implementation = this.implementationResolver
+					.resolve(InvokePriorityMethodTest.Implementee.class,
+							InvokePriorityMethodTest.Implementor0.class);
+
+			Method implementeeMethod = getMethodByName(
+					InvokePriorityMethodTest.Implementee.class, "handle");
+
+			ImplementInfo implementInfo = implementation
+					.getImplementInfo(implementeeMethod);
+			ImplementMethodInfo implementMethodInfo = implementInfo
+					.getImplementMethodInfos()[0];
+			Object[] params = {};
+
+			assertEquals(3, this.defaultImplementeeMethodInvocationFactory
+					.invokePriorityMethod(implementation, implementeeMethod,
+							implementMethodInfo,
+							implementMethodInfo.getPriorityMethod(), params,
+							new InvokePriorityMethodTest.Implementor0()));
+		}
+
+		// default
+		{
+			Implementation<InvokePriorityMethodTest.Implementee> implementation = this.implementationResolver
+					.resolve(InvokePriorityMethodTest.Implementee.class,
+							InvokePriorityMethodTest.Implementor1.class);
+
+			Method implementeeMethod = getMethodByName(
+					InvokePriorityMethodTest.Implementee.class, "handle");
+
+			ImplementInfo implementInfo = implementation
+					.getImplementInfo(implementeeMethod);
+			ImplementMethodInfo implementMethodInfo = implementInfo
+					.getImplementMethodInfos()[0];
+			Object[] params = {};
+
+			assertEquals(3, this.defaultImplementeeMethodInvocationFactory
+					.invokePriorityMethod(implementation, implementeeMethod,
+							implementMethodInfo,
+							implementMethodInfo.getPriorityMethod(), params,
+							new InvokePriorityMethodTest.Implementor1()));
+		}
+
+		// protected
+		{
+			Implementation<InvokePriorityMethodTest.Implementee> implementation = this.implementationResolver
+					.resolve(InvokePriorityMethodTest.Implementee.class,
+							InvokePriorityMethodTest.Implementor2.class);
+
+			Method implementeeMethod = getMethodByName(
+					InvokePriorityMethodTest.Implementee.class, "handle");
+
+			ImplementInfo implementInfo = implementation
+					.getImplementInfo(implementeeMethod);
+			ImplementMethodInfo implementMethodInfo = implementInfo
+					.getImplementMethodInfos()[0];
+			Object[] params = {};
+
+			assertEquals(3, this.defaultImplementeeMethodInvocationFactory
+					.invokePriorityMethod(implementation, implementeeMethod,
+							implementMethodInfo,
+							implementMethodInfo.getPriorityMethod(), params,
+							new InvokePriorityMethodTest.Implementor2()));
+		}
+
+		// private
+		{
+			Implementation<InvokePriorityMethodTest.Implementee> implementation = this.implementationResolver
+					.resolve(InvokePriorityMethodTest.Implementee.class,
+							InvokePriorityMethodTest.Implementor3.class);
+
+			Method implementeeMethod = getMethodByName(
+					InvokePriorityMethodTest.Implementee.class, "handle");
+
+			ImplementInfo implementInfo = implementation
+					.getImplementInfo(implementeeMethod);
+			ImplementMethodInfo implementMethodInfo = implementInfo
+					.getImplementMethodInfos()[0];
+			Object[] params = {};
+
+			assertEquals(3, this.defaultImplementeeMethodInvocationFactory
+					.invokePriorityMethod(implementation, implementeeMethod,
+							implementMethodInfo,
+							implementMethodInfo.getPriorityMethod(), params,
+							new InvokePriorityMethodTest.Implementor3()));
+		}
+	}
+
+	protected static class InvokePriorityMethodTest
+	{
+		public static class Implementee
+		{
+			public void handle()
+			{
+			}
+		}
+
+		public static class Implementor0 extends Implementee
+		{
+			@Priority("getPriority")
+			@Override
+			public void handle()
+			{
+				super.handle();
+			}
+
+			public int getPriority()
+			{
+				return 3;
+			}
+		}
+
+		public static class Implementor1 extends Implementee
+		{
+			@Priority("getPriority")
+			@Override
+			public void handle()
+			{
+				super.handle();
+			}
+
+			int getPriority()
+			{
+				return 3;
+			}
+		}
+
+		public static class Implementor2 extends Implementee
+		{
+			@Priority("getPriority")
+			@Override
+			public void handle()
+			{
+				super.handle();
+			}
+
+			protected int getPriority()
+			{
+				return 3;
+			}
+		}
+
+		public static class Implementor3 extends Implementee
+		{
+			@Priority("getPriority")
+			@Override
+			public void handle()
+			{
+				super.handle();
+			}
+
+			@SuppressWarnings("unused")
+			private int getPriority()
+			{
+				return 3;
 			}
 		}
 	}
