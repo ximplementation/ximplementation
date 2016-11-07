@@ -699,11 +699,11 @@ public class ImplementationResolver
 	{
 		Method method = null;
 
-		Method[] all = clazz.getMethods();
+		Method[] myAll = clazz.getDeclaredMethods();
 
 		List<Method> named = new ArrayList<Method>();
 
-		for (Method m : all)
+		for (Method m : myAll)
 		{
 			Refered refAnno = getAnnotation(m, Refered.class);
 
@@ -752,20 +752,31 @@ public class ImplementationResolver
 
 		if (method == null)
 		{
-			if (named.size() == 1)
+			int namedSize = named.size();
+			
+			if (namedSize == 1)
 				method = named.get(0);
-			else if (named.size() == 0)
-				throw new ImplementationResolveException(
-						"Class [" + clazz.getName()
-								+ "] : No method is found for '"
-								+ methodRef + "' reference");
-			else
+			else if(namedSize > 1)
 				throw new ImplementationResolveException(
 						"Class [" + clazz.getName() + "] : More than one '"
 								+ methodRef
 								+ "' named method is found for '" + methodRef
 								+ "' reference");
+			else
+			{
+				if (clazz.getSuperclass() != null)
+				{
+					method = findReferedMethod(clazz.getSuperclass(), methodRef,
+							validReturnTypes);
+				}
+			}
 		}
+		
+		if(method == null)
+			throw new ImplementationResolveException(
+					"Class [" + clazz.getName()
+							+ "] : No method is found for '"
+							+ methodRef + "' reference");
 
 		return method;
 	}

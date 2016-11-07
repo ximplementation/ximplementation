@@ -1320,11 +1320,20 @@ public class ImplementationResolverTest extends AbstractTestSupport
 						FindReferedMethodTest.Test2.class, "test",
 						Number.class));
 
+		// method signature part
 		assertEquals(
 				getMethodByNameAndType(FindReferedMethodTest.Test4.class,
 						"test", int.class),
 				this.implementationResolver.findReferedMethod(
 						FindReferedMethodTest.Test4.class, "test(int)",
+						Number.class));
+
+		// findReferedMethod(clazz.getSuperclass(), methodRef, validReturnTypes)
+		assertEquals(
+				getMethodByNameAndType(FindReferedMethodTest.Test5.class,
+						"test", int.class),
+				this.implementationResolver.findReferedMethod(
+						FindReferedMethodTest.Test6.class, "test(int)",
 						Number.class));
 	}
 
@@ -1401,6 +1410,24 @@ public class ImplementationResolverTest extends AbstractTestSupport
 			{
 				return 0;
 			}
+		}
+
+		public static class Test5
+		{
+			public int test()
+			{
+				return 0;
+			}
+
+			public Integer test(int a)
+			{
+				return 0;
+			}
+		}
+
+		public static class Test6 extends Test5
+		{
+
 		}
 	}
 
