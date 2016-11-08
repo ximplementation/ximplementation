@@ -16,6 +16,7 @@ package org.ximplementation.support;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * Unit tests support class.
@@ -44,6 +45,18 @@ public abstract class AbstractTestSupport
 	}
 
 	public static Method getMethodByName(Method[] methods, String name)
+	{
+		for (Method method : methods)
+		{
+			if (method.getName().equals(name))
+				return method;
+		}
+
+		return null;
+	}
+
+	public static Method getMethodByName(Collection<Method> methods,
+			String name)
 	{
 		for (Method method : methods)
 		{

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -118,16 +119,11 @@ public class ImplementationResolver
 
 		List<ImplementInfo> implementInfos = new ArrayList<ImplementInfo>();
 
-		Method[] implementeeMethods = getCandidateImplementeeMethods(
+		Collection<Method> implementeeMethods = getImplementeeMethods(
 				implementee);
 
-		for (int i = 0; i < implementeeMethods.length; i++)
+		for (Method implementeeMethod : implementeeMethods)
 		{
-			Method implementeeMethod = implementeeMethods[i];
-
-			if (!isImplementeeMethod(implementee, implementeeMethod))
-				continue;
-
 			ImplementInfo implementInfo = resolveImplementInfo(implementee, implementeeMethods, implementeeMethod,
 					implementors);
 
@@ -152,7 +148,8 @@ public class ImplementationResolver
 	 * @param implementors
 	 * @return
 	 */
-	protected ImplementInfo resolveImplementInfo(Class<?> implementee, Method[] implementeeMethods, Method implementeeMethod,
+	protected ImplementInfo resolveImplementInfo(Class<?> implementee,
+			Collection<Method> implementeeMethods, Method implementeeMethod,
 			Set<Class<?>> implementors)
 	{
 		ImplementInfo implementInfo = new ImplementInfo(implementeeMethod);
@@ -188,7 +185,8 @@ public class ImplementationResolver
 	 * @param implementor
 	 * @return
 	 */
-	protected Collection<ImplementMethodInfo> resolveImplementMethodInfo(Class<?> implementee, Method[] implementeeMethods,
+	protected Collection<ImplementMethodInfo> resolveImplementMethodInfo(
+			Class<?> implementee, Collection<Method> implementeeMethods,
 			Method implementeeMethod, Class<?> implementor)
 	{
 		List<ImplementMethodInfo> implementMethodInfos = new ArrayList<ImplementMethodInfo>();
@@ -197,12 +195,11 @@ public class ImplementationResolver
 		String implementeeMethodSignature = getMethodSignature(implementee, implementeeMethod);
 		String implementeeMethodRefered = getRefered(implementeeMethod);
 
-		Method[] implementMethods = getCandidateImplementMethods(implementor);
+		Collection<Method> implementMethods = getCandidateImplementMethods(
+				implementor);
 
-		for (int i = 0; i < implementMethods.length; i++)
+		for (Method implementMethod : implementMethods)
 		{
-			Method implementMethod = implementMethods[i];
-
 			if (isImplementMethod(implementee, implementeeMethod, implementeeMethodName, implementeeMethodSignature,
 					implementeeMethodRefered, implementor, implementMethod))
 			{
@@ -379,31 +376,70 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Get candidate <i>implementee</i> methods.
-	 * <p>
-	 * They will be used for resolving later.
-	 * </p>
+	 * Get <i>implementee method</i>s for the specified <i>implementee</i>.
 	 * 
 	 * @param implementee
+	 *            The <i>implementee</i> to be got.
 	 * @return
 	 */
-	protected Method[] getCandidateImplementeeMethods(Class<?> implementee)
+	protected Collection<Method> getImplementeeMethods(
+			Class<?> implementee)
 	{
-		return implementee.getMethods();
+		Collection<Method> implementeeMethods = new LinkedList<Method>();
+
+		doGetImplementeeMethods(implementee, implementeeMethods);
+
+		return implementeeMethods;
 	}
 
 	/**
-	 * Get candidate implement methods.
-	 * <p>
-	 * They will be used for resolving later.
-	 * </p>
+	 * Do get <i>implementee method</i>s for the specified <i>implementee</i>.
 	 * 
-	 * @param implementor
-	 * @return
+	 * @param implementee
+	 *            The <i>implementee</i> to be got.
+	 * @param implementeeMethods
+	 *            An collection for storing <i>implementee method</i>s.
 	 */
-	protected Method[] getCandidateImplementMethods(Class<?> implementor)
+	protected void doGetImplementeeMethods(Class<?> implementee,
+			Collection<Method> implementeeMethods)
 	{
-		return implementor.getMethods();
+		Method[] myMethods = implementee.getDeclaredMethods();
+
+		for (Method myMethod : myMethods)
+		{
+			if (!isImplementeeMethod(implementee, myMethod))
+				continue;
+			
+			boolean hasOverriddenMethod = false;
+			
+			for(Method implementeeMethod : implementeeMethods)
+			{
+				if(isOverriddenMethod(implementee, myMethod, implementeeMethod.getDeclaringClass(), implementeeMethod))
+				{
+					hasOverriddenMethod = true;
+					break;
+				}
+			}
+
+			if (!hasOverriddenMethod)
+				implementeeMethods.add(myMethod);
+		}
+
+		// methods in super class
+		Class<?> superClass = implementee.getSuperclass();
+		if (superClass != null)
+			doGetImplementeeMethods(superClass, implementeeMethods);
+
+		// methods in super interfaces
+		Class<?>[] superInterfaces = implementee.getInterfaces();
+		if (superInterfaces != null)
+		{
+			for (Class<?> superInterface : superInterfaces)
+			{
+				doGetImplementeeMethods(superInterface,
+						implementeeMethods);
+			}
+		}
 	}
 
 	/**
@@ -416,21 +452,113 @@ public class ImplementationResolver
 	protected boolean isImplementeeMethod(Class<?> implementee, Method implementeeMethod)
 	{
 		int modifier = implementeeMethod.getModifiers();
-
-		// public,protected,default methods must be allowed
-		if (Modifier.isStatic(modifier) || Modifier.isPrivate(modifier))
+	
+		// exclude static method
+		if (Modifier.isStatic(modifier))
 			return false;
-
+	
 		// exclude synthetic methods, compiler may generate odd methods
 		// especially when extending generic type
 		if (implementeeMethod.isSynthetic())
 			return false;
+	
+		return true;
+	}
 
-		Class<?> delcClass = implementeeMethod.getDeclaringClass();
+	/**
+	 * Get candidate implement methods.
+	 * 
+	 * @param implementor
+	 * @return
+	 */
+	protected Collection<Method> getCandidateImplementMethods(
+			Class<?> implementor)
+	{
+		Collection<Method> implementMethods = new LinkedList<Method>();
 
-		if (Object.class.equals(delcClass))
+		doGetCandidateImplementMethods(implementor, implementMethods);
+
+		return implementMethods;
+	}
+
+	/**
+	 * Do get <i>implement method</i>s for the specified <i>implementor</i>.
+	 * 
+	 * @param implementor
+	 *            The <i>implementor</i> to be got.
+	 * @param implementMethods
+	 *            An collection for storing <i>implement method</i>s.
+	 */
+	protected void doGetCandidateImplementMethods(Class<?> implementor,
+			Collection<Method> implementMethods)
+	{
+		Method[] myMethods = implementor.getDeclaredMethods();
+
+		for (Method myMethod : myMethods)
+		{
+			if (!isCandidateImplementMethod(implementor, myMethod))
+				continue;
+
+			boolean hasOverriddenMethod = false;
+
+			for (Method implementMethod : implementMethods)
+			{
+				if (isOverriddenMethod(implementor, myMethod,
+						implementMethod.getDeclaringClass(),
+						implementMethod))
+				{
+					hasOverriddenMethod = true;
+					break;
+				}
+			}
+
+			if (!hasOverriddenMethod)
+				implementMethods.add(myMethod);
+		}
+
+		// methods in super class
+		Class<?> superClass = implementor.getSuperclass();
+		if (superClass != null)
+			doGetImplementeeMethods(superClass, implementMethods);
+
+		// methods in super interfaces
+		Class<?>[] superInterfaces = implementor.getInterfaces();
+		if (superInterfaces != null)
+		{
+			for (Class<?> superInterface : superInterfaces)
+			{
+				doGetImplementeeMethods(superInterface, implementMethods);
+			}
+		}
+	}
+	
+	/**
+	 * Return if the {@code implementMethod} is candidate <i>implement
+	 * method</i>.
+	 * <p>
+	 * {@code @NotImplement} method must return {@code true} here, for if sub
+	 * class method is annotated with {@code @NotImplement} and is ignored by
+	 * {@linkplain #doGetCandidateImplementMethods(Class, Collection)}, its
+	 * ancestor method will be added also, and this is illegal.
+	 * </p>
+	 * 
+	 * @param implementor
+	 * @param implementMethod
+	 * @return
+	 */
+	protected boolean isCandidateImplementMethod(Class<?> implementor, Method implementMethod)
+	{
+		int modifier = implementMethod.getModifiers();
+	
+		// exclude static method
+		if (Modifier.isStatic(modifier))
 			return false;
-
+	
+		// exclude synthetic methods, compiler may generate odd methods
+		// especially when extending generic type
+		if (implementMethod.isSynthetic())
+			return false;
+	
 		return true;
 	}
 
@@ -532,20 +660,16 @@ public class ImplementationResolver
 	protected boolean maybeImplementMethod(Class<?> implementor, Method implementMethod)
 	{
 		int modifier = implementMethod.getModifiers();
-
-		// public,protected,default methods must be allowed, see
-		// #isImplementeeMethod
-		if (Modifier.isStatic(modifier) || Modifier.isPrivate(modifier))
+	
+		// exclude static method
+		if (Modifier.isStatic(modifier))
 			return false;
-
+	
 		// exclude synthetic methods, compiler may generate odd methods
 		// especially when extending generic type
 		if (implementMethod.isSynthetic())
 			return false;
 	
-		if (Object.class.equals(implementMethod.getDeclaringClass()))
-			return false;
-
 		if (getAnnotation(implementMethod, NotImplement.class) != null)
 			return false;
 	

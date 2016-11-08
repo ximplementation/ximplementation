@@ -19,15 +19,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -74,7 +76,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 
 		assertEquals(ResolveTestArray.Implementee.class,
 				implementation.getImplementee());
-		assertEquals(1, implementation.getImplementInfos().length);
+		assertEquals(12, implementation.getImplementInfos().length);
 
 		Set<Class<?>> expectedImplementors = new HashSet<Class<?>>();
 		expectedImplementors.add(ResolveTestArray.Implementor0.class);
@@ -105,7 +107,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 
 		assertEquals(ResolveTestArray.Implementee.class,
 				implementation.getImplementee());
-		assertEquals(1, implementation.getImplementInfos().length);
+		assertEquals(12, implementation.getImplementInfos().length);
 
 		Set<Class<?>> actualImplementors = new HashSet<Class<?>>();
 		for (ImplementMethodInfo implementMethodInfo : implementation
@@ -155,7 +157,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		
 		assertEquals(DoResolveTest.Implementee.class,
 				implementation.getImplementee());
-		assertEquals(1, implementation.getImplementInfos().length);
+		assertEquals(12, implementation.getImplementInfos().length);
 		assertEquals("handle", implementation.getImplementInfos()[0]
 				.getImplementeeMethod().getName());
 	}
@@ -198,7 +200,9 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		implementors.add(ResolveImplementInfoTest.Implementor1.class);
 		implementors.add(ResolveImplementInfoTest.NotImplementor.class);
 
-		Method[] implementeeMethods = ResolveImplementInfoTest.Implementee.class.getMethods();
+		Collection<Method> implementeeMethods = this.implementationResolver
+				.getImplementeeMethods(
+						ResolveImplementInfoTest.Implementee.class);
 		Method implementeeMethod = getMethodByName(implementeeMethods,
 				"handle");
 		
@@ -249,7 +253,8 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	public void resolveImplementMethodInfoTest()
 	{
 		Class<?> implementee = ResolveImplementMethodInfoTest.Implementee.class;
-		Method[] implementeeMethods = implementee.getMethods();
+		Collection<Method> implementeeMethods = this.implementationResolver
+				.getImplementeeMethods(implementee);
 		Method implementeeMethod = getMethodByName(implementeeMethods,
 				"handle");
 		Class<?> implementor = ResolveImplementMethodInfoTest.Implementor.class;
@@ -561,48 +566,183 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	}
 
 	@Test
-	public void getCandicateImplementeeMethodsTest()
+	public void getImplementeeMethodsTest()
 	{
-		Class<?> implementee = GetCandicateImplementeeMethodsTest.class;
+		Collection<Method> implementeeMethods = this.implementationResolver
+				.getImplementeeMethods(
+						GetImplementeeMethodsTest.Implementee.class);
 
-		Method[] methods = this.implementationResolver
-				.getCandidateImplementeeMethods(implementee);
-
-		assertEquals(implementee.getMethods().length, methods.length);
-
-		Set<Method> expected = new HashSet<Method>(
-				Arrays.asList(implementee.getMethods()));
-		Set<Method> actual = new HashSet<Method>(Arrays.asList(methods));
-		assertEquals(expected, actual);
+		assertEquals(LinkedList.class, implementeeMethods.getClass());
+		assertEquals(1, implementeeMethods.size());
+		
+		assertThat(implementeeMethods, Matchers.contains(
+				Matchers.hasToString(Matchers.containsString(
+						"GetImplementeeMethodsTest$Implementee.m0()"))));
 	}
 
-	public static class GetCandicateImplementeeMethodsTest
+	protected static class GetImplementeeMethodsTest
 	{
-		public void implementeeMethod()
+		public static interface Implementee
 		{
+			public void m0();
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
-	public void getCandicateImplementMethodsTest()
+	public void doGetImplementeeMethodsTest()
 	{
-		Class<?> implementor = GetCandicateImplementMethodsTest.class;
+		// simple class
+		{
+			Class<?> implementee = DoGetImplementeeMethodsTest.ImplementeeClass.class;
 
-		Method[] methods = this.implementationResolver
-				.getCandidateImplementMethods(implementor);
+			Collection<Method> methods = this.implementationResolver
+					.getImplementeeMethods(implementee);
 
-		assertEquals(implementor.getMethods().length, methods.length);
+			assertEquals(12, methods.size());
 
-		Set<Method> expected = new HashSet<Method>(
-				Arrays.asList(implementor.getMethods()));
-		Set<Method> actual = new HashSet<Method>(Arrays.asList(methods));
-		assertEquals(expected, actual);
+			assertThat(methods, Matchers.containsInAnyOrder(
+					Matchers.hasToString(Matchers.containsString(
+							"DoGetImplementeeMethodsTest$ImplementeeClass.m0()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.finalize()")),
+					Matchers.hasToString(
+							Matchers.containsString("java.lang.Object.wait()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.wait(long,int)")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.wait(long)")),
+					Matchers.hasToString(Matchers.containsString(
+							"java.lang.Object.equals(java.lang.Object)")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.toString()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.hashCode()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.getClass()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.clone()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.notify()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.notifyAll()"))));
+		}
+
+		// simple interface
+		{
+			Class<?> implementee = DoGetImplementeeMethodsTest.ImplementeeInterface.class;
+
+			Collection<Method> methods = this.implementationResolver
+					.getImplementeeMethods(implementee);
+
+			assertEquals(1, methods.size());
+
+			assertThat(methods, Matchers.contains(
+					Matchers.hasToString(Matchers.containsString(
+							"DoGetImplementeeMethodsTest$ImplementeeInterface.m1()"))));
+		}
+
+		// sub interface
+		{
+			Class<?> implementee = DoGetImplementeeMethodsTest.ImplementeeInterface1.class;
+
+			Collection<Method> methods = this.implementationResolver
+					.getImplementeeMethods(implementee);
+
+			assertEquals(2, methods.size());
+
+			assertThat(methods, Matchers
+					.containsInAnyOrder(
+							Matchers.hasToString(Matchers.containsString(
+							"DoGetImplementeeMethodsTest$ImplementeeInterface.m1()")),
+							Matchers.hasToString(Matchers.containsString(
+									"DoGetImplementeeMethodsTest$ImplementeeInterface1.m3()"))));
+		}
+
+		// sub class with interfaces
+		{
+			Class<?> implementee = DoGetImplementeeMethodsTest.ImplementeeClass1.class;
+
+			Collection<Method> methods = this.implementationResolver
+					.getImplementeeMethods(implementee);
+
+			assertEquals(15, methods.size());
+
+			assertThat(methods, Matchers.containsInAnyOrder(
+					Matchers.hasToString(Matchers.containsString(
+							"DoGetImplementeeMethodsTest$ImplementeeClass.m0()")),
+					Matchers.hasToString(Matchers.containsString(
+							"DoGetImplementeeMethodsTest$ImplementeeClass1.m1()")),
+					Matchers.hasToString(Matchers.containsString(
+							"DoGetImplementeeMethodsTest$ImplementeeClass1.m2()")),
+					Matchers.hasToString(Matchers.containsString(
+							"DoGetImplementeeMethodsTest$ImplementeeClass1.m3()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.finalize()")),
+					Matchers.hasToString(
+							Matchers.containsString("java.lang.Object.wait()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.wait(long,int)")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.wait(long)")),
+					Matchers.hasToString(Matchers.containsString(
+							"java.lang.Object.equals(java.lang.Object)")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.toString()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.hashCode()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.getClass()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.clone()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.notify()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.notifyAll()"))));
+		}
 	}
 
-	public static class GetCandicateImplementMethodsTest
+	public static class DoGetImplementeeMethodsTest
 	{
-		public void implementMethod()
+		public static class ImplementeeClass
 		{
+			public static void staticNotImplementeeMethod()
+			{
+
+			}
+
+			public void m0()
+			{
+			}
+		}
+
+		public static interface ImplementeeInterface
+		{
+			public void m1();
+		}
+
+		public static interface ImplementeeInterface1
+				extends ImplementeeInterface
+		{
+			public void m3();
+		}
+
+		public static class ImplementeeClass1 extends ImplementeeClass
+				implements ImplementeeInterface1
+		{
+			public void m2()
+			{
+			}
+
+			@Override
+			public void m1()
+			{
+			}
+
+			@Override
+			public void m3()
+			{
+			}
 		}
 	}
 
@@ -610,23 +750,23 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	public void isImplementeeMethodTest()
 	{
 		Class<?> implementee = IsImplementeeMethodTest.class;
-
+	
 		assertFalse(this.implementationResolver.isImplementeeMethod(implementee,
 				getMethodByName(implementee, "notImplementeeMethodStatic")));
-
+	
 		assertTrue(this.implementationResolver.isImplementeeMethod(implementee,
 				getMethodByName(implementee, "implementeeMethod")));
-
+	
 		assertTrue(this.implementationResolver.isImplementeeMethod(implementee,
 				getMethodByName(implementee, "implementeeMethodProtected")));
-
+	
 		assertTrue(this.implementationResolver.isImplementeeMethod(implementee,
 				getMethodByName(implementee, "implementeeMethodDefault")));
-
-		assertFalse(this.implementationResolver.isImplementeeMethod(implementee,
-				getMethodByName(implementee, "notImplementeeMethodPrivate")));
-
-		assertFalse(this.implementationResolver.isImplementeeMethod(implementee,
+	
+		assertTrue(this.implementationResolver.isImplementeeMethod(implementee,
+				getMethodByName(implementee, "implementeeMethodPrivate")));
+	
+		assertTrue(this.implementationResolver.isImplementeeMethod(implementee,
 				getMethodByName(implementee, "hashCode")));
 	}
 
@@ -635,21 +775,262 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		public static void notImplementeeMethodStatic()
 		{
 		}
-
+	
 		public void implementeeMethod()
 		{
 		}
-
+	
 		protected void implementeeMethodProtected()
 		{
 		}
-
+	
 		void implementeeMethodDefault()
+		{
+		}
+	
+		@SuppressWarnings("unused")
+		private void implementeeMethodPrivate()
+		{
+		}
+	}
+
+	@Test
+	public void getCandidateImplementMethodsTest()
+	{
+		Collection<Method> implementeeMethods = this.implementationResolver
+				.getCandidateImplementMethods(
+						GetCandidateImplementMethodsTest.Implementor.class);
+
+		assertEquals(LinkedList.class, implementeeMethods.getClass());
+		assertEquals(1, implementeeMethods.size());
+
+		assertThat(implementeeMethods,
+				Matchers.contains(Matchers.hasToString(Matchers.containsString(
+						"GetCandidateImplementMethodsTest$Implementor.m0()"))));
+	}
+
+	protected static class GetCandidateImplementMethodsTest
+	{
+		public static interface Implementor
+		{
+			public void m0();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void doGetCandidateImplementMethodsTest()
+	{
+		// simple class
+		{
+			Class<?> implementor = DoGetCandidateImplementMethodsTest.ImplementorClass.class;
+
+			Collection<Method> methods = this.implementationResolver
+					.getCandidateImplementMethods(implementor);
+
+			assertEquals(12, methods.size());
+
+			assertThat(methods, Matchers.containsInAnyOrder(
+					Matchers.hasToString(Matchers.containsString(
+							"DoGetCandidateImplementMethodsTest$ImplementorClass.m0()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.finalize()")),
+					Matchers.hasToString(
+							Matchers.containsString("java.lang.Object.wait()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.wait(long,int)")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.wait(long)")),
+					Matchers.hasToString(Matchers.containsString(
+							"java.lang.Object.equals(java.lang.Object)")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.toString()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.hashCode()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.getClass()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.clone()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.notify()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.notifyAll()"))));
+		}
+
+		// simple interface
+		{
+			Class<?> implementee = DoGetCandidateImplementMethodsTest.ImplementorInterface.class;
+
+			Collection<Method> methods = this.implementationResolver
+					.getCandidateImplementMethods(implementee);
+
+			assertEquals(1, methods.size());
+
+			assertThat(methods, Matchers
+					.contains(Matchers.hasToString(Matchers.containsString(
+							"DoGetCandidateImplementMethodsTest$ImplementorInterface.m1()"))));
+		}
+
+		// sub interface
+		{
+			Class<?> implementee = DoGetCandidateImplementMethodsTest.ImplementorInterface1.class;
+
+			Collection<Method> methods = this.implementationResolver
+					.getCandidateImplementMethods(implementee);
+
+			assertEquals(2, methods.size());
+
+			assertThat(methods, Matchers.containsInAnyOrder(
+					Matchers.hasToString(Matchers.containsString(
+							"DoGetCandidateImplementMethodsTest$ImplementorInterface.m1()")),
+					Matchers.hasToString(Matchers.containsString(
+							"DoGetCandidateImplementMethodsTest$ImplementorInterface1.m3()"))));
+		}
+
+		// sub class with interfaces
+		{
+			Class<?> implementee = DoGetCandidateImplementMethodsTest.ImplementorClass1.class;
+
+			Collection<Method> methods = this.implementationResolver
+					.getCandidateImplementMethods(implementee);
+
+			assertEquals(15, methods.size());
+
+			assertThat(methods, Matchers.containsInAnyOrder(
+					Matchers.hasToString(Matchers.containsString(
+							"DoGetCandidateImplementMethodsTest$ImplementorClass.m0()")),
+					Matchers.hasToString(Matchers.containsString(
+							"DoGetCandidateImplementMethodsTest$ImplementorClass1.m1()")),
+					Matchers.hasToString(Matchers.containsString(
+							"DoGetCandidateImplementMethodsTest$ImplementorClass1.m2()")),
+					Matchers.hasToString(Matchers.containsString(
+							"DoGetCandidateImplementMethodsTest$ImplementorClass1.m3()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.finalize()")),
+					Matchers.hasToString(
+							Matchers.containsString("java.lang.Object.wait()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.wait(long,int)")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.wait(long)")),
+					Matchers.hasToString(Matchers.containsString(
+							"java.lang.Object.equals(java.lang.Object)")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.toString()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.hashCode()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.getClass()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.clone()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.notify()")),
+					Matchers.hasToString(Matchers
+							.containsString("java.lang.Object.notifyAll()"))));
+		}
+	}
+
+	public static class DoGetCandidateImplementMethodsTest
+	{
+		public static class ImplementorClass
+		{
+			public static void staticNotImplementMethod()
+			{
+
+			}
+
+			public void m0()
+			{
+			}
+		}
+
+		public static interface ImplementorInterface
+		{
+			public void m1();
+		}
+
+		public static interface ImplementorInterface1
+				extends ImplementorInterface
+		{
+			public void m3();
+		}
+
+		public static class ImplementorClass1 extends
+				ImplementorClass implements ImplementorInterface1
+		{
+			public void m2()
+			{
+			}
+
+			@Override
+			public void m1()
+			{
+			}
+
+			@Override
+			public void m3()
+			{
+			}
+		}
+	}
+
+	@Test
+	public void isCandidateImplementMethodTest()
+	{
+		Class<?> implementor = IsCandidateImplementMethodTest.class;
+
+		assertFalse(this.implementationResolver.isCandidateImplementMethod(
+				implementor,
+				getMethodByName(implementor,
+						"notCandidateImplementMethodStatic")));
+
+		assertTrue(this.implementationResolver.isCandidateImplementMethod(
+				implementor, getMethodByName(implementor, "implementMethod")));
+
+		assertTrue(this.implementationResolver.isCandidateImplementMethod(
+				implementor,
+				getMethodByName(implementor, "implementMethodProtected")));
+
+		assertTrue(this.implementationResolver.isCandidateImplementMethod(
+				implementor,
+				getMethodByName(implementor, "implementMethodDefault")));
+
+		assertTrue(this.implementationResolver.isCandidateImplementMethod(
+				implementor,
+				getMethodByName(implementor, "implementMethodPrivate")));
+
+		assertTrue(this.implementationResolver.isCandidateImplementMethod(
+				implementor, getMethodByName(implementor, "hashCode")));
+
+		assertTrue(this.implementationResolver.isCandidateImplementMethod(
+				implementor, getMethodByName(implementor, "notImplementAnno")));
+	}
+
+	public static class IsCandidateImplementMethodTest
+	{
+		public static void notCandidateImplementMethodStatic()
+		{
+		}
+
+		public void implementMethod()
+		{
+		}
+
+		protected void implementMethodProtected()
+		{
+		}
+
+		void implementMethodDefault()
 		{
 		}
 
 		@SuppressWarnings("unused")
-		private void notImplementeeMethodPrivate()
+		private void implementMethodPrivate()
+		{
+		}
+
+		@NotImplement
+		public void notImplementAnno()
 		{
 		}
 	}
@@ -901,27 +1282,27 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	public void maybeImplementMethodTest()
 	{
 		Class<?> implement = MaybeImplementMethodTest.class;
-
+	
 		assertFalse(this.implementationResolver.maybeImplementMethod(implement,
 				getMethodByName(implement, "notImplementMethodStatic")));
-
+	
 		assertTrue(this.implementationResolver.maybeImplementMethod(implement,
 				getMethodByName(implement, "implementMethod")));
-
+	
 		assertTrue(this.implementationResolver.maybeImplementMethod(implement,
 				getMethodByName(implement, "implementMethodProtected")));
-
+	
 		assertTrue(this.implementationResolver.maybeImplementMethod(implement,
 				getMethodByName(implement, "implementMethodDefault")));
-
-		assertFalse(this.implementationResolver.maybeImplementMethod(implement,
-				getMethodByName(implement, "notImplementMethodPrivate")));
-
+	
+		assertTrue(this.implementationResolver.maybeImplementMethod(implement,
+				getMethodByName(implement, "implementMethodPrivate")));
+	
+		assertTrue(this.implementationResolver.maybeImplementMethod(implement,
+				getMethodByName(implement, "hashCode")));
+	
 		assertFalse(this.implementationResolver.maybeImplementMethod(implement,
 				getMethodByName(implement, "notImplementAnno")));
-
-		assertFalse(this.implementationResolver.maybeImplementMethod(implement,
-				getMethodByName(implement, "hashCode")));
 	}
 
 	public static class MaybeImplementMethodTest
@@ -929,24 +1310,24 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		public static void notImplementMethodStatic()
 		{
 		}
-
+	
 		public void implementMethod()
 		{
 		}
-
+	
 		protected void implementMethodProtected()
 		{
 		}
-
+	
 		void implementMethodDefault()
 		{
 		}
-
+	
 		@SuppressWarnings("unused")
-		private void notImplementMethodPrivate()
+		private void implementMethodPrivate()
 		{
 		}
-
+	
 		@NotImplement
 		public void notImplementAnno()
 		{
