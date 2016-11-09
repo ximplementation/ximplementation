@@ -41,8 +41,8 @@ import org.ximplementation.Validity;
 /**
  * {@linkplain Implementation} resolver.
  * <p>
- * It resolves all methods in the given <i>implementee</i> which are not
- * {@code private}, not {@code static}, and not declared in {@linkplain Object}.
+ * It resolves all methods including inherited in the given <i>implementee</i>
+ * and its <i>implementor</i>s which are not {@code static}.
  * </p>
  * <p>
  * Note that this class is thread-safe and can be accessed by multiple threads.
