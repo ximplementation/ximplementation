@@ -16,6 +16,7 @@ package org.ximplementation.support;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
  * Implement info of an <i>implementee method</i>.
@@ -149,6 +150,6 @@ public class ImplementInfo implements Serializable
 	public String toString()
 	{
 		return getClass().getSimpleName() + " [implementeeMethod=" + implementeeMethod + ", implementMethodInfos="
-				+ implementMethodInfos + "]";
+				+ Arrays.toString(implementMethodInfos) + "]";
 	}
 }
