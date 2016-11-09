@@ -245,7 +245,7 @@ public class ImplementorManager
 	 *            The <i>implementee</i> to be checked.
 	 * @return {@code true} if yes, {@code false} if no.
 	 */
-	public boolean hasImplementors(Class<?> implementee)
+	public boolean hasImplementor(Class<?> implementee)
 	{
 		Set<Class<?>> implementors = this.implementorsMap.get(implementee);
 	

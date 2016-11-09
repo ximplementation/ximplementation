@@ -258,7 +258,7 @@ public class ImplementorManagerTest extends AbstractTestSupport
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void hasImplementorsTest()
+	public void hasImplementorTest()
 	{
 		ImplementorManager implementorManager = new ImplementorManager();
 
@@ -267,9 +267,9 @@ public class ImplementorManagerTest extends AbstractTestSupport
 
 		implementorManager.addFor(Serializable.class, new Class<?>[0]);
 
-		assertFalse(implementorManager.hasImplementors(Integer.class));
-		assertFalse(implementorManager.hasImplementors(Serializable.class));
-		assertTrue(implementorManager.hasImplementors(Object.class));
+		assertFalse(implementorManager.hasImplementor(Integer.class));
+		assertFalse(implementorManager.hasImplementor(Serializable.class));
+		assertTrue(implementorManager.hasImplementor(Object.class));
 	}
 
 	@Test
