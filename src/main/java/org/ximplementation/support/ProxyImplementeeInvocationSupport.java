@@ -14,14 +14,17 @@
 
 package org.ximplementation.support;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 /**
  * Invocation support for proxy <i>implementee</i>.
  * <p>
- * It can be used as {@linkplain InvocationHandler} for building proxy
- * <i>implementee</i>.
+ * It can be used as invocation handler for building proxy <i>implementee</i>.
+ * </p>
+ * <p>
+ * Note that it overrides the {@linkplain Object#equals(Object)},
+ * {@linkplain Object#hashCode()}, {@linkplain Object#toString()} methods for
+ * proxy invocation support.
  * </p>
  * 
  * @author earthangry@gmail.com

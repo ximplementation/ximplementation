@@ -21,12 +21,11 @@ import java.lang.reflect.Proxy;
 /**
  * Implementee bean builder based on JDK {@linkplain Proxy}.
  * <p>
- * It creates an <i>implementee</i> bean of {@linkplain Proxy} instance with a
- * {@linkplain ProxyImplementeeInvocationHandler} as the invocation handler for
- * each building.
+ * It creating <i>implementee</i> bean of {@linkplain Proxy} instance, with
+ * {@linkplain ProxyImplementeeInvocationHandler} as its invocation handler.
  * </p>
  * <p>
- * All <i>implementee</i> beans it built implements the
+ * Note that the <i>implementee</i> bean also implements the
  * {@linkplain ProxyImplementee} interface for token.
  * </p>
  * 
