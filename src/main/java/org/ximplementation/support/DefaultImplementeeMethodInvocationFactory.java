@@ -67,7 +67,7 @@ public class DefaultImplementeeMethodInvocationFactory
 		ImplementInfo implementInfo = findImplementInfo(implementation,
 				implementeeMethod);
 
-		if (!implementInfo.hasImplementMethodInfo())
+		if (implementInfo == null || !implementInfo.hasImplementMethodInfo())
 			return null;
 
 		for (ImplementMethodInfo myImplementMethodInfo : implementInfo
