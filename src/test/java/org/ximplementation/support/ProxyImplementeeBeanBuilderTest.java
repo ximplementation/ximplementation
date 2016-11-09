@@ -16,13 +16,10 @@ package org.ximplementation.support;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,9 +27,10 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.ximplementation.Implement;
 import org.ximplementation.Implementor;
-import org.ximplementation.NotImplement;
 import org.ximplementation.Index;
+import org.ximplementation.NotImplement;
 import org.ximplementation.Validity;
+import org.ximplementation.support.ProxyImplementeeBeanBuilder.ProxyImplementeeInvocationHandler;
 
 /**
  * {@linkplain ProxyImplementeeBeanBuilder} unit tests.
@@ -61,14 +59,13 @@ public class ProxyImplementeeBeanBuilderTest extends AbstractTestSupport
 	}
 
 	@Test
-	public void buildTestByMap()
+	public void buildTest()
 	{
 		Implementation<BuildTest.Implementee1> implementation = new ImplementationResolver()
-				.resolve(BuildTest.Implementee1.class,
-						BuildTest.Implementor0.class,
-						BuildTest.Implementor1.class,
-						BuildTest.Implementor2.class);
-		
+				.resolve(
+				BuildTest.Implementee1.class, BuildTest.Implementor0.class,
+				BuildTest.Implementor1.class, BuildTest.Implementor2.class);
+
 		ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory
 				.valueOf(new BuildTest.Implementor0(),
 						new BuildTest.Implementor1(),
@@ -82,42 +79,12 @@ public class ProxyImplementeeBeanBuilderTest extends AbstractTestSupport
 	}
 
 	@Test
-	public void buildTestByImplementorBeanFactory()
-	{
-		Implementation<BuildTest.Implementee1> implementation = new ImplementationResolver()
-				.resolve(
-				BuildTest.Implementee1.class, BuildTest.Implementor0.class,
-				BuildTest.Implementor1.class, BuildTest.Implementor2.class);
-
-		Map<Class<?>, List<?>> implementorBeansMap = new HashMap<Class<?>, List<?>>();
-		implementorBeansMap.put(BuildTest.Implementor0.class,
-				Arrays.asList(new BuildTest.Implementor0()));
-		implementorBeansMap.put(BuildTest.Implementor1.class,
-				Arrays.asList(new BuildTest.Implementor1()));
-		implementorBeansMap.put(BuildTest.Implementor2.class,
-				Arrays.asList(new BuildTest.Implementor2()));
-
-		BuildTest.Implementee1 implementee1 = this.proxyImplementeeBeanBuilder
-				.build(implementation,
-						new SimpleImplementorBeanFactory(implementorBeansMap));
-
-		assertNotNull(implementee1);
-		assertTrue(implementee1 instanceof ProxyImplementee);
-	}
-
-	@Test
 	public void doBuildTestNotInterface()
 	{
-		Map<Class<?>, List<?>> implementorBeansMap = new HashMap<Class<?>, List<?>>();
-		implementorBeansMap.put(BuildTest.Implementor0.class,
-				Arrays.asList(new BuildTest.Implementor0()));
-		implementorBeansMap.put(BuildTest.Implementor1.class,
-				Arrays.asList(new BuildTest.Implementor1()));
-		implementorBeansMap.put(BuildTest.Implementor2.class,
-				Arrays.asList(new BuildTest.Implementor2()));
-
-		ImplementorBeanFactory implementorBeanFactory = new SimpleImplementorBeanFactory(
-				implementorBeansMap);
+		ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory
+				.valueOf(new BuildTest.Implementor0(),
+						new BuildTest.Implementor1(),
+						new BuildTest.Implementor2());
 
 		Implementation<BuildTest.Implementee0> implementation = new ImplementationResolver()
 				.resolve(
@@ -134,16 +101,10 @@ public class ProxyImplementeeBeanBuilderTest extends AbstractTestSupport
 	@Test
 	public void doBuildTest()
 	{
-		Map<Class<?>, List<?>> implementorBeansMap = new HashMap<Class<?>, List<?>>();
-		implementorBeansMap.put(BuildTest.Implementor0.class,
-				Arrays.asList(new BuildTest.Implementor0()));
-		implementorBeansMap.put(BuildTest.Implementor1.class,
-				Arrays.asList(new BuildTest.Implementor1()));
-		implementorBeansMap.put(BuildTest.Implementor2.class,
-				Arrays.asList(new BuildTest.Implementor2()));
-
-		ImplementorBeanFactory implementorBeanFactory = new SimpleImplementorBeanFactory(
-				implementorBeansMap);
+		ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory
+				.valueOf(new BuildTest.Implementor0(),
+						new BuildTest.Implementor1(),
+						new BuildTest.Implementor2());
 
 		Implementation<BuildTest.Implementee1> implementation = new ImplementationResolver()
 				.resolve(
@@ -156,21 +117,18 @@ public class ProxyImplementeeBeanBuilderTest extends AbstractTestSupport
 		assertEquals(152, implementee1.plus(150, 2));
 		assertEquals(BuildTest.Implementor1.MY_RE, implementee1.plus(1, 2));
 		assertEquals(9, implementee1.plus(250, 9));
+		assertThat(implementee1.toString(), Matchers.containsString(
+				ProxyImplementeeInvocationHandler.class.getSimpleName()
+						+ " [implementation="));
 	}
 
 	@Test
 	public void doBuildTestThrowUnsupportedOperationException()
 	{
-		Map<Class<?>, List<?>> implementorBeansMap = new HashMap<Class<?>, List<?>>();
-		implementorBeansMap.put(BuildTest.Implementor0.class,
-				Arrays.asList(new BuildTest.Implementor0()));
-		implementorBeansMap.put(BuildTest.Implementor1.class,
-				Arrays.asList(new BuildTest.Implementor1()));
-		implementorBeansMap.put(BuildTest.Implementor2.class,
-				Arrays.asList(new BuildTest.Implementor2()));
-
-		ImplementorBeanFactory implementorBeanFactory = new SimpleImplementorBeanFactory(
-				implementorBeansMap);
+		ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory
+				.valueOf(new BuildTest.Implementor0(),
+						new BuildTest.Implementor1(),
+						new BuildTest.Implementor2());
 
 		Implementation<BuildTest.Implementee1> implementation = new ImplementationResolver()
 				.resolve(

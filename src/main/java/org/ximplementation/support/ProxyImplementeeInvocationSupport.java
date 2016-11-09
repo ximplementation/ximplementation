@@ -34,7 +34,7 @@ public class ProxyImplementeeInvocationSupport
 
 	protected ImplementorBeanFactory implementorBeanFactory;
 
-	private ImplementeeMethodInvocationFactory implementeeMethodInvocationFactory;
+	protected ImplementeeMethodInvocationFactory implementeeMethodInvocationFactory;
 
 	public ProxyImplementeeInvocationSupport()
 	{
@@ -86,23 +86,97 @@ public class ProxyImplementeeInvocationSupport
 	/**
 	 * Invoke the specified <i>implementee method</i>.
 	 * 
-	 * @param method
+	 * @param implementeeMethod
 	 *            The <i>implementee method</i> to be invoked.
 	 * @param parameters
 	 *            The parameters of the <i>implementee method</i>.
 	 * @return The <i>implementee method</i> invocation result.
 	 * @throws Throwable
 	 */
-	public Object invoke(Method method, Object[] parameters) throws Throwable
+	public Object invoke(Method implementeeMethod, Object[] parameters) throws Throwable
 	{
-		ImplementeeMethodInvocation invocation = this.implementeeMethodInvocationFactory
-				.get(this.implementation, method, parameters,
-						this.implementorBeanFactory);
+		ImplementeeMethodInvocation invocation = getImplementeeMethodInvocation(
+				implementeeMethod, parameters);
 
 		if (invocation == null)
 			throw new UnsupportedOperationException(
-					"No valid implement method found for [" + method + "]");
+					"No valid implement method found for [" + implementeeMethod + "]");
 
 		return invocation.invoke();
+	}
+
+	/**
+	 * Get {@linkplain ImplementeeMethodInvocation}.
+	 * 
+	 * @param method
+	 *            The <i>implementee method</i> to be invoked.
+	 * @param parameters
+	 *            The parameters of the <i>implementee method</i>.
+	 * @return
+	 * @throws Throwable
+	 */
+	protected ImplementeeMethodInvocation getImplementeeMethodInvocation(
+			Method method, Object[] parameters) throws Throwable
+	{
+		return this.implementeeMethodInvocationFactory.get(this.implementation,
+				method, parameters, this.implementorBeanFactory);
+	}
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " [implementation=" + implementation
+				+ ", implementorBeanFactory=" + implementorBeanFactory
+				+ ", implementeeMethodInvocationFactory="
+				+ implementeeMethodInvocationFactory + "]";
+	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((implementation == null) ? 0 : implementation.hashCode());
+		result = prime * result + ((implementeeMethodInvocationFactory == null)
+				? 0 : implementeeMethodInvocationFactory.hashCode());
+		result = prime * result + ((implementorBeanFactory == null) ? 0
+				: implementorBeanFactory.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ProxyImplementeeInvocationSupport other = (ProxyImplementeeInvocationSupport) obj;
+		if (implementation == null)
+		{
+			if (other.implementation != null)
+				return false;
+		}
+		else if (!implementation.equals(other.implementation))
+			return false;
+		if (implementeeMethodInvocationFactory == null)
+		{
+			if (other.implementeeMethodInvocationFactory != null)
+				return false;
+		}
+		else if (!implementeeMethodInvocationFactory
+				.equals(other.implementeeMethodInvocationFactory))
+			return false;
+		if (implementorBeanFactory == null)
+		{
+			if (other.implementorBeanFactory != null)
+				return false;
+		}
+		else if (!implementorBeanFactory.equals(other.implementorBeanFactory))
+			return false;
+		return true;
 	}
 }

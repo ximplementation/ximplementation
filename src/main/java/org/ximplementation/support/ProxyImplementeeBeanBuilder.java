@@ -21,6 +21,11 @@ import java.lang.reflect.Proxy;
 /**
  * Implementee bean builder based on JDK {@linkplain Proxy}.
  * <p>
+ * It creates an <i>implementee</i> bean of {@linkplain Proxy} instance with a
+ * {@linkplain ProxyImplementeeInvocationHandler} as the invocation handler for
+ * each building.
+ * </p>
+ * <p>
  * All <i>implementee</i> beans it built implements the
  * {@linkplain ProxyImplementee} interface for token.
  * </p>
@@ -81,7 +86,19 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 		return proxy;
 	}
 
-	protected class ProxyImplementeeInvocationHandler extends
+	/**
+	 * The {@linkplain InvocationHandler} for JDK {@linkplain Proxy}
+	 * <i>implementee</i> bean.
+	 * <p>
+	 * Note that for all invocation on <i>implementee method</i>s which declared
+	 * in {@linkplain Object}, it will call the handler itself's methods.
+	 * </p>
+	 * 
+	 * @author earthangry@gmail.com
+	 * @date 2015-12-3
+	 *
+	 */
+	public static class ProxyImplementeeInvocationHandler extends
 			ProxyImplementeeInvocationSupport
 			implements InvocationHandler
 	{
@@ -106,43 +123,6 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 				return method.invoke(this, args);
 
 			return invoke(method, args);
-		}
-
-		@Override
-		public String toString()
-		{
-			return getClass().getSimpleName() + " [implementee="
-					+ this.implementation.getImplementee() + "]";
-		}
-
-		@Override
-		public int hashCode()
-		{
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((implementation == null) ? 0
-					: implementation.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj)
-		{
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			ProxyImplementeeInvocationHandler other = (ProxyImplementeeInvocationHandler) obj;
-			if (implementation == null)
-			{
-				if (other.implementation != null)
-					return false;
-			}
-			else if (!implementation.equals(other.implementation))
-				return false;
-			return true;
 		}
 	}
 }
