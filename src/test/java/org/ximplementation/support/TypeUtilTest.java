@@ -20,8 +20,11 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -350,6 +353,108 @@ public class TypeUtilTest extends AbstractTestSupport
 			<T extends Number> void m6(Collection<T[]> c);
 
 			<G extends Number> void m7(Collection<G[]> c);
+		}
+	}
+
+	@Test
+	public void eraseTest()
+	{
+		Map<TypeVariable<?>, Type> typeVariablesMap = TypeUtil
+				.resolveTypeParams(EraseTest.Sub.class);
+
+		// Class
+		{
+			assertEquals(String.class,
+					TypeUtil.erase(String.class, typeVariablesMap));
+		}
+
+		// TypeVariable
+		{
+			{
+				TypeVariable<?> type = (TypeVariable<?>) getMethodByName(
+						EraseTest.Gsuper.class, "handle")
+						.getGenericParameterTypes()[0];
+
+				assertEquals(EraseTest.Para.class, TypeUtil.erase(type, null));
+			}
+
+			{
+				TypeVariable<?> type = (TypeVariable<?>) getMethodByName(
+						EraseTest.Sub.class, "m0")
+						.getGenericParameterTypes()[0];
+
+				assertEquals(Number.class, TypeUtil.erase(type, null));
+			}
+
+			{
+				TypeVariable<?> type = (TypeVariable<?>) getMethodByName(
+						EraseTest.Gsuper.class, "handle")
+						.getGenericParameterTypes()[0];
+
+				assertEquals(EraseTest.Para0.class,
+						TypeUtil.erase(type, typeVariablesMap));
+			}
+		}
+
+		// ParameterizedType
+		{
+			ParameterizedType type = (ParameterizedType) getMethodByName(
+					EraseTest.Sub.class, "m1")
+					.getGenericParameterTypes()[0];
+
+			assertEquals(Collection.class, TypeUtil.erase(type, null));
+		}
+
+		// GenericArrayType
+		{
+			GenericArrayType type = (GenericArrayType) getMethodByName(
+					EraseTest.Sub.class, "m2")
+					.getGenericParameterTypes()[0];
+
+			assertEquals(Number[].class, TypeUtil.erase(type, null));
+		}
+
+		// WildcardType
+		{
+			ParameterizedType ptype = (ParameterizedType) getMethodByName(
+					EraseTest.Sub.class, "m3")
+					.getGenericParameterTypes()[0];
+
+			WildcardType type = (WildcardType) ptype
+					.getActualTypeArguments()[0];
+
+			assertEquals(Number.class, TypeUtil.erase(type, null));
+		}
+	}
+
+	protected static class EraseTest
+	{
+		public static interface Gsuper<T extends Para>
+		{
+			public void handle(T t);
+		}
+
+		public static interface Sub extends Gsuper<Para0>
+		{
+			<T extends Number> void m0(T t);
+
+			<T extends Number> void m1(Collection<? extends T> c);
+
+			<T extends Number> void m2(T[] c);
+
+			<G extends Number> void m3(Collection<? extends G> c);
+		}
+
+		public static class Para
+		{
+		}
+
+		public static class Para0 extends Para
+		{
+		}
+
+		public static class Para1 extends Para
+		{
 		}
 	}
 }

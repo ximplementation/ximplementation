@@ -120,6 +120,39 @@ public class Implementation<T> implements Serializable
 	}
 
 	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(implementInfos);
+		result = prime * result
+				+ ((implementee == null) ? 0 : implementee.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Implementation<?> other = (Implementation<?>) obj;
+		if (!Arrays.equals(implementInfos, other.implementInfos))
+			return false;
+		if (implementee == null)
+		{
+			if (other.implementee != null)
+				return false;
+		}
+		else if (!implementee.equals(other.implementee))
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString()
 	{
 		return getClass().getSimpleName() + " [implementee=" + implementee

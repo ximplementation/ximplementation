@@ -132,7 +132,9 @@ public class ImplementInfoTest extends AbstractTestSupport
 			ImplementInfo implementInfo = new ImplementInfo(getMethodByName(
 					GetImplementMethodInfoTest.Implementee.class, "plus"));
 
-			assertNull(implementInfo.getImplementMethodInfo(getMethodByName(
+			assertNull(implementInfo.getImplementMethodInfo(
+					GetImplementMethodInfoTest.Implementor0.class,
+					getMethodByName(
 					GetImplementMethodInfoTest.Implementor0.class, "plus")));
 		}
 
@@ -152,7 +154,9 @@ public class ImplementInfoTest extends AbstractTestSupport
 					GetImplementMethodInfoTest.Implementor1.class, "plus");
 
 			assertEquals(implementMethod,
-					implementInfo.getImplementMethodInfo(implementMethod)
+					implementInfo.getImplementMethodInfo(
+							GetImplementMethodInfoTest.Implementor1.class,
+							implementMethod)
 							.getImplementMethod());
 		}
 
@@ -162,7 +166,9 @@ public class ImplementInfoTest extends AbstractTestSupport
 					GetImplementMethodInfoTest.Implementee.class, "plus"),
 					new ImplementMethodInfo[0]);
 
-			assertNull(implementInfo.getImplementMethodInfo(getMethodByName(
+			assertNull(implementInfo.getImplementMethodInfo(
+					GetImplementMethodInfoTest.Implementor0.class,
+					getMethodByName(
 					GetImplementMethodInfoTest.Implementor0.class, "plus")));
 		}
 	}

@@ -123,15 +123,17 @@ public class ImplementInfo implements Serializable
 	}
 
 	/**
-	 * Get the {@code ImplementMethodInfo} for a specified <i>implement
-	 * method</i>.
+	 * Get the {@code ImplementMethodInfo} for given <i>implementor</i> and
+	 * <i>implement method</i>.
 	 * 
+	 * @param implementor
+	 *            The <i>implementor</i>.
 	 * @param implementMethod
 	 *            The <i>implement method</i>.
-	 * @return The {@code ImplementMethodInfo} about the <i>implement method</i>
-	 *         , {@code null} if no.
+	 * @return The {@code ImplementMethodInfo}, {@code null} if none.
 	 */
-	public ImplementMethodInfo getImplementMethodInfo(Method implementMethod)
+	public ImplementMethodInfo getImplementMethodInfo(Class<?> implementor,
+			Method implementMethod)
 	{
 		if (this.implementMethodInfos == null)
 			return null;
@@ -139,11 +141,45 @@ public class ImplementInfo implements Serializable
 		for (ImplementMethodInfo implementMethodInfo : this.implementMethodInfos)
 		{
 			if (implementMethodInfo.getImplementMethod()
-					.equals(implementMethod))
+					.equals(implementMethod)
+					&& implementMethodInfo.getImplementor().equals(implementor))
 				return implementMethodInfo;
 		}
 
 		return null;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(implementMethodInfos);
+		result = prime * result + ((implementeeMethod == null) ? 0
+				: implementeeMethod.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ImplementInfo other = (ImplementInfo) obj;
+		if (!Arrays.equals(implementMethodInfos, other.implementMethodInfos))
+			return false;
+		if (implementeeMethod == null)
+		{
+			if (other.implementeeMethod != null)
+				return false;
+		}
+		else if (!implementeeMethod.equals(other.implementeeMethod))
+			return false;
+		return true;
 	}
 
 	@Override

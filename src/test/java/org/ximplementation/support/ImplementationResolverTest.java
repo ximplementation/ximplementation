@@ -203,7 +203,8 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		Collection<Method> implementeeMethods = this.implementationResolver
 				.getImplementeeMethods(
 						ResolveImplementInfoTest.Implementee.class);
-		Method implementeeMethod = getMethodByName(implementeeMethods,
+		Method implementeeMethod = getMethodByName(
+				ResolveImplementInfoTest.Implementee.class,
 				"handle");
 		
 		ImplementInfo implementInfo = this.implementationResolver.resolveImplementInfo(
@@ -255,8 +256,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		Class<?> implementee = ResolveImplementMethodInfoTest.Implementee.class;
 		Collection<Method> implementeeMethods = this.implementationResolver
 				.getImplementeeMethods(implementee);
-		Method implementeeMethod = getMethodByName(implementeeMethods,
-				"handle");
+		Method implementeeMethod = getMethodByName(implementee, "handle");
 		Class<?> implementor = ResolveImplementMethodInfoTest.Implementor.class;
 
 		Collection<ImplementMethodInfo> implementMethodInfos = this.implementationResolver
@@ -309,8 +309,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	public void buildImplementMethodInfoTest()
 	{
 		Class<?> implementee = BuildImplementMethodInfoTest.Implementee.class;
-		Method[] implementeeMethods = implementee.getMethods();
-		Method implementeeMethod = getMethodByName(implementeeMethods,
+		Method implementeeMethod = getMethodByName(implementee,
 				"handle");
 		Class<?> implementor = BuildImplementMethodInfoTest.Implementor.class;
 		Method implementMethod = getMethodByName(implementor, "handle");

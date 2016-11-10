@@ -15,7 +15,12 @@
 package org.ximplementation.support;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.ximplementation.Priority;
 import org.ximplementation.Validity;
@@ -49,6 +54,8 @@ import org.ximplementation.Validity;
 public class DefaultImplementeeMethodInvocationFactory
 		implements ImplementeeMethodInvocationFactory
 {
+	private ConcurrentHashMap<ImplementMethodInfo, Class<?>[]> implementMethodParamTypes = new ConcurrentHashMap<ImplementMethodInfo, Class<?>[]>();
+
 	public DefaultImplementeeMethodInvocationFactory()
 	{
 		super();
@@ -73,7 +80,8 @@ public class DefaultImplementeeMethodInvocationFactory
 		for (ImplementMethodInfo myImplementMethodInfo : implementInfo
 				.getImplementMethodInfos())
 		{
-			if (!isImplementMethodParamValid(myImplementMethodInfo,
+			if (!isImplementMethodParamValid(implementation, implementeeMethod,
+					myImplementMethodInfo,
 					implementeeMethodParams))
 				continue;
 
@@ -214,15 +222,19 @@ public class DefaultImplementeeMethodInvocationFactory
 	 * Return if {@linkplain ImplementMethodInfo#getImplementMethod()} parameter
 	 * types are valid for the given parameters.
 	 * 
+	 * @param implementation
+	 * @param implementeeMethod
 	 * @param implementMethodInfo
 	 * @param implementeeMethodParams
 	 * @return
 	 */
 	protected boolean isImplementMethodParamValid(
+			Implementation<?> implementation, Method implementeeMethod,
 			ImplementMethodInfo implementMethodInfo,
 			Object[] implementeeMethodParams)
 	{
-		Class<?>[] myParamTypes = implementMethodInfo.getParamTypes();
+		Class<?>[] myParamTypes = getActualImplementMethodParamTypes(
+				implementation, implementeeMethod, implementMethodInfo);
 
 		if (myParamTypes == null || myParamTypes.length == 0)
 			return true;
@@ -321,9 +333,11 @@ public class DefaultImplementeeMethodInvocationFactory
 		int firstCloserCount = 0;
 		int secondCloserCount = 0;
 	
-		Class<?>[] firstParamTypes = first.getParamTypes();
+		Class<?>[] firstParamTypes = getActualImplementMethodParamTypes(
+				implementation, implementeeMethod, first);
 		int[] firstParamIndexes = first.getParamIndexes();
-		Class<?>[] secondParamTypes = second.getParamTypes();
+		Class<?>[] secondParamTypes = getActualImplementMethodParamTypes(
+				implementation, implementeeMethod, second);
 		int[] secondParamIndexes = second.getParamIndexes();
 	
 		for (int i = 0; i < firstParamTypes.length; i++)
@@ -411,6 +425,118 @@ public class DefaultImplementeeMethodInvocationFactory
 		}
 		else
 			return (secondSamePkg ? 1 : 0);
+	}
+
+	/**
+	 * Get the actual <i>implement method</i> parameter types with all generic
+	 * type erased.
+	 * 
+	 * @param implementation
+	 * @param implementeeMethod
+	 * @param implementMethodInfo
+	 * @return
+	 */
+	protected Class<?>[] getActualImplementMethodParamTypes(
+			Implementation<?> implementation, Method implementeeMethod,
+			ImplementMethodInfo implementMethodInfo)
+	{
+		Class<?> implementor = implementMethodInfo.getImplementor();
+		Method implementMethod = implementMethodInfo.getImplementMethod();
+
+		// if method is declared in the implementor, the parameter types are
+		// erased, return them is ok
+		if (implementMethod.getDeclaringClass().equals(implementor))
+			return implementMethodInfo.getParamTypes();
+
+		Class<?>[] paramTypes = implementMethodInfo.getParamTypes();
+		Type[] gparamTypes = implementMethodInfo.getGenericParamTypes();
+		
+		//not generic actual
+		if(Arrays.equals(paramTypes, gparamTypes))
+			return paramTypes;
+
+		// if method is declared in ancestor class, type variables should be
+		// resolved
+
+		Class<?>[] actualParamTypes = getCachedActualImplementMethodParamTypes(
+				implementMethodInfo);
+
+		if (actualParamTypes != null)
+			return actualParamTypes;
+
+		Map<TypeVariable<?>, Type> typeVariablesMap = resolveTypeParams(
+				implementor);
+
+		actualParamTypes = new Class<?>[paramTypes.length];
+
+		for (int i = 0; i < paramTypes.length; i++)
+		{
+			Class<?> paramType = paramTypes[i];
+			Type gparamType = gparamTypes[i];
+
+			// the element is not generic
+			if (gparamType.equals(paramType))
+				actualParamTypes[i] = paramType;
+			else
+			{
+				actualParamTypes[i] = erase(gparamType, typeVariablesMap);
+			}
+		}
+
+		cacheActualImplementMethodParamTypes(implementMethodInfo,
+				actualParamTypes);
+
+		return actualParamTypes;
+	}
+
+	/**
+	 * Get cached actual <i>implement method</i> parameter types.
+	 * 
+	 * @param implementMethodInfo
+	 * @return
+	 */
+	protected Class<?>[] getCachedActualImplementMethodParamTypes(
+			ImplementMethodInfo implementMethodInfo)
+	{
+		return this.implementMethodParamTypes.get(implementMethodInfo);
+	}
+
+	/**
+	 * Cache actual <i>implement method</i> parameter types.
+	 * 
+	 * @param implementMethodInfo
+	 * @param actualImplementMethodParamTypes
+	 */
+	protected void cacheActualImplementMethodParamTypes(
+			ImplementMethodInfo implementMethodInfo,
+			Class<?>[] actualImplementMethodParamTypes)
+	{
+		this.implementMethodParamTypes.put(implementMethodInfo,
+				actualImplementMethodParamTypes);
+	}
+
+	/**
+	 * Resolve type parameter map.
+	 * 
+	 * @param type
+	 * @return
+	 */
+	protected Map<TypeVariable<?>, Type> resolveTypeParams(Type type)
+	{
+		return TypeUtil.resolveTypeParams(type);
+	}
+
+	/**
+	 * Erase the given {@linkplain Type} to {@linkplain Class}.
+	 * 
+	 * @param type
+	 * @param typeVariablesMap
+	 * @return
+	 */
+	protected Class<?> erase(Type type,
+			Map<TypeVariable<?>, Type> typeVariablesMap)
+	{
+		return TypeUtil.erase(type, typeVariablesMap);
 	}
 
 	/**

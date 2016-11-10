@@ -14,6 +14,7 @@
 
 package org.ximplementation.support;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -665,14 +666,17 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 		// implementMethodInfo.getParamTypes() = null
 		{
 			ImplementMethodInfo implementMethodInfo = implementation.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
 							IsImplementMethodParamValidTest.Implementor0.class,
-							"plus"));
+							getMethodByName(
+									IsImplementMethodParamValidTest.Implementor0.class,
+									"plus"));
 
 			implementMethodInfo.setParamTypes(null);
 
 			assertTrue(this.defaultImplementeeMethodInvocationFactory
-					.isImplementMethodParamValid(
+					.isImplementMethodParamValid(implementation,
+							implementeeMethod,
 							implementMethodInfo,
 							new Object[] { 1, 2 }));
 		}
@@ -681,12 +685,15 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 		{
 			ImplementMethodInfo implementMethodInfo = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
 							IsImplementMethodParamValidTest.Implementor0.class,
-							"plus"));
+							getMethodByName(
+							IsImplementMethodParamValidTest.Implementor0.class,
+									"plus"));
 
 			assertTrue(this.defaultImplementeeMethodInvocationFactory
-					.isImplementMethodParamValid(implementMethodInfo,
+					.isImplementMethodParamValid(implementation,
+							implementeeMethod, implementMethodInfo,
 							new Object[] { 1, 2 }));
 		}
 
@@ -695,12 +702,15 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 		{
 			ImplementMethodInfo implementMethodInfo = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
 							IsImplementMethodParamValidTest.Implementor1.class,
-							"plus"));
+							getMethodByName(
+							IsImplementMethodParamValidTest.Implementor1.class,
+									"plus"));
 
 			assertFalse(this.defaultImplementeeMethodInvocationFactory
-					.isImplementMethodParamValid(implementMethodInfo,
+					.isImplementMethodParamValid(implementation,
+							implementeeMethod, implementMethodInfo,
 							new Object[] { 1 }));
 		}
 
@@ -708,24 +718,30 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 		{
 			ImplementMethodInfo implementMethodInfo = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
 							IsImplementMethodParamValidTest.Implementor1.class,
-							"plus"));
+							getMethodByName(
+							IsImplementMethodParamValidTest.Implementor1.class,
+									"plus"));
 
 			assertFalse(this.defaultImplementeeMethodInvocationFactory
-					.isImplementMethodParamValid(implementMethodInfo,
+					.isImplementMethodParamValid(implementation,
+							implementeeMethod, implementMethodInfo,
 							new Object[] { 1, 2.0D }));
 		}
 
 		{
 			ImplementMethodInfo implementMethodInfo = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
 							IsImplementMethodParamValidTest.Implementor1.class,
-							"plus"));
+							getMethodByName(
+							IsImplementMethodParamValidTest.Implementor1.class,
+									"plus"));
 
 			assertTrue(this.defaultImplementeeMethodInvocationFactory
-					.isImplementMethodParamValid(implementMethodInfo,
+					.isImplementMethodParamValid(implementation,
+							implementeeMethod, implementMethodInfo,
 							new Object[] { 1, 2 }));
 		}
 
@@ -733,12 +749,15 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 		{
 			ImplementMethodInfo implementMethodInfo = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
+							IsImplementMethodParamValidTest.Implementor2.class,
+							getMethodByName(
 							IsImplementMethodParamValidTest.Implementor2.class,
 							"plus"));
 
 			assertTrue(this.defaultImplementeeMethodInvocationFactory
-					.isImplementMethodParamValid(implementMethodInfo,
+					.isImplementMethodParamValid(implementation,
+							implementeeMethod, implementMethodInfo,
 							new Object[] { 1, 2 }));
 		}
 
@@ -746,13 +765,45 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 		{
 			ImplementMethodInfo implementMethodInfo = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
+							IsImplementMethodParamValidTest.Implementor2.class,
+							getMethodByName(
 							IsImplementMethodParamValidTest.Implementor2.class,
 							"plus"));
 
 			assertFalse(this.defaultImplementeeMethodInvocationFactory
-					.isImplementMethodParamValid(implementMethodInfo,
+					.isImplementMethodParamValid(implementation,
+							implementeeMethod, implementMethodInfo,
 							new Object[] { null, 2 }));
+		}
+
+		// generic method in super class
+		{
+			Implementation<?> myImplementation = this.implementationResolver
+					.resolve(IsImplementMethodParamValidTest.GImplementee.class,
+							IsImplementMethodParamValidTest.GImplementor.class);
+
+			Method myImplementeeMethod = getMethodByName(
+					IsImplementMethodParamValidTest.GImplementee.class,
+					"handle");
+
+			ImplementMethodInfo implementMethodInfo = myImplementation
+					.getImplementInfo(myImplementeeMethod)
+					.getImplementMethodInfo(
+							IsImplementMethodParamValidTest.GImplementor.class,
+							getMethodByName(
+							IsImplementMethodParamValidTest.GImplementor.class,
+							"handle"));
+
+			assertTrue(this.defaultImplementeeMethodInvocationFactory
+					.isImplementMethodParamValid(myImplementation,
+							myImplementeeMethod, implementMethodInfo,
+							new Object[] { 2 }));
+
+			assertFalse(this.defaultImplementeeMethodInvocationFactory
+					.isImplementMethodParamValid(myImplementation,
+							myImplementeeMethod, implementMethodInfo,
+							new Object[] { 2.0D }));
 		}
 	}
 
@@ -792,6 +843,17 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 				return 0;
 			}
 		}
+
+		public static class GImplementee<T extends Number>
+		{
+			public void handle(T t)
+			{
+			}
+		}
+
+		public static class GImplementor extends GImplementee<Integer>
+		{
+		}
 	}
 
 	@Test
@@ -811,13 +873,17 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 		{
 			ImplementMethodInfo implementMethodInfo0 = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
+							CompareImplementMethodInfoPriorityTest.Implementor0.class,
+							getMethodByName(
 							CompareImplementMethodInfoPriorityTest.Implementor0.class,
 							"plus"));
 
 			ImplementMethodInfo implementMethodInfo2 = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
+							CompareImplementMethodInfoPriorityTest.Implementor2.class,
+							getMethodByName(
 							CompareImplementMethodInfoPriorityTest.Implementor2.class,
 							"plus"));
 
@@ -838,13 +904,17 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 		{
 			ImplementMethodInfo implementMethodInfo0 = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
+							CompareImplementMethodInfoPriorityTest.Implementor0.class,
+							getMethodByName(
 							CompareImplementMethodInfoPriorityTest.Implementor0.class,
 							"plus"));
 
 			ImplementMethodInfo implementMethodInfo1 = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
+							CompareImplementMethodInfoPriorityTest.Implementor1.class,
+							getMethodByName(
 							CompareImplementMethodInfoPriorityTest.Implementor1.class,
 							"plus"));
 
@@ -935,13 +1005,17 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 		{
 			ImplementMethodInfo implementMethodInfo0 = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
+							CompareImplementMethodParamTypePriorityTest.Implementor0.class,
+							getMethodByName(
 							CompareImplementMethodParamTypePriorityTest.Implementor0.class,
 							"plus"));
 
 			ImplementMethodInfo implementMethodInfo1 = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
+							CompareImplementMethodParamTypePriorityTest.Implementor1.class,
+							getMethodByName(
 							CompareImplementMethodParamTypePriorityTest.Implementor1.class,
 							"plus"));
 
@@ -955,13 +1029,17 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 		{
 			ImplementMethodInfo implementMethodInfo0 = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
+							CompareImplementMethodParamTypePriorityTest.Implementor0.class,
+							getMethodByName(
 							CompareImplementMethodParamTypePriorityTest.Implementor0.class,
 							"plus"));
 
 			ImplementMethodInfo implementMethodInfo1 = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
+							CompareImplementMethodParamTypePriorityTest.Implementor2.class,
+							getMethodByName(
 							CompareImplementMethodParamTypePriorityTest.Implementor2.class,
 							"plus"));
 
@@ -978,13 +1056,17 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 		{
 			ImplementMethodInfo implementMethodInfo0 = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
+							CompareImplementMethodParamTypePriorityTest.Implementor3.class,
+							getMethodByName(
 							CompareImplementMethodParamTypePriorityTest.Implementor3.class,
 							"plus"));
 
 			ImplementMethodInfo implementMethodInfo1 = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
+							CompareImplementMethodParamTypePriorityTest.Implementor0.class,
+							getMethodByName(
 							CompareImplementMethodParamTypePriorityTest.Implementor0.class,
 							"plus"));
 
@@ -1001,13 +1083,17 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 		{
 			ImplementMethodInfo implementMethodInfo0 = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
+							CompareImplementMethodParamTypePriorityTest.Implementor3.class,
+							getMethodByName(
 							CompareImplementMethodParamTypePriorityTest.Implementor3.class,
 							"plus"));
 
 			ImplementMethodInfo implementMethodInfo1 = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
+							CompareImplementMethodParamTypePriorityTest.Implementor4.class,
+							getMethodByName(
 							CompareImplementMethodParamTypePriorityTest.Implementor4.class,
 							"plus"));
 
@@ -1021,13 +1107,17 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 		{
 			ImplementMethodInfo implementMethodInfo0 = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
+							CompareImplementMethodParamTypePriorityTest.Implementor4.class,
+							getMethodByName(
 							CompareImplementMethodParamTypePriorityTest.Implementor4.class,
 							"plus"));
 
 			ImplementMethodInfo implementMethodInfo1 = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
+							CompareImplementMethodParamTypePriorityTest.Implementor5.class,
+							getMethodByName(
 							CompareImplementMethodParamTypePriorityTest.Implementor5.class,
 							"plus"));
 
@@ -1041,19 +1131,57 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 		{
 			ImplementMethodInfo implementMethodInfo0 = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
+							CompareImplementMethodParamTypePriorityTest.Implementor4.class,
+							getMethodByName(
 							CompareImplementMethodParamTypePriorityTest.Implementor4.class,
 							"plus"));
 
 			ImplementMethodInfo implementMethodInfo1 = implementation
 					.getImplementInfo(implementeeMethod)
-					.getImplementMethodInfo(getMethodByName(
+					.getImplementMethodInfo(
+							CompareImplementMethodParamTypePriorityTest.Implementor5.class,
+							getMethodByName(
 							CompareImplementMethodParamTypePriorityTest.Implementor5.class,
 							"plus"));
 
 			assertEquals(-1, this.defaultImplementeeMethodInvocationFactory
 					.compareImplementMethodParamTypePriority(implementation,
 							implementeeMethod, new Object[] { 0, 1, 2 },
+							implementMethodInfo0, implementMethodInfo1));
+		}
+
+		// generic method in super class
+		{
+			Implementation<?> myImplementation = this.implementationResolver
+					.resolve(
+							CompareImplementMethodParamTypePriorityTest.GImplementee.class,
+							CompareImplementMethodParamTypePriorityTest.GImplementee.class,
+							CompareImplementMethodParamTypePriorityTest.GImplementor.class);
+
+			Method myImplementeeMethod = getMethodByName(
+					CompareImplementMethodParamTypePriorityTest.GImplementee.class,
+					"handle");
+
+			ImplementMethodInfo implementMethodInfo0 = myImplementation
+					.getImplementInfo(myImplementeeMethod)
+					.getImplementMethodInfo(
+							CompareImplementMethodParamTypePriorityTest.GImplementee.class,
+							getMethodByName(
+							CompareImplementMethodParamTypePriorityTest.GImplementee.class,
+							"handle"));
+
+			ImplementMethodInfo implementMethodInfo1 = myImplementation
+					.getImplementInfo(myImplementeeMethod)
+					.getImplementMethodInfo(
+							CompareImplementMethodParamTypePriorityTest.GImplementor.class,
+							getMethodByName(
+							CompareImplementMethodParamTypePriorityTest.GImplementor.class,
+							"handle"));
+
+			assertEquals(-1, this.defaultImplementeeMethodInvocationFactory
+					.compareImplementMethodParamTypePriority(implementation,
+							implementeeMethod, new Object[] { 1 },
 							implementMethodInfo0, implementMethodInfo1));
 		}
 
@@ -1125,6 +1253,17 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 				return null;
 			}
 		}
+
+		public static class GImplementee<T extends Number>
+		{
+			public void handle(T t)
+			{
+			}
+		}
+
+		public static class GImplementor extends GImplementee<Integer>
+		{
+		}
 	}
 
 	@Test
@@ -1162,5 +1301,157 @@ public class DefaultImplementeeMethodInvocationFactoryTest
 				.compareImplementorPriority(implementation,
 						org.ximplementation.support.testpkg.TImplementorDiffPkg0.class,
 						org.ximplementation.support.testpkg.TImplementorDiffPkg0.class));
+	}
+
+	@Test
+	public void getActualImplementMethodParamTypesTest()
+	{
+		@SuppressWarnings("rawtypes")
+		Implementation<GetActualImplementMethodParamTypesTest.Implementee> implementation = this.implementationResolver
+				.resolve(
+						GetActualImplementMethodParamTypesTest.Implementee.class,
+						GetActualImplementMethodParamTypesTest.Implementee.class,
+						GetActualImplementMethodParamTypesTest.Implementor0.class,
+						GetActualImplementMethodParamTypesTest.Implementor1.class);
+
+		Method implementeeMethod0 = getMethodByName(
+				GetActualImplementMethodParamTypesTest.Implementee.class,
+				"handle0");
+		ImplementInfo implementInfo0 = implementation
+				.getImplementInfo(implementeeMethod0);
+
+		Method implementeeMethod1 = getMethodByName(
+				GetActualImplementMethodParamTypesTest.Implementee.class,
+				"handle1");
+		ImplementInfo implementInfo1 = implementation
+				.getImplementInfo(implementeeMethod1);
+
+		// implementMethod.getDeclaringClass().equals(implementor)
+		{
+			ImplementMethodInfo implementMethodInfo = implementInfo0.getImplementMethodInfo(GetActualImplementMethodParamTypesTest.Implementee.class, getMethodByName(
+					GetActualImplementMethodParamTypesTest.Implementee.class,
+					"handle0"));
+
+			Class<?>[] actualParamTypes = this.defaultImplementeeMethodInvocationFactory
+					.getActualImplementMethodParamTypes(implementation,
+							implementeeMethod0, implementMethodInfo);
+
+			assertArrayEquals(implementMethodInfo.getParamTypes(),
+					actualParamTypes);
+			assertEquals(GetActualImplementMethodParamTypesTest.Para.class,
+					actualParamTypes[0]);
+			assertEquals(String.class, actualParamTypes[1]);
+
+			assertNull(this.defaultImplementeeMethodInvocationFactory
+					.getCachedActualImplementMethodParamTypes(
+							implementMethodInfo));
+		}
+
+		// Arrays.equals(paramTypes, gparamTypes)
+		{
+			ImplementMethodInfo implementMethodInfo = implementInfo1
+					.getImplementMethodInfo(
+							GetActualImplementMethodParamTypesTest.Implementor0.class,
+							getMethodByName(
+									GetActualImplementMethodParamTypesTest.Implementor0.class,
+									"handle1"));
+
+			Class<?>[] actualParamTypes = this.defaultImplementeeMethodInvocationFactory
+					.getActualImplementMethodParamTypes(implementation,
+							implementeeMethod0, implementMethodInfo);
+
+			assertArrayEquals(implementMethodInfo.getParamTypes(),
+					actualParamTypes);
+			assertEquals(String.class, actualParamTypes[0]);
+
+			assertNull(this.defaultImplementeeMethodInvocationFactory
+					.getCachedActualImplementMethodParamTypes(
+							implementMethodInfo));
+		}
+
+		// generic method not overridden in sub class
+		{
+			ImplementMethodInfo implementMethodInfo = implementInfo0
+					.getImplementMethodInfo(
+							GetActualImplementMethodParamTypesTest.Implementor0.class,
+							getMethodByName(
+									GetActualImplementMethodParamTypesTest.Implementor0.class,
+									"handle0"));
+
+			Class<?>[] actualParamTypes = this.defaultImplementeeMethodInvocationFactory
+					.getActualImplementMethodParamTypes(implementation,
+							implementeeMethod0, implementMethodInfo);
+
+			assertEquals(GetActualImplementMethodParamTypesTest.Para0.class,
+					actualParamTypes[0]);
+			assertEquals(String.class, actualParamTypes[1]);
+
+			assertArrayEquals(actualParamTypes,
+					this.defaultImplementeeMethodInvocationFactory
+							.getCachedActualImplementMethodParamTypes(
+									implementMethodInfo));
+		}
+
+		// generic method overridden in sub class
+		{
+			ImplementMethodInfo implementMethodInfo = implementInfo0
+					.getImplementMethodInfo(
+							GetActualImplementMethodParamTypesTest.Implementor1.class,
+							getMethodByName(
+									GetActualImplementMethodParamTypesTest.Implementor1.class,
+									"handle0"));
+
+			Class<?>[] actualParamTypes = this.defaultImplementeeMethodInvocationFactory
+					.getActualImplementMethodParamTypes(implementation,
+							implementeeMethod0, implementMethodInfo);
+
+			assertEquals(GetActualImplementMethodParamTypesTest.Para1.class,
+					actualParamTypes[0]);
+			assertEquals(String.class, actualParamTypes[1]);
+
+			assertNull(this.defaultImplementeeMethodInvocationFactory
+							.getCachedActualImplementMethodParamTypes(
+									implementMethodInfo));
+		}
+	}
+
+	protected static class GetActualImplementMethodParamTypesTest
+	{
+		public static class Implementee<T extends Para>
+		{
+			public void handle0(T t, String s)
+			{
+			}
+
+			public void handle1(String str)
+			{
+			}
+		}
+
+		public static class Implementor0 extends Implementee<Para0>
+		{
+
+		}
+
+		public static class Implementor1<T extends Para1>
+				extends Implementee<T>
+		{
+			@Override
+			public void handle0(T t, String s)
+			{
+			}
+		}
+
+		public static class Para
+		{
+		}
+
+		public static class Para0 extends Para
+		{
+		}
+
+		public static class Para1 extends Para
+		{
+		}
 	}
 }

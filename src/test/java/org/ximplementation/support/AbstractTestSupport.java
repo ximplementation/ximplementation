@@ -16,7 +16,6 @@ package org.ximplementation.support;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * Unit tests support class.
@@ -29,72 +28,57 @@ public abstract class AbstractTestSupport
 {
 	public static Method getMethodByName(Class<?> clazz, String name)
 	{
-		for (Method method : clazz.getMethods())
-		{
-			if (method.getName().equals(name))
-				return method;
-		}
-
-		for (Method method : clazz.getDeclaredMethods())
-		{
-			if (method.getName().equals(name))
-				return method;
-		}
-
-		return null;
-	}
-
-	public static Method getMethodByName(Method[] methods, String name)
-	{
-		for (Method method : methods)
-		{
-			if (method.getName().equals(name))
-				return method;
-		}
-
-		return null;
-	}
-
-	public static Method getMethodByName(Collection<Method> methods,
-			String name)
-	{
-		for (Method method : methods)
-		{
-			if (method.getName().equals(name))
-				return method;
-		}
-
-		return null;
+		return doGetMethod(clazz, true, name);
 	}
 
 	public static Method getMethodByNameAndType(Class<?> clazz, String name,
 			Class<?>... paramTypes)
 	{
-		for (Method method : clazz.getMethods())
-		{
-			if (method.getName().equals(name)
-					&& Arrays.equals(method.getParameterTypes(), paramTypes))
-				return method;
-		}
-
-		for (Method method : clazz.getDeclaredMethods())
-		{
-			if (method.getName().equals(name)
-					&& Arrays.equals(method.getParameterTypes(), paramTypes))
-				return method;
-		}
-
-		return null;
+		return doGetMethod(clazz, false, name, paramTypes);
 	}
 
-	public static Method getMethodByNameAndType(Method[] methods, String name,
-			Class<?>... paramTypes)
+	protected static Method doGetMethod(Class<?> clazz, boolean onlyName,
+			String name, Class<?>... paramTypes)
 	{
-		for (Method method : methods)
+		Method[] myMethods = clazz.getDeclaredMethods();
+
+		for (Method myMethod : myMethods)
 		{
-			if (method.getName().equals(name)
-					&& Arrays.equals(method.getParameterTypes(), paramTypes))
-				return method;
+			if (onlyName)
+			{
+				if (myMethod.getName().equals(name))
+					return myMethod;
+			}
+			else
+			{
+				if (myMethod.getName().equals(name) && Arrays.equals(paramTypes,
+						myMethod.getParameterTypes()))
+					return myMethod;
+			}
+		}
+		
+		Method method = null;
+
+		// methods in super class
+		Class<?> superClass = clazz.getSuperclass();
+		if (superClass != null)
+			method = doGetMethod(superClass, onlyName, name, paramTypes);
+		
+		if(method != null)
+			return method;
+
+		// methods in super interfaces
+		Class<?>[] superInterfaces = clazz.getInterfaces();
+		if (superInterfaces != null)
+		{
+			for (Class<?> superInterface : superInterfaces)
+			{
+				method = doGetMethod(superInterface, onlyName, name,
+						paramTypes);
+
+				if (method != null)
+					return method;
+			}
 		}
 
 		return null;

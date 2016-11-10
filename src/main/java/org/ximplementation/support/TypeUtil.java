@@ -14,6 +14,7 @@
 
 package org.ximplementation.support;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -191,7 +192,7 @@ public class TypeUtil
 	}
 
 	/**
-	 * Return the final type of a specified {@linkplain TypeVariable}.
+	 * Return the final type of a given {@linkplain TypeVariable}.
 	 * <p>
 	 * For example, it will returns {@code Integer} for {@code T} of the
 	 * following map :
@@ -204,7 +205,7 @@ public class TypeUtil
 	 * 
 	 * @param typeVariable
 	 * @param typeVariablesMap
-	 * @return
+	 * @return The final type, itself if none.
 	 */
 	public static Type getFinalType(TypeVariable<?> typeVariable,
 			Map<TypeVariable<?>, Type> typeVariablesMap)
@@ -346,6 +347,68 @@ public class TypeUtil
 		}
 		else
 			return false;
+	}
+
+	/**
+	 * Erase the given {@linkplain Type} to {@linkplain Class}.
+	 * 
+	 * @param type
+	 *            The {@linkplain Type} to be erased.
+	 * @param typeVariablesMap
+	 *            Type variable map stores {@linkplain TypeVariable}'s
+	 *            corresponding type, can be {@code null}.
+	 * @return The erased {@linkplain Class}.
+	 */
+	public static Class<?> erase(Type type,
+			Map<TypeVariable<?>, Type> typeVariablesMap)
+	{
+		if (type instanceof Class<?>)
+		{
+			return (Class<?>) type;
+		}
+		else if (type instanceof TypeVariable<?>)
+		{
+			Type finalType = getFinalType((TypeVariable<?>) type,
+					typeVariablesMap);
+
+			if (finalType instanceof TypeVariable<?>)
+			{
+				Type[] bounds = ((TypeVariable<?>) finalType).getBounds();
+
+				if (bounds == null || bounds.length == 0)
+					return Object.class;
+				else
+					return erase(bounds[0], typeVariablesMap);
+			}
+			else
+				return erase(finalType, typeVariablesMap);
+		}
+		else if (type instanceof ParameterizedType)
+		{
+			Type rawType = ((ParameterizedType) type).getRawType();
+
+			return erase(rawType, typeVariablesMap);
+		}
+		else if (type instanceof GenericArrayType)
+		{
+			Class<?> componentType = erase(
+					((GenericArrayType) type).getGenericComponentType(),
+					typeVariablesMap);
+
+			return Array.newInstance(componentType, 0).getClass();
+		}
+		else if (type instanceof WildcardType)
+		{
+			Type[] upperBounds = ((WildcardType) type).getUpperBounds();
+
+			if (upperBounds == null || upperBounds.length == 0)
+				return Object.class;
+			else
+				return erase(upperBounds[0], typeVariablesMap);
+		}
+		else
+			throw new UnsupportedOperationException(
+					"Type [" + type + "] erase is not supported");
 	}
 
 	/**

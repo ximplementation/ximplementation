@@ -387,6 +387,45 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((implementMethod == null) ? 0 : implementMethod.hashCode());
+		result = prime * result
+				+ ((implementor == null) ? 0 : implementor.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ImplementMethodInfo other = (ImplementMethodInfo) obj;
+		if (implementMethod == null)
+		{
+			if (other.implementMethod != null)
+				return false;
+		}
+		else if (!implementMethod.equals(other.implementMethod))
+			return false;
+		if (implementor == null)
+		{
+			if (other.implementor != null)
+				return false;
+		}
+		else if (!implementor.equals(other.implementor))
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString()
 	{
 		return getClass().getSimpleName() + " [implementor=" + implementor
