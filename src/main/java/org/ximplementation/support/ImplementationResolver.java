@@ -829,6 +829,10 @@ public class ImplementationResolver
 
 		for (Method m : myAll)
 		{
+			// ignore synthetic methods
+			if (m.isSynthetic())
+				continue;
+
 			Refered refAnno = getAnnotation(m, Refered.class);
 
 			if (refAnno != null && refAnno.value().equals(methodRef))
