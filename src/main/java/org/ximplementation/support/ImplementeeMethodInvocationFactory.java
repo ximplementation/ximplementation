@@ -38,8 +38,7 @@ public interface ImplementeeMethodInvocationFactory
 	 *            The invocation parameters of the <i>implementee method</i> to
 	 *            be invoked.
 	 * @param implementorBeanFactory
-	 *            The {@code ImplementorBeanFactory} about the
-	 *            <i>implementee</i>.
+	 *            The {@code ImplementorBeanFactory} for the <i>implementee</i>.
 	 * @return The {@code ImplementeeMethodInvocation} instance, {@code null} if
 	 *         no.
 	 * @throws Throwable

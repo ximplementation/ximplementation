@@ -18,20 +18,25 @@ import java.util.Collection;
 
 /**
  * Factory of <i>implementor</i> beans.
+ * <p>
+ * It is used for getting <i>implementor</i> beans when invoking <i>implement
+ * method</i>s.
+ * </p>
  * 
  * @author earthangry@gmail.com
  * @date 2016-8-15
  * @see ImplementeeBeanBuilder
+ * @see ImplementeeMethodInvocationFactory
  */
 public interface ImplementorBeanFactory
 {
 	/**
-	 * Get beans of the specified <i>implementor</i>.
+	 * Get beans of the given <i>implementor</i>.
 	 * 
 	 * @param implementor
 	 *            An <i>implementor</i>.
 	 * @return The beans of the <i>implementor</i>, {@code null} or an empty
-	 *         {@code Collection} if no.
+	 *         {@code Collection} if none.
 	 */
-	Collection<?> getImplementorBeans(Class<?> implementor);
+	<T> Collection<T> getImplementorBeans(Class<T> implementor);
 }

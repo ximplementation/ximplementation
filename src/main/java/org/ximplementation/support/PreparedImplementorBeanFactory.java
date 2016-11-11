@@ -46,7 +46,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 
 		for (Class<?> implementor : implementors)
 		{
-			this.implementorBeansMap.put(implementor, new ArrayList<Object>(1));
+			setImplementorBeansList(implementor, new ArrayList<Object>(1));
 		}
 	}
 
@@ -73,7 +73,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 				Class<?> implementor = implementMethodInfo.getImplementor();
 
 				if (!this.implementorBeansMap.containsKey(implementor))
-					this.implementorBeansMap.put(implementor,
+					setImplementorBeansList(implementor,
 							new ArrayList<Object>(1));
 			}
 		}
@@ -98,7 +98,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	 */
 	public boolean accept(Class<?> implementor)
 	{
-		return (this.implementorBeansMap.get(implementor) != null);
+		return (getImplementorBeansList(implementor) != null);
 	}
 
 	/**
@@ -110,15 +110,11 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	 */
 	public boolean accept(Object implementorBean)
 	{
-		return (this.implementorBeansMap
-				.get(implementorBean.getClass()) != null);
+		return (getImplementorBeansList(implementorBean.getClass()) != null);
 	}
 
 	/**
 	 * Add an <i>implementor</i> bean.
-	 * <p>
-	 * Return {@code true} if the bean is acceptable, {@code false} otherwise.
-	 * </p>
 	 * 
 	 * @param implementorBean
 	 *            The <i>implementor</i> bean to be added.
@@ -127,8 +123,8 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	 */
 	public boolean addImplementorBean(Object implementorBean)
 	{
-		List<Object> implementorBeans = this.implementorBeansMap
-				.get(implementorBean.getClass());
+		List<Object> implementorBeans = getImplementorBeansList(
+				implementorBean.getClass());
 
 		if (implementorBeans == null)
 			return false;
@@ -138,9 +134,33 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<?> getImplementorBeans(Class<?> implementor)
+	public <T> Collection<T> getImplementorBeans(Class<T> implementor)
+	{
+		return (Collection<T>) getImplementorBeansList(implementor);
+	}
+
+	/**
+	 * Get the <i>implementor</i> beans list.
+	 * 
+	 * @param implementor
+	 * @return
+	 */
+	protected List<Object> getImplementorBeansList(Class<?> implementor)
 	{
 		return this.implementorBeansMap.get(implementor);
+	}
+
+	/**
+	 * Set the <i>implementor</i> beans list.
+	 * 
+	 * @param implementor
+	 * @param implementorBeans
+	 */
+	protected void setImplementorBeansList(Class<?> implementor,
+			List<Object> implementorBeans)
+	{
+		this.implementorBeansMap.put(implementor, implementorBeans);
 	}
 }

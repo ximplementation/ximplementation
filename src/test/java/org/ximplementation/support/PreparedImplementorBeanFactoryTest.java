@@ -19,10 +19,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hamcrest.Matchers;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.ximplementation.Implement;
@@ -222,5 +226,25 @@ public class PreparedImplementorBeanFactoryTest extends AbstractTestSupport
 		public static class Implementor1
 		{
 		}
+	}
+
+	@Test
+	public void getImplementorBeansTest()
+	{
+		@SuppressWarnings("unchecked")
+		Set<Class<?>> implementors = new HashSet<Class<?>>(Arrays.asList(Integer.class));
+		
+		PreparedImplementorBeanFactory beanFactory = new PreparedImplementorBeanFactory(implementors);
+		
+		Collection<Integer> implementorBeans = beanFactory
+				.getImplementorBeans(Integer.class);
+
+		assertEquals(0, implementorBeans.size());
+
+		beanFactory.addImplementorBean(new Integer(1));
+		beanFactory.addImplementorBean(new Float(1));
+
+		assertEquals(1, implementorBeans.size());
+		Assert.assertThat(implementorBeans, Matchers.contains(new Integer(1)));
 	}
 }

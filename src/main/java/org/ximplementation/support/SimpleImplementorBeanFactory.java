@@ -57,11 +57,12 @@ public class SimpleImplementorBeanFactory implements ImplementorBeanFactory
 		this.implementorBeansMap = implementorBeansMap;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<?> getImplementorBeans(Class<?> implementor)
+	public <T> Collection<T> getImplementorBeans(Class<T> implementor)
 	{
 		return (this.implementorBeansMap == null ? null
-				: this.implementorBeansMap.get(implementor));
+				: (Collection<T>) this.implementorBeansMap.get(implementor));
 	}
 
 	/**
