@@ -34,7 +34,6 @@ import org.ximplementation.Implementor;
 import org.ximplementation.Index;
 import org.ximplementation.Priority;
 import org.ximplementation.Validity;
-import org.ximplementation.support.DefaultImplementeeMethodInvocationFactory.SimpleImplementeeMethodInvocation;
 
 /**
  * {@linkplain DefaultImplementeeMethodInvocationFactory} unit tests.

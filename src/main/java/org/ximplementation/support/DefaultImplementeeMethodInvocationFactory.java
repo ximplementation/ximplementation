@@ -152,7 +152,8 @@ public class DefaultImplementeeMethodInvocationFactory
 		}
 
 		return (implementMethodInfo == null ? null
-				: new SimpleImplementeeMethodInvocation(implementeeMethodParams,
+				: new SimpleImplementeeMethodInvocation(implementation,
+						implementeeMethod, implementeeMethodParams,
 						implementMethodInfo, implementorBean));
 	}
 
@@ -549,72 +550,5 @@ public class DefaultImplementeeMethodInvocationFactory
 	protected Class<?> toWrapperType(Class<?> type)
 	{
 		return TypeUtil.toWrapperType(type);
-	}
-
-	protected static class SimpleImplementeeMethodInvocation
-			implements ImplementeeMethodInvocation
-	{
-		private Object[] implementeeMethodParams;
-
-		private ImplementMethodInfo implementMethodInfo;
-
-		private Object implementorBean;
-
-		public SimpleImplementeeMethodInvocation()
-		{
-			super();
-		}
-
-		public SimpleImplementeeMethodInvocation(
-				Object[] implementeeMethodParams,
-				ImplementMethodInfo implementMethodInfo, Object implementorBean
-				)
-		{
-			super();
-			this.implementeeMethodParams = implementeeMethodParams;
-			this.implementMethodInfo = implementMethodInfo;
-			this.implementorBean = implementorBean;
-		}
-
-		public Object[] getImplementeeMethodParams()
-		{
-			return implementeeMethodParams;
-		}
-
-		public void setImplementeeMethodParams(Object[] implementeeMethodParams)
-		{
-			this.implementeeMethodParams = implementeeMethodParams;
-		}
-
-		public ImplementMethodInfo getImplementMethodInfo()
-		{
-			return implementMethodInfo;
-		}
-
-		public void setImplementMethodInfo(
-				ImplementMethodInfo implementMethodInfo)
-		{
-			this.implementMethodInfo = implementMethodInfo;
-		}
-
-		public Object getImplementorBean()
-		{
-			return implementorBean;
-		}
-
-		public void setImplementorBean(Object implementorBean)
-		{
-			this.implementorBean = implementorBean;
-		}
-
-		@Override
-		public Object invoke() throws Throwable
-		{
-			Object[] implementMethodParams = this.implementMethodInfo
-					.getParams(this.implementeeMethodParams);
-
-			return this.implementMethodInfo.getImplementMethod()
-					.invoke(this.implementorBean, implementMethodParams);
-		}
 	}
 }
