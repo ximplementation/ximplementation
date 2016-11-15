@@ -1324,6 +1324,11 @@ public class ImplementationResolverTest extends AbstractTestSupport
 				implementeeMethod, IsImplementMethodTest.Implementor3.class,
 				getMethodByName(IsImplementMethodTest.Implementor3.class,
 						"plus")));
+
+		assertTrue(this.implementationResolver.isImplementMethod(implementee,
+				implementeeMethod, IsImplementMethodTest.Implementor4.class,
+				getMethodByName(IsImplementMethodTest.Implementor4.class,
+						"myPlus")));
 	}
 
 	public static class IsImplementMethodTest
@@ -1367,6 +1372,16 @@ public class ImplementationResolverTest extends AbstractTestSupport
 				return null;
 			}
 		}
+
+		public static class Implementor4
+		{
+			@Implement("plus(Number, Number)")
+			public Number myPlus(Number a, Number b)
+			{
+				return null;
+			}
+		}
+
 	}
 
 	@Test

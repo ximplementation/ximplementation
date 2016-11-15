@@ -18,6 +18,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Method;
 
 /**
  * Implement method annotation.
@@ -155,16 +156,34 @@ import java.lang.annotation.Target;
 public @interface Implement
 {
 	/**
-	 * The identification of the <i>implementee method</i> which this method
+	 * The <i>implementee method</i> match pattern which this method
 	 * implemented.
 	 * <p>
-	 * It can be any of the following values :
+	 * The match pattern is the following format:
 	 * </p>
-	 * <ul>
-	 * <li>The name of the <i>implementee method</i> if no duplication;</li>
-	 * <li>The signature part of the <i>implementee method</i> (eg.
-	 * <code>"plus(java.lang.Integer, java.lang.Integer)"</code>).</li>
-	 * </ul>
+	 * <p>
+	 * <i>&lt;method-name-pattern&gt</i>[([
+	 * <i>&lt;parameter-type-pattern&gt,</i>] ... )]
+	 * </p>
+	 * <p>
+	 * <i>&lt;method-name-pattern&gt</i> : [<i>&lt;class-name&gt.</i>]
+	 * <i>&lt;method-name&gt</i>
+	 * </p>
+	 * <p>
+	 * <i>&lt;parameter-type-pattern&gt</i> : <i>&lt;class-name&gt</i>
+	 * </p>
+	 * <p>
+	 * <i>&lt;class-name&gt</i> : The {@linkplain Class#getSimpleName()} or The
+	 * right-sub {@linkplain Class#getName()}.
+	 * </p>
+	 * <p>
+	 * <i>&lt;method-name&gt</i> : The {@linkplain Method#getName()}.
+	 * </p>
+	 * <p>
+	 * Examples :
+	 * <code>"plus", "Foo.plus", "org.example.Foo.plus", "plus(int, int)", "Foo.plus(int, int)",
+	 * "plus(Integer, java.lang.Integer)", "plus(Date, Date)"</code>.
+	 * </p>
 	 * <p>
 	 * If not set, its value will be treated as this <i>implement method</i>
 	 * name.

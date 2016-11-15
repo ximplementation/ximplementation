@@ -48,15 +48,17 @@ public @interface Priority
 	int DEFAULT = 0;
 
 	/**
-	 * The identification of the priority method.
+	 * The priority method match pattern.
 	 * <p>
-	 * It can be any of the following values :
+	 * See {@linkplain Implement#value()} API documentation for detail match
+	 * pattern format.
 	 * </p>
-	 * <ul>
-	 * <li>The name of the priority method if no duplication;</li>
-	 * <li>The signature part of the priority method (eg.
-	 * <code>"getPriority(java.lang.String)"</code>).</li>
-	 * </ul>
+	 * <p>
+	 * Examples :
+	 * <code>"getPriority", "Foo.getPriority", "org.example.Foo.getPriority", "getPriority(int, int)", "Foo.getPriority(int, int)",
+	 * "getPriority(Integer, java.lang.Integer)", "getPriority(Date, Date)"</code>
+	 * .
+	 * </p>
 	 * 
 	 * @return
 	 */

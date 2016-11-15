@@ -47,15 +47,16 @@ import java.lang.annotation.Target;
 public @interface Validity
 {
 	/**
-	 * The identification of the validity method.
+	 * The validity method match pattern.
 	 * <p>
-	 * It can be any of the following values :
+	 * See {@linkplain Implement#value()} API documentation for detail match
+	 * pattern format.
 	 * </p>
-	 * <ul>
-	 * <li>The name of the validity method if no duplication;</li>
-	 * <li>The signature part of the validity method (eg.
-	 * <code>"isValid(java.lang.String)"</code>).</li>
-	 * </ul>
+	 * <p>
+	 * Examples :
+	 * <code>"isValid", "Foo.isValid", "org.example.Foo.isValid", "isValid(int, int)", "Foo.isValid(int, int)",
+	 * "isValid(Integer, java.lang.Integer)", "isValid(Date, Date)"</code>.
+	 * </p>
 	 * 
 	 * @return
 	 */
