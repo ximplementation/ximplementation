@@ -54,8 +54,6 @@ public @interface Priority
 	 * </p>
 	 * <ul>
 	 * <li>The name of the priority method if no duplication;</li>
-	 * <li>The {@linkplain Refered#value() @Refered.value} of the priority
-	 * method;</li>
 	 * <li>The signature part of the priority method (eg.
 	 * <code>"getPriority(java.lang.String)"</code>).</li>
 	 * </ul>

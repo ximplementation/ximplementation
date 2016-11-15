@@ -53,8 +53,6 @@ public @interface Validity
 	 * </p>
 	 * <ul>
 	 * <li>The name of the validity method if no duplication;</li>
-	 * <li>The {@linkplain Refered#value() @Refered.value} of the validity
-	 * method;</li>
 	 * <li>The signature part of the validity method (eg.
 	 * <code>"isValid(java.lang.String)"</code>).</li>
 	 * </ul>

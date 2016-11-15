@@ -149,22 +149,19 @@ import java.lang.annotation.Target;
  * @see Priority
  * @see Validity
  * @see Index
- * @see Refered
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })
 public @interface Implement
 {
 	/**
-	 * The identification of the <i>implementee method</i> which this method is
+	 * The identification of the <i>implementee method</i> which this method
 	 * implemented.
 	 * <p>
 	 * It can be any of the following values :
 	 * </p>
 	 * <ul>
-	 * <li>The name of the <i>implementee method</i>;</li>
-	 * <li>The {@linkplain Refered#value() @Refered.value} of the <i>implementee
-	 * method</i>;</li>
+	 * <li>The name of the <i>implementee method</i> if no duplication;</li>
 	 * <li>The signature part of the <i>implementee method</i> (eg.
 	 * <code>"plus(java.lang.Integer, java.lang.Integer)"</code>).</li>
 	 * </ul>

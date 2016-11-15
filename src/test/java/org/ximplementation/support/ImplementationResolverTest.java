@@ -40,7 +40,6 @@ import org.ximplementation.Implementor;
 import org.ximplementation.Index;
 import org.ximplementation.NotImplement;
 import org.ximplementation.Priority;
-import org.ximplementation.Refered;
 import org.ximplementation.Validity;
 
 /**
@@ -53,6 +52,9 @@ import org.ximplementation.Validity;
 public class ImplementationResolverTest extends AbstractTestSupport
 {
 	private ImplementationResolver implementationResolver;
+
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
 
 	@Before
 	public void setUp() throws Exception
@@ -452,43 +454,100 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	@Test
 	public void resolveImplementMethodInfoValidityTest()
 	{
-		Class<?> implementee = ResolveImplementMethodInfoPropertiesTest.Implementee.class;
-		Method implementeeMethod = getMethodByName(implementee, "handle");
-		Class<?> implementor = ResolveImplementMethodInfoPropertiesTest.Implementor.class;
-		Method implementMethod = getMethodByName(implementor, "handle");
+		// boolean return type
+		{
+			Class<?> implementee = ResolveImplementMethodInfoValidityTest.Implementee.class;
+			Method implementeeMethod = getMethodByName(implementee, "handle");
+			Class<?> implementor = ResolveImplementMethodInfoValidityTest.Implementor.class;
+			Method implementMethod = getMethodByName(implementor, "handle");
 
-		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
-				implementor, implementMethod);
+			ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
+					implementor, implementMethod);
 
-		this.implementationResolver.resolveImplementMethodInfoValidity(
-				implementee, implementeeMethod, implementMethodInfo);
+			this.implementationResolver.resolveImplementMethodInfoValidity(
+					implementee, implementeeMethod, implementMethodInfo);
 
-		assertEquals(getMethodByName(implementor, "isValid"),
-				implementMethodInfo.getValidityMethod());
-		assertNotNull(implementMethodInfo.getValidityParamIndexes());
+			assertEquals(getMethodByName(implementor, "isValid"),
+					implementMethodInfo.getValidityMethod());
+			assertNotNull(implementMethodInfo.getValidityParamIndexes());
+		}
+
+		// Boolean return type
+		{
+			Class<?> implementee = ResolveImplementMethodInfoValidityTest.Implementee.class;
+			Method implementeeMethod = getMethodByName(implementee, "handle");
+			Class<?> implementor = ResolveImplementMethodInfoValidityTest.Implementor1.class;
+			Method implementMethod = getMethodByName(implementor, "handle");
+
+			ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
+					implementor, implementMethod);
+
+			this.implementationResolver.resolveImplementMethodInfoValidity(
+					implementee, implementeeMethod, implementMethodInfo);
+
+			assertEquals(getMethodByName(implementor, "isValid"),
+					implementMethodInfo.getValidityMethod());
+			assertNotNull(implementMethodInfo.getValidityParamIndexes());
+		}
 	}
 
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
+	public static class ResolveImplementMethodInfoValidityTest
+	{
+		public static class Implementee
+		{
+			public void handle(int a)
+			{
+			}
+		}
+
+		public static class Implementor extends Implementee
+		{
+			@Override
+			@Validity("isValid")
+			public void handle(int a)
+			{
+			}
+
+			public boolean isValid(int a)
+			{
+				return true;
+			}
+		}
+
+		public static class Implementor1 extends Implementee
+		{
+			@Override
+			@Validity("isValid")
+			public void handle(int a)
+			{
+			}
+
+			public Boolean isValid(int a)
+			{
+				return true;
+			}
+		}
+	}
 
 	@Test
-	public void resolveImplementMethodInfoValidityTestThrow()
+	public void resolveImplementMethodInfoValidityTest_notFound()
 	{
-		Class<?> implementee = ResolveImplementMethodInfoValidityThrow.Implementee.class;
+		Class<?> implementee = ResolveImplementMethodInfoValidity_notFound.Implementee.class;
 		Method implementeeMethod = getMethodByName(implementee, "handle");
-		Class<?> implementor = ResolveImplementMethodInfoValidityThrow.Implementor.class;
+		Class<?> implementor = ResolveImplementMethodInfoValidity_notFound.Implementor.class;
 		Method implementMethod = getMethodByName(implementor, "handle");
 
 		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
 				implementor, implementMethod);
 
 		expectedException.expect(ImplementationResolveException.class);
+		expectedException.expectMessage("No method is found for [@Validity");
 
 		this.implementationResolver.resolveImplementMethodInfoValidity(
 				implementee, implementeeMethod, implementMethodInfo);
 	}
 
-	public static class ResolveImplementMethodInfoValidityThrow
+	public static class ResolveImplementMethodInfoValidity_notFound
 	{
 		public static class Implementee
 		{
@@ -508,11 +567,76 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	}
 
 	@Test
+	public void resolveImplementMethodInfoValidityTest_notIegalReturnType()
+	{
+		Class<?> implementee = ResolveImplementMethodInfoValidity_notIegalReturnType.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "handle");
+		Class<?> implementor = ResolveImplementMethodInfoValidity_notIegalReturnType.Implementor.class;
+		Method implementMethod = getMethodByName(implementor, "handle");
+
+		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
+				implementor, implementMethod);
+
+		expectedException.expect(ImplementationResolveException.class);
+		expectedException
+				.expectMessage("must return [" + boolean.class.getSimpleName()
+						+ "] or [" + Boolean.class.getSimpleName() + "] type");
+
+		this.implementationResolver.resolveImplementMethodInfoValidity(
+				implementee, implementeeMethod, implementMethodInfo);
+	}
+
+	public static class ResolveImplementMethodInfoValidity_notIegalReturnType
+	{
+		public static class Implementee
+		{
+			public void handle(int a)
+			{
+			}
+		}
+
+		public static class Implementor extends Implementee
+		{
+			@Override
+			@Validity("isValid")
+			public void handle(int a)
+			{
+			}
+
+			public int isValid()
+			{
+				return 0;
+			}
+		}
+	}
+
+	@Test
 	public void resolveImplementMethodInfoPriorityTest()
 	{
-		Class<?> implementee = ResolveImplementMethodInfoPropertiesTest.Implementee.class;
+		// int return type
+		{
+			Class<?> implementee = ResolveImplementMethodInfoPriorityTest.Implementee.class;
+			Method implementeeMethod = getMethodByName(implementee, "handle");
+			Class<?> implementor = ResolveImplementMethodInfoPriorityTest.Implementor.class;
+			Method implementMethod = getMethodByName(implementor, "handle");
+
+			ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
+					implementor, implementMethod);
+
+			this.implementationResolver.resolveImplementMethodInfoPriority(
+					implementee, implementeeMethod, implementMethodInfo);
+
+			assertEquals(getMethodByName(implementor, "getPriority"),
+					implementMethodInfo.getPriorityMethod());
+			assertEquals(1, implementMethodInfo.getPriorityValue());
+			assertNotNull(implementMethodInfo.getPriorityParamIndexes());
+		}
+
+		// Integer return type
+		{
+		Class<?> implementee = ResolveImplementMethodInfoPriorityTest.Implementee.class;
 		Method implementeeMethod = getMethodByName(implementee, "handle");
-		Class<?> implementor = ResolveImplementMethodInfoPropertiesTest.Implementor.class;
+			Class<?> implementor = ResolveImplementMethodInfoPriorityTest.Implementor1.class;
 		Method implementMethod = getMethodByName(implementor, "handle");
 
 		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
@@ -525,14 +649,53 @@ public class ImplementationResolverTest extends AbstractTestSupport
 				implementMethodInfo.getPriorityMethod());
 		assertEquals(1, implementMethodInfo.getPriorityValue());
 		assertNotNull(implementMethodInfo.getPriorityParamIndexes());
+		}
+	}
+
+	public static class ResolveImplementMethodInfoPriorityTest
+	{
+		public static class Implementee
+		{
+			public void handle(int a)
+			{
+			}
+		}
+
+		public static class Implementor extends Implementee
+		{
+			@Override
+			@Priority(value = "getPriority", priority = 1)
+			public void handle(int a)
+			{
+			}
+
+			public int getPriority(int a)
+			{
+				return 1;
+			}
+		}
+
+		public static class Implementor1 extends Implementee
+		{
+			@Override
+			@Priority(value = "getPriority", priority = 1)
+			public void handle(int a)
+			{
+			}
+
+			public Integer getPriority(int a)
+			{
+				return 1;
+			}
+		}
 	}
 
 	@Test
-	public void resolveImplementMethodInfoPriorityTestThrow()
+	public void resolveImplementMethodInfoPriorityTest_notFound()
 	{
-		Class<?> implementee = ResolveImplementMethodInfoPriorityThrow.Implementee.class;
+		Class<?> implementee = ResolveImplementMethodInfoPriority_notFound.Implementee.class;
 		Method implementeeMethod = getMethodByName(implementee, "handle");
-		Class<?> implementor = ResolveImplementMethodInfoPriorityThrow.Implementor.class;
+		Class<?> implementor = ResolveImplementMethodInfoPriority_notFound.Implementor.class;
 		Method implementMethod = getMethodByName(implementor, "handle");
 
 		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
@@ -545,7 +708,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 				implementee, implementeeMethod, implementMethodInfo);
 	}
 
-	public static class ResolveImplementMethodInfoPriorityThrow
+	public static class ResolveImplementMethodInfoPriority_notFound
 	{
 		public static class Implementee
 		{
@@ -560,6 +723,47 @@ public class ImplementationResolverTest extends AbstractTestSupport
 			@Priority("getPriority")
 			public void handle(int a)
 			{
+			}
+		}
+	}
+
+	@Test
+	public void resolveImplementMethodInfoPriorityTest_notIegalReturnType()
+	{
+		Class<?> implementee = ResolveImplementMethodInfoPriority_notIegalReturnType.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "handle");
+		Class<?> implementor = ResolveImplementMethodInfoPriority_notIegalReturnType.Implementor.class;
+		Method implementMethod = getMethodByName(implementor, "handle");
+
+		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
+				implementor, implementMethod);
+
+		expectedException.expect(ImplementationResolveException.class);
+
+		this.implementationResolver.resolveImplementMethodInfoPriority(
+				implementee, implementeeMethod, implementMethodInfo);
+	}
+
+	public static class ResolveImplementMethodInfoPriority_notIegalReturnType
+	{
+		public static class Implementee
+		{
+			public void handle(int a)
+			{
+			}
+		}
+
+		public static class Implementor extends Implementee
+		{
+			@Override
+			@Priority("getPriority")
+			public void handle(int a)
+			{
+			}
+
+			public boolean getPriority()
+			{
+				return true;
 			}
 		}
 	}
@@ -1098,104 +1302,37 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	@Test
 	public void isImplementMethodTest()
 	{
-		Class<?> implementee = IsImplementMethod.Implementee.class;
+		Class<?> implementee = IsImplementMethodTest.Implementee.class;
 		Method implementeeMethod = getMethodByName(implementee, "plus");
-		String implementeeMethodName = implementeeMethod.getName();
-		String implementeeMethodSignature = implementeeMethod.toString();
-		String implementeeMethodRefered = "plus-ref";
 
 		assertFalse(this.implementationResolver.isImplementMethod(implementee,
-				implementeeMethod, implementeeMethodName,
-				implementeeMethodSignature, implementeeMethodRefered,
-				IsImplementMethod.Implementor0.class, getMethodByName(
-						IsImplementMethod.Implementor0.class, "plusStatic")));
+				implementeeMethod,
+				IsImplementMethodTest.Implementor0.class, getMethodByName(
+						IsImplementMethodTest.Implementor0.class, "plusStatic")));
 
 		assertTrue(this.implementationResolver.isImplementMethod(implementee,
-				implementeeMethod, implementeeMethodName,
-				implementeeMethodSignature, implementeeMethodRefered,
-				IsImplementMethod.Implementor1.class,
-				getMethodByName(IsImplementMethod.Implementor1.class, "plus")));
+				implementeeMethod,
+				IsImplementMethodTest.Implementor1.class,
+				getMethodByName(IsImplementMethodTest.Implementor1.class, "plus")));
 
 		assertTrue(this.implementationResolver.isImplementMethod(implementee,
-				implementeeMethod, implementeeMethodName,
-				implementeeMethodSignature, implementeeMethodRefered,
-				IsImplementMethod.Implementor2.class, getMethodByName(
-						IsImplementMethod.Implementor2.class, "myPlus")));
+				implementeeMethod,
+				IsImplementMethodTest.Implementor2.class, getMethodByName(
+						IsImplementMethodTest.Implementor2.class, "myPlus")));
 
 		assertTrue(this.implementationResolver.isImplementMethod(implementee,
-				implementeeMethod, implementeeMethodName,
-				implementeeMethodSignature, implementeeMethodRefered,
-				IsImplementMethod.Implementor4.class, getMethodByName(
-						IsImplementMethod.Implementor4.class, "myPlus")));
-
-		assertTrue(this.implementationResolver.isImplementMethod(implementee,
-				implementeeMethod, implementeeMethodName,
-				implementeeMethodSignature, implementeeMethodRefered,
-				IsImplementMethod.Implementor6.class,
-				getMethodByName(IsImplementMethod.Implementor6.class, "plus")));
-
-		assertTrue(this.implementationResolver.isImplementMethod(implementee,
-				implementeeMethod, implementeeMethodName,
-				implementeeMethodSignature, implementeeMethodRefered,
-				IsImplementMethod.Implementor7.class,
-				getMethodByName(IsImplementMethod.Implementor7.class, "plus")));
-
-		assertTrue(this.implementationResolver.isImplementMethod(implementee,
-				implementeeMethod, implementeeMethodName,
-				implementeeMethodSignature, implementeeMethodRefered,
-				IsImplementMethod.Implementor8.class,
-				getMethodByName(IsImplementMethod.Implementor8.class, "plus")));
+				implementeeMethod, IsImplementMethodTest.Implementor3.class,
+				getMethodByName(IsImplementMethodTest.Implementor3.class,
+						"plus")));
 	}
 
-	@Test
-	public void isImplementMethodTestNotAbleToImplement()
-	{
-		Class<?> implementee = IsImplementMethod.Implementee.class;
-		Method implementeeMethod = getMethodByName(implementee, "plus");
-		String implementeeMethodName = implementeeMethod.getName();
-		String implementeeMethodSignature = implementeeMethod.toString();
-		String implementeeMethodRefered = "plus-ref";
-
-		expectedException
-				.expect(ImplementationResolveException.class);
-		expectedException
-				.expectMessage("is not able to implement Method");
-		
-		this.implementationResolver.isImplementMethod(implementee,
-				implementeeMethod, implementeeMethodName,
-				implementeeMethodSignature, implementeeMethodRefered,
-				IsImplementMethod.Implementor3.class, getMethodByName(
-						IsImplementMethod.Implementor3.class, "myPlus"));
-
-	}
-
-	@Test
-	public void isImplementMethodTestNotAbleToImplement1()
-	{
-		Class<?> implementee = IsImplementMethod.Implementee.class;
-		Method implementeeMethod = getMethodByName(implementee, "plus");
-		String implementeeMethodName = implementeeMethod.getName();
-		String implementeeMethodSignature = implementeeMethod.toString();
-		String implementeeMethodRefered = "plus-ref";
-
-		expectedException.expect(ImplementationResolveException.class);
-		expectedException.expectMessage("is not able to implement Method");
-
-		this.implementationResolver.isImplementMethod(implementee,
-				implementeeMethod, implementeeMethodName,
-				implementeeMethodSignature, implementeeMethodRefered,
-				IsImplementMethod.Implementor5.class, getMethodByName(
-						IsImplementMethod.Implementor5.class, "myPlus"));
-	}
-
-	public static class IsImplementMethod
+	public static class IsImplementMethodTest
 	{
 		public static interface Implementee
 		{
-			@Refered("plus-ref")
 			Number plus(Number a, Number b);
 		}
-
+	
 		public static class Implementor0
 		{
 			public static Number plusStatic(Number a, Number b)
@@ -1203,7 +1340,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 				return null;
 			}
 		}
-
+	
 		public static class Implementor1
 		{
 			@Implement
@@ -1212,53 +1349,17 @@ public class ImplementationResolverTest extends AbstractTestSupport
 				return null;
 			}
 		}
-
+	
 		public static class Implementor2
 		{
-			@Implement("plus-ref")
-			public Number myPlus(Number a, Number b)
-			{
-				return null;
-			}
-		}
-
-		public static class Implementor3
-		{
-			@Implement("plus-ref")
-			public Number myPlus(String a, String b)
-			{
-				return null;
-			}
-		}
-
-		public static class Implementor4
-		{
-			@Implement("public abstract java.lang.Number org.ximplementation.support.ImplementationResolverTest$IsImplementMethod$Implementee.plus(java.lang.Number,java.lang.Number)")
-			public Number myPlus(Number a, Number b)
-			{
-				return null;
-			}
-		}
-
-		public static class Implementor5
-		{
-			@Implement("public abstract java.lang.Number org.ximplementation.support.ImplementationResolverTest$IsImplementMethod$Implementee.plus(java.lang.Number,java.lang.Number)")
-			public Number myPlus(String a, String b)
-			{
-				return null;
-			}
-		}
-
-		public static class Implementor6
-		{
 			@Implement("plus")
-			public Number plus(Number a, Number b)
+			public Number myPlus(Number a, Number b)
 			{
 				return null;
 			}
 		}
 
-		public static class Implementor7 implements Implementee
+		public static class Implementor3 implements Implementee
 		{
 			@Override
 			public Number plus(Number a, Number b)
@@ -1266,11 +1367,39 @@ public class ImplementationResolverTest extends AbstractTestSupport
 				return null;
 			}
 		}
+	}
 
-		public static class Implementor8
+	@Test
+	public void isImplementMethodTest_notCompatible()
+	{
+		Class<?> implementee = IsImplementMethodTest_notCompatible.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "plus");
+
+		expectedException
+				.expect(ImplementationResolveException.class);
+		expectedException
+				.expectMessage("is not compatible to implement method");
+		
+		this.implementationResolver.isImplementMethod(implementee,
+				implementeeMethod,
+				IsImplementMethodTest_notCompatible.Implementor.class,
+				getMethodByName(
+						IsImplementMethodTest_notCompatible.Implementor.class,
+						"myPlus"));
+
+	}
+
+	public static class IsImplementMethodTest_notCompatible
+	{
+		public static interface Implementee
 		{
-			@Implement("plus(java.lang.Number,java.lang.Number)")
-			public Number plus(Number a, Number b)
+			Number plus(Number a, Number b);
+		}
+
+		public static class Implementor
+		{
+			@Implement("plus")
+			public Number myPlus(String a, String b)
 			{
 				return null;
 			}
@@ -1447,118 +1576,118 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	}
 
 	@Test
-	public void isInvocationFeasibleMethodTest()
+	public void isInvocationCompatibleTest()
 	{
-		Class<?> implementee = IsInvocationFeasibleMethodTest.Implementee.class;
+		Class<?> implementee = IsInvocationCompatibleTest.Implementee.class;
 
 		// !implementeeReturnType.isAssignableFrom(implementorReturnType)
 		assertFalse(
-				this.implementationResolver.isInvocationFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationCompatible(implementee,
 						getMethodByName(implementee, "plus"),
-						IsInvocationFeasibleMethodTest.Implementor0.class,
+						IsInvocationCompatibleTest.Implementor0.class,
 						getMethodByName(
-								IsInvocationFeasibleMethodTest.Implementor0.class,
+								IsInvocationCompatibleTest.Implementor0.class,
 								"plus")));
 
 		// implementorParamTypes.length > implementeeParamTypes.length
 		assertFalse(
-				this.implementationResolver.isInvocationFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationCompatible(implementee,
 						getMethodByName(implementee, "plus"),
-						IsInvocationFeasibleMethodTest.Implementor1.class,
+						IsInvocationCompatibleTest.Implementor1.class,
 						getMethodByName(
-								IsInvocationFeasibleMethodTest.Implementor1.class,
+								IsInvocationCompatibleTest.Implementor1.class,
 								"plus")));
 
 		// myParamIndex >= implementeeParamTypes.length
 		assertFalse(
-				this.implementationResolver.isInvocationFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationCompatible(implementee,
 						getMethodByName(implementee, "plus"),
-						IsInvocationFeasibleMethodTest.Implementor2.class,
+						IsInvocationCompatibleTest.Implementor2.class,
 						getMethodByName(
-								IsInvocationFeasibleMethodTest.Implementor2.class,
+								IsInvocationCompatibleTest.Implementor2.class,
 								"plus")));
 
 		// !implementeeParamType.isAssignableFrom(implementorParamType)
 		assertFalse(
-				this.implementationResolver.isInvocationFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationCompatible(implementee,
 						getMethodByName(implementee, "plus"),
-						IsInvocationFeasibleMethodTest.Implementor3.class,
+						IsInvocationCompatibleTest.Implementor3.class,
 						getMethodByName(
-								IsInvocationFeasibleMethodTest.Implementor3.class,
+								IsInvocationCompatibleTest.Implementor3.class,
 								"plus")));
 
 		// implementorParamType.isAssignableFrom(implementeeParamType)
 		assertTrue(
-				this.implementationResolver.isInvocationFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationCompatible(implementee,
 						getMethodByName(implementee, "plus"),
-						IsInvocationFeasibleMethodTest.Implementor4.class,
+						IsInvocationCompatibleTest.Implementor4.class,
 						getMethodByName(
-								IsInvocationFeasibleMethodTest.Implementor4.class,
+								IsInvocationCompatibleTest.Implementor4.class,
 								"plus")));
 
 		// primitive return type in implementor
 		assertTrue(
-				this.implementationResolver.isInvocationFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationCompatible(implementee,
 						getMethodByName(implementee, "plus"),
-						IsInvocationFeasibleMethodTest.Implementor5.class,
+						IsInvocationCompatibleTest.Implementor5.class,
 						getMethodByName(
-								IsInvocationFeasibleMethodTest.Implementor5.class,
+								IsInvocationCompatibleTest.Implementor5.class,
 								"plus")));
 
 		// primitive parameter type in implementor
-		assertTrue(this.implementationResolver.isInvocationFeasibleMethod(
+		assertTrue(this.implementationResolver.isInvocationCompatible(
 				implementee, getMethodByName(implementee, "plus"),
-				IsInvocationFeasibleMethodTest.Implementor6.class,
+				IsInvocationCompatibleTest.Implementor6.class,
 						getMethodByName(
-						IsInvocationFeasibleMethodTest.Implementor6.class,
+						IsInvocationCompatibleTest.Implementor6.class,
 								"plus")));
 
 		// super parameter type in implementor
 		assertTrue(
-				this.implementationResolver.isInvocationFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationCompatible(implementee,
 						getMethodByName(implementee, "plus"),
-						IsInvocationFeasibleMethodTest.Implementor7.class,
+						IsInvocationCompatibleTest.Implementor7.class,
 						getMethodByName(
-								IsInvocationFeasibleMethodTest.Implementor7.class,
+								IsInvocationCompatibleTest.Implementor7.class,
 								"plus")));
 
 		// subset of parameters
 		assertTrue(
-				this.implementationResolver.isInvocationFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationCompatible(implementee,
 						getMethodByName(implementee, "plus"),
-						IsInvocationFeasibleMethodTest.Implementor8.class,
+						IsInvocationCompatibleTest.Implementor8.class,
 						getMethodByName(
-								IsInvocationFeasibleMethodTest.Implementor8.class,
+								IsInvocationCompatibleTest.Implementor8.class,
 								"plus")));
 
 		//// subset of parameters
 		assertTrue(
-				this.implementationResolver.isInvocationFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationCompatible(implementee,
 						getMethodByName(implementee, "plus"),
-						IsInvocationFeasibleMethodTest.Implementor9.class,
+						IsInvocationCompatibleTest.Implementor9.class,
 						getMethodByName(
-								IsInvocationFeasibleMethodTest.Implementor9.class,
+								IsInvocationCompatibleTest.Implementor9.class,
 								"plus")));
 
 		// the same return type and parameter types
 		assertTrue(
-				this.implementationResolver.isInvocationFeasibleMethod(implementee,
+				this.implementationResolver.isInvocationCompatible(implementee,
 						getMethodByName(implementee, "minus"),
-						IsInvocationFeasibleMethodTest.Implementor10.class,
+						IsInvocationCompatibleTest.Implementor10.class,
 						getMethodByName(
-								IsInvocationFeasibleMethodTest.Implementor10.class,
+								IsInvocationCompatibleTest.Implementor10.class,
 								"minus")));
 
 		// generic
-		assertTrue(this.implementationResolver.isInvocationFeasibleMethod(
+		assertTrue(this.implementationResolver.isInvocationCompatible(
 				implementee, getMethodByName(implementee, "gplus"),
-				IsInvocationFeasibleMethodTest.Implementor11.class,
+				IsInvocationCompatibleTest.Implementor11.class,
 				getMethodByName(
-						IsInvocationFeasibleMethodTest.Implementor11.class,
+						IsInvocationCompatibleTest.Implementor11.class,
 						"gplus")));
 	}
 
-	public static class IsInvocationFeasibleMethodTest
+	public static class IsInvocationCompatibleTest
 	{
 		public static interface Implementee<T extends Number>
 		{
@@ -1667,216 +1796,50 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	}
 
 	@Test
-	public void findReferedMethodTest()
+	public void findMethodTest()
 	{
-		assertEquals(getMethodByName(FindReferedMethodTest.Test0.class, "test"), this.implementationResolver.findReferedMethod(
-						FindReferedMethodTest.Test0.class, "my-ref",
-						Void.class));
+		// in class
+		assertEquals(getMethodByName(FindMethodTest.Test0.class, "test1"),
+				this.implementationResolver.findMethod(
+						FindMethodTest.Test0.class, "test1"));
 
-		assertEquals(
-				getMethodByNameAndType(FindReferedMethodTest.Test1.class,
-						"test", int.class),
-				this.implementationResolver.findReferedMethod(
-						FindReferedMethodTest.Test1.class, "test",
-						int.class));
+		// in super class
+		assertEquals(getMethodByName(FindMethodTest.Test0.class, "test1"),
+				this.implementationResolver
+						.findMethod(FindMethodTest.Test1.class, "test1"));
 
-		assertEquals(
-				getMethodByNameAndType(FindReferedMethodTest.Test1.class,
-						"test", int.class),
-				this.implementationResolver.findReferedMethod(
-						FindReferedMethodTest.Test1.class, "test",
-						Number.class));
+		// in super interface
+		assertEquals(getMethodByName(FindMethodTest.Test3.class, "test3"),
+				this.implementationResolver
+						.findMethod(FindMethodTest.Test4.class, "test3"));
 
-		assertEquals(
-				getMethodByNameAndType(FindReferedMethodTest.Test2.class,
-						"test", int.class),
-				this.implementationResolver.findReferedMethod(
-						FindReferedMethodTest.Test2.class, "test", int.class));
-
-		assertEquals(
-				getMethodByNameAndType(FindReferedMethodTest.Test2.class,
-						"test", int.class),
-				this.implementationResolver.findReferedMethod(
-						FindReferedMethodTest.Test2.class, "test",
-						Number.class));
-
-		// method signature part
-		assertEquals(
-				getMethodByNameAndType(FindReferedMethodTest.Test4.class,
-						"test", int.class),
-				this.implementationResolver.findReferedMethod(
-						FindReferedMethodTest.Test4.class, "test(int)",
-						Number.class));
-
-		// findReferedMethod(clazz.getSuperclass(), methodRef, validReturnTypes)
-		assertEquals(
-				getMethodByNameAndType(FindReferedMethodTest.Test5.class,
-						"test", int.class),
-				this.implementationResolver.findReferedMethod(
-						FindReferedMethodTest.Test6.class, "test(int)",
-						Number.class));
+		// not found
+		assertNull(this.implementationResolver
+				.findMethod(FindMethodTest.Test4.class, "test5"));
 	}
 
-	@Test
-	public void findReferedMethodTestNoMethodIsFound()
-	{
-		expectedException.expect(ImplementationResolveException.class);
-		expectedException.expectMessage("No method is found for");
-
-		this.implementationResolver.findReferedMethod(
-				FindReferedMethodTest.Test3.class, "test", Number.class);
-	}
-
-	@Test
-	public void findReferedMethodTestMoreThanOneIsFound()
-	{
-		expectedException.expect(ImplementationResolveException.class);
-		expectedException.expectMessage("More than one");
-
-		this.implementationResolver.findReferedMethod(
-				FindReferedMethodTest.Test4.class, "test", int.class);
-	}
-
-	public static class FindReferedMethodTest
+	public static class FindMethodTest
 	{
 		public static class Test0
 		{
-			public void test0()
-			{
-			}
-
-			@Refered("my-ref")
-			public void test()
+			public void test1()
 			{
 			}
 		}
 
-		public static class Test1
+		public static class Test1 extends Test0
 		{
-			public void test()
+			public void test2()
 			{
-			}
-
-			public int test(int a)
-			{
-				return 0;
 			}
 		}
 
-		public static class Test2
+		public static interface Test3
 		{
-			public void test()
-			{
-			}
-
-			public Integer test(int a)
-			{
-				return 0;
-			}
+			void test3();
 		}
 
-		public static class Test3
-		{
-		}
-
-		public static class Test4
-		{
-			public int test()
-			{
-				return 0;
-			}
-
-			public Integer test(int a)
-			{
-				return 0;
-			}
-		}
-
-		public static class Test5
-		{
-			public int test()
-			{
-				return 0;
-			}
-
-			public Integer test(int a)
-			{
-				return 0;
-			}
-		}
-
-		public static class Test6 extends Test5
-		{
-
-		}
-	}
-
-	@Test
-	public void getMethodSignatureTest()
-	{
-		Method method = getMethodByName(GetMethodSignatureTest.class, "test");
-		
-		assertEquals(method.toString(),
-				this.implementationResolver.getMethodSignature(
-				GetMethodSignatureTest.class,
-						method));
-	}
-
-	public static class GetMethodSignatureTest
-	{
-		public void test(Integer a, Integer b)
-		{
-		}
-	}
-
-	@Test
-	public void isMethodSignaturePartTest()
-	{
-		assertTrue(this.implementationResolver.isMethodSignaturePart("()"));
-		assertTrue(this.implementationResolver.isMethodSignaturePart("plus()"));
-		assertTrue(
-				this.implementationResolver.isMethodSignaturePart("plus(a,b)"));
-		assertTrue(this.implementationResolver
-				.isMethodSignaturePart("plus(java.lang.Integer)"));
-		assertFalse(this.implementationResolver.isMethodSignaturePart("("));
-		assertFalse(this.implementationResolver.isMethodSignaturePart(")"));
-		assertFalse(this.implementationResolver.isMethodSignaturePart("plus"));
-		assertFalse(this.implementationResolver.isMethodSignaturePart("plus("));
-		assertFalse(this.implementationResolver.isMethodSignaturePart("plus)"));
-	}
-
-	@Test
-	public void matchMethodSignatureTest()
-	{
-		assertFalse(this.implementationResolver.matchMethodSignature("plus()",
-				null));
-		assertFalse(this.implementationResolver.matchMethodSignature("plus()",
-				""));
-		assertTrue(this.implementationResolver.matchMethodSignature("plus()",
-				"plus()"));
-		assertTrue(this.implementationResolver
-				.matchMethodSignature("public void plus()",
-				"plus()"));
-	}
-
-	@Test
-	public void getReferedTest()
-	{
-		assertEquals("test", this.implementationResolver
-				.getRefered(getMethodByName(GetReferedTest.class, "test0")));
-
-		assertNull(this.implementationResolver
-				.getRefered(getMethodByName(GetReferedTest.class, "test1")));
-	}
-
-	public static class GetReferedTest
-	{
-		@Refered("test")
-		public void test0()
-		{
-		}
-
-		public void test1()
+		public static abstract class Test4 extends Test1 implements Test3
 		{
 		}
 	}

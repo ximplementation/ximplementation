@@ -35,7 +35,6 @@ import org.ximplementation.Implementor;
 import org.ximplementation.Index;
 import org.ximplementation.NotImplement;
 import org.ximplementation.Priority;
-import org.ximplementation.Refered;
 import org.ximplementation.Validity;
 
 /**
@@ -58,9 +57,31 @@ public class ImplementationResolver
 
 	private Map<Type, Map<TypeVariable<?>, Type>> typeVariablesMap = new WeakHashMap<Type, Map<TypeVariable<?>, Type>>();
 
+	private MethodMatcher methodMatcher = new DefaultMethodMatcher();
+
 	public ImplementationResolver()
 	{
 		super();
+	}
+
+	/**
+	 * Get {@linkplain MethodMatcher} used for matching methods.
+	 * 
+	 * @return
+	 */
+	public MethodMatcher getMethodMatcher()
+	{
+		return methodMatcher;
+	}
+
+	/**
+	 * Set {@linkplain MethodMatcher} used for matching methods.
+	 * 
+	 * @param methodMatcher
+	 */
+	public void setMethodMatcher(MethodMatcher methodMatcher)
+	{
+		this.methodMatcher = methodMatcher;
 	}
 
 	/**
@@ -191,17 +212,13 @@ public class ImplementationResolver
 	{
 		List<ImplementMethodInfo> implementMethodInfos = new ArrayList<ImplementMethodInfo>();
 
-		String implementeeMethodName = implementeeMethod.getName();
-		String implementeeMethodSignature = getMethodSignature(implementee, implementeeMethod);
-		String implementeeMethodRefered = getRefered(implementeeMethod);
-
 		Collection<Method> implementMethods = getCandidateImplementMethods(
 				implementor);
 
 		for (Method implementMethod : implementMethods)
 		{
-			if (isImplementMethod(implementee, implementeeMethod, implementeeMethodName, implementeeMethodSignature,
-					implementeeMethodRefered, implementor, implementMethod))
+			if (isImplementMethod(implementee, implementeeMethod, implementor,
+					implementMethod))
 			{
 				ImplementMethodInfo implementMethodInfo = buildImplementMethodInfo(implementee, implementeeMethod,
 						implementor, implementMethod);
@@ -317,13 +334,23 @@ public class ImplementationResolver
 
 		if (validity != null)
 		{
-			String validityRef = validity.value();
+			String validityMethodMatcher = validity.value();
 
-			Method validityMethod = findReferedMethod(implementor, validityRef, boolean.class, Boolean.class);
+			Method validityMethod = findMethod(implementor, validityMethodMatcher);
 
 			if (validityMethod == null)
 				throw new ImplementationResolveException("Class [" + implementor
-						+ "] : No method is found for [@Validity(\"" + validityRef + "\")] reference");
+						+ "] : No method is found for [@Validity(\"" + validityMethodMatcher + "\")] reference");
+			
+			Class<?> returnType = toWrapperType(validityMethod.getReturnType());
+			
+			if (!Boolean.class.equals(returnType))
+				throw new ImplementationResolveException("Class [" + implementor
+						+ "] : Validity method [" + validityMethod
+						+ "] must return [" + boolean.class.getSimpleName()
+						+ "] or [" + Boolean.class.getSimpleName() + "] type");
+
+			// TODO check if parameters compatible
 
 			int[] validityParamIndexes = getMethodParamIndexes(implementor, validityMethod);
 
@@ -356,15 +383,28 @@ public class ImplementationResolver
 			Method priorityMethod = null;
 			int[] priorityParamIndexes = null;
 
-			String priorityMethodRef = priority.value();
+			String priorityMethodMatcher = priority.value();
 
-			if (!priorityMethodRef.isEmpty())
+			if (!priorityMethodMatcher.isEmpty())
 			{
-				priorityMethod = findReferedMethod(implementor, priorityMethodRef, Number.class);
+				priorityMethod = findMethod(implementor, priorityMethodMatcher);
 
 				if (priorityMethod == null)
 					throw new ImplementationResolveException("Class [" + implementor
-							+ "] : No method is found for [@Priority(\"" + priorityMethodRef + "\")] reference");
+							+ "] : No method is found for [@Priority(\"" + priorityMethodMatcher + "\")] reference");
+
+				Class<?> returnType = toWrapperType(
+						priorityMethod.getReturnType());
+
+				if (!Integer.class.equals(returnType))
+					throw new ImplementationResolveException(
+							"Class [" + implementor + "] : Priority method ["
+									+ priorityMethod
+									+ "] must return ["
+									+ int.class.getSimpleName() + "] or ["
+									+ Integer.class.getSimpleName() + "] type");
+
+				// TODO check if parameters compatible
 
 				priorityParamIndexes = getMethodParamIndexes(implementor, priorityMethod);
 			}
@@ -596,15 +636,12 @@ public class ImplementationResolver
 	 * 
 	 * @param implementee
 	 * @param implementeeMethod
-	 * @param implementeeMethodName
-	 * @param implementeeMethodSignature
-	 * @param implementeeMethodRefered
 	 * @param implementor
 	 * @param implementMethod
 	 * @return
 	 */
-	protected boolean isImplementMethod(Class<?> implementee, Method implementeeMethod, String implementeeMethodName,
-			String implementeeMethodSignature, String implementeeMethodRefered, Class<?> implementor,
+	protected boolean isImplementMethod(Class<?> implementee,
+			Method implementeeMethod, Class<?> implementor,
 			Method implementMethod)
 	{
 		if (!maybeImplementMethod(implementor, implementMethod))
@@ -617,34 +654,24 @@ public class ImplementationResolver
 			String implementAnoValue = implementAno.value();
 
 			if (implementAnoValue == null || implementAnoValue.isEmpty())
+				implementAnoValue = implementMethod.getName();
+
+			if (this.methodMatcher.match(implementAnoValue, implementeeMethod,
+					implementee))
 			{
-				// the same name and invoke feasible
-				return implementeeMethodName.equals(implementMethod.getName())
-						&& isInvocationFeasibleMethod(implementee,
-								implementeeMethod, implementor,
-								implementMethod);
+				if (!isInvocationCompatible(implementee, implementeeMethod,
+						implementor, implementMethod))
+					throw new ImplementationResolveException(
+							"Class [" + implementor.getName() + "] : method ["
+									+ implementMethod
+									+ "] is not compatible to implement method ["
+									+ implementeeMethod + "] in [" + implementee
+									+ "]");
+
+				return true;
 			}
 			else
-			{
-				if (implementAnoValue.equals(implementeeMethodRefered)
-						|| (isMethodSignaturePart(implementAnoValue)
-								&& matchMethodSignature(
-										implementeeMethodSignature,
-										implementAnoValue)))
-				{
-					if (!isInvocationFeasibleMethod(implementee, implementeeMethod, implementor, implementMethod))
-						throw new ImplementationResolveException("Method [" + implementMethod
-								+ "] is not able to implement Method [" + implementeeMethod + "] ");
-
-					return true;
-				}
-				else if (implementAnoValue.equals(implementeeMethodName))
-				{
-					return isInvocationFeasibleMethod(implementee, implementeeMethod, implementor, implementMethod);
-				}
-				else
-					return false;
-			}
+				return false;
 		}
 		else
 			return isOverriddenMethod(implementee, implementeeMethod, implementor, implementMethod);
@@ -745,10 +772,10 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Return if the {@code implementMethod} method is invocation feasible to
+	 * Return if the {@code implementMethod} method is invocation compatible to
 	 * the {@code implementeeMethod} method.
 	 * <p>
-	 * Method {@code A} is invocation feasible to method {@code B} if :
+	 * Method {@code A} is invocation compatible to method {@code B} if :
 	 * </p>
 	 * <ul>
 	 * <li>The return type of {@code A} is sub type of {@code B} after both are
@@ -763,7 +790,8 @@ public class ImplementationResolver
 	 * @param implementMethod
 	 * @return
 	 */
-	protected boolean isInvocationFeasibleMethod(Class<?> implementee, Method implementeeMethod, Class<?> implementor,
+	protected boolean isInvocationCompatible(Class<?> implementee,
+			Method implementeeMethod, Class<?> implementor,
 			Method implementMethod)
 	{
 		// 返回值类型
@@ -809,156 +837,50 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Find refered method.
-	 * <p>
-	 * Return {@code null} if not found.
-	 * </p>
+	 * Find method.
 	 * 
 	 * @param clazz
-	 * @param methodRef
-	 * @param validReturnTypes
-	 * @return
+	 * @param matcher
+	 * @return The matched method, {@code null} if no.
 	 */
-	protected Method findReferedMethod(Class<?> clazz, String methodRef, Class<?>... validReturnTypes)
+	protected Method findMethod(Class<?> clazz, String matcher)
 	{
-		Method method = null;
+		Method[] myMethods = clazz.getDeclaredMethods();
 
-		Method[] myAll = clazz.getDeclaredMethods();
-
-		List<Method> named = new ArrayList<Method>();
-
-		for (Method m : myAll)
+		for (Method myMethod : myMethods)
 		{
 			// ignore synthetic methods
-			if (m.isSynthetic())
+			if (myMethod.isSynthetic())
 				continue;
 
-			Refered refAnno = getAnnotation(m, Refered.class);
-
-			if (refAnno != null && refAnno.value().equals(methodRef))
-			{
-				method = m;
-				break;
-			}
-			else if (isMethodSignaturePart(methodRef) && matchMethodSignature(
-					getMethodSignature(clazz, m), methodRef))
-			{
-				method = m;
-				break;
-			}
-			else
-			{
-				if (m.getName().equals(methodRef))
-				{
-					if (validReturnTypes.length == 0)
-					{
-						named.add(m);
-					}
-					else
-					{
-						Class<?> returnType = toWrapperType(m.getReturnType());
-
-						boolean returnValid = false;
-
-						for (Class<?> validReturnType : validReturnTypes)
-						{
-							validReturnType = toWrapperType(
-										validReturnType);
-
-							if (validReturnType.isAssignableFrom(returnType))
-							{
-								returnValid = true;
-							}
-						}
-
-						if (returnValid)
-							named.add(m);
-					}
-				}
-			}
+			if (this.methodMatcher.match(matcher, myMethod, clazz))
+				return myMethod;
 		}
 
-		if (method == null)
+		Method method = null;
+
+		// methods in super class
+		Class<?> superClass = clazz.getSuperclass();
+		if (superClass != null)
+			method = findMethod(superClass, matcher);
+
+		if (method != null)
+			return method;
+
+		// methods in super interfaces
+		Class<?>[] superInterfaces = clazz.getInterfaces();
+		if (superInterfaces != null)
 		{
-			int namedSize = named.size();
-			
-			if (namedSize == 1)
-				method = named.get(0);
-			else if(namedSize > 1)
-				throw new ImplementationResolveException(
-						"Class [" + clazz.getName() + "] : More than one '"
-								+ methodRef
-								+ "' named method is found for '" + methodRef
-								+ "' reference");
-			else
+			for (Class<?> superInterface : superInterfaces)
 			{
-				if (clazz.getSuperclass() != null)
-				{
-					method = findReferedMethod(clazz.getSuperclass(), methodRef,
-							validReturnTypes);
-				}
+				method = findMethod(superInterface, matcher);
+
+				if (method != null)
+					return method;
 			}
 		}
-		
-		if(method == null)
-			throw new ImplementationResolveException(
-					"Class [" + clazz.getName()
-							+ "] : No method is found for '"
-							+ methodRef + "' reference");
 
-		return method;
-	}
-
-	/**
-	 * Get the method signature.
-	 * 
-	 * @param clazz
-	 * @param method
-	 * @return
-	 */
-	protected String getMethodSignature(Class<?> clazz, Method method)
-	{
-		return method.toString();
-	}
-
-	/**
-	 * Return if the specified string is part of method signature.
-	 * 
-	 * @param sp
-	 * @return
-	 */
-	protected boolean isMethodSignaturePart(String sp)
-	{
-		return (sp != null && sp.matches(METHOD_SIGNATURE_PART_REGEX));
-	}
-
-	/**
-	 * Return if the specified string matches the method signature.
-	 * 
-	 * @param methodSignature
-	 * @param part
-	 * @return
-	 */
-	protected boolean matchMethodSignature(String methodSignature, String part)
-	{
-		return (part != null && !part.isEmpty()
-				&& methodSignature.indexOf(part) > -1);
-	}
-
-	/**
-	 * Get refered name of the method.
-	 * <p>
-	 * Return {@code null} if the method is not {@linkplain Refered} annotated.
-	 * </p>
-	 * 
-	 * @param method
-	 * @return
-	 */
-	protected String getRefered(Method method)
-	{
-		Refered refered = getAnnotation(method, Refered.class);
-
-		return (refered == null ? null : refered.value());
+		return null;
 	}
 
 	/**

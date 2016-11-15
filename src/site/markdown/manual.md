@@ -51,12 +51,6 @@ This annotation indicate that the method parameter value should be set to specif
 
 See the API documentation [Here](apidocs/org/ximplementation/Index.html) for more.
 
-`@Refered`
-
-This annotation indicate that the method has been identified by a name, and can be referenced by this name.
-
-See the API documentation [Here](apidocs/org/ximplementation/Refered.html) for more.
-
 ## Resolving and Instantiation
 The [ImplementationResolver](apidocs/org/ximplementation/support/ImplementationResolver.html) is the main class for resolving implementations, it resolving a given <i>implementee</i> and its <i>implementor</i>s, then creating an [Implementation](apidocs/org/ximplementation/support/Implementation.html) instance which contains the implementation info for that <i>implementee</i>.
 
@@ -66,4 +60,4 @@ The [ImplementorBeanFactory](apidocs/org/ximplementation/support/ImplementorBean
 
 The [ImplementeeMethodInvocationFactory](apidocs/org/ximplementation/support/ImplementeeMethodInvocationFactory.html) is an interface for getting [ImplementeeMethodInvocation](apidocs/org/ximplementation/support/ImplementeeMethodInvocation.html) which encapsulating the final concrete invocation info(eg. the <i>implement method</i> with the max invocation priority and the corresponding <i>implementor</i> instance) for an <i>implementee method</i> invocation. The [DefaultImplementeeMethodInvocationFactory](apidocs/org/ximplementation/support/DefaultImplementeeMethodInvocationFactory.html) is a concrete `ImplementeeMethodInvocationFactory` and used by [ProxyImplementeeBeanBuilder](apidocs/org/ximplementation/support/ProxyImplementeeBeanBuilder.html) by default.
 
-Each call on <i>implementee method</i> of an <i>implementee</i> instance created by [ProxyImplementeeBeanBuilder](apidocs/org/ximplementation/support/ProxyImplementeeBeanBuilder.html) will first call the [ImplementeeMethodInvocationFactory](apidocs/org/ximplementation/support/ImplementeeMethodInvocationFactory.html)'s `get` method for getting an [ImplementeeMethodInvocation](apidocs/org/ximplementation/support/ImplementeeMethodInvocation.html) instance, then call the got `ImplementeeMethodInvocation`'s `invoke()` method and returns its result as the <i>implementee method</i> invocation result.
+Each call on <i>implementee method</i> of an <i>implementee</i> instance created by [ProxyImplementeeBeanBuilder](apidocs/org/ximplementation/support/ProxyImplementeeBeanBuilder.html) will first call the [ImplementeeMethodInvocationFactory](apidocs/org/ximplementation/support/ImplementeeMethodInvocationFactory.html)'s `get` method to get an [ImplementeeMethodInvocation](apidocs/org/ximplementation/support/ImplementeeMethodInvocation.html) instance, then call the got `ImplementeeMethodInvocation`'s `invoke()` method and returns its result as the <i>implementee method</i> invocation result.
