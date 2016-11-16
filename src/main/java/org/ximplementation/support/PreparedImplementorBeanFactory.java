@@ -60,23 +60,10 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	{
 		super();
 
-		ImplementInfo[] implementInfos = implementation.getImplementInfos();
+		Set<Class<?>> implementors = implementation.getImplementors();
 
-		for (ImplementInfo implementInfo : implementInfos)
-		{
-			if (!implementInfo.hasImplementMethodInfo())
-				continue;
-
-			for (ImplementMethodInfo implementMethodInfo : implementInfo
-					.getImplementMethodInfos())
-			{
-				Class<?> implementor = implementMethodInfo.getImplementor();
-
-				if (!this.implementorBeansMap.containsKey(implementor))
-					setImplementorBeansList(implementor,
-							new ArrayList<Object>(1));
-			}
-		}
+		for (Class<?> implementor : implementors)
+			setImplementorBeansList(implementor, new ArrayList<Object>(1));
 	}
 
 	/**

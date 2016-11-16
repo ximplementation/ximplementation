@@ -17,6 +17,8 @@ package org.ximplementation.support;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Implementation info for an <i>implementee</i>.
@@ -117,6 +119,35 @@ public class Implementation<T> implements Serializable
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get all <i>implementor</i>s of the <i>implementee</i>.
+	 * 
+	 * @return An <i>implementor</i> set, empty if no <i>implementor</i>s.
+	 */
+	public Set<Class<?>> getImplementors()
+	{
+		Set<Class<?>> implementors = new HashSet<Class<?>>();
+
+		if (this.implementInfos == null)
+			return implementors;
+
+		for (ImplementInfo implementInfo : this.implementInfos)
+		{
+			if (!implementInfo.hasImplementMethodInfo())
+				continue;
+
+			for (ImplementMethodInfo implementMethodInfo : implementInfo
+					.getImplementMethodInfos())
+			{
+				Class<?> implementor = implementMethodInfo.getImplementor();
+
+				implementors.add(implementor);
+			}
+		}
+
+		return implementors;
 	}
 
 	@Override

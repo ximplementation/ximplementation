@@ -16,12 +16,16 @@ package org.ximplementation.support;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.Method;
+import java.util.Set;
 
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.ximplementation.Implement;
 import org.ximplementation.Implementor;
 
 /**
@@ -115,6 +119,80 @@ public class ImplementationTest extends AbstractTestSupport
 		@Implementor(Implementee.class)
 		public static class Implementor1
 		{
+			public Number plus(Number a, Number b)
+			{
+				return null;
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void getImplementorsTest()
+	{
+		// this.implementInfos == null
+		{
+			Implementation<Object> implementation = new Implementation<Object>();
+			Set<Class<?>> implementors = implementation.getImplementors();
+
+			assertEquals(0, implementors.size());
+		}
+
+		// !implementInfo.hasImplementMethodInfo()
+		{
+			Implementation<Object> implementation = new Implementation<Object>();
+			ImplementInfo[] implementInfos = new ImplementInfo[2];
+			implementInfos[0] = new ImplementInfo();
+			implementInfos[1] = new ImplementInfo();
+
+			Set<Class<?>> implementors = implementation.getImplementors();
+
+			assertEquals(0, implementors.size());
+		}
+
+		{
+			Implementation<GetImplementorsTest.Implementee> implementation = this.implementationResolver
+					.resolve(GetImplementorsTest.Implementee.class,
+							GetImplementorsTest.Implementor0.class,
+							GetImplementorsTest.Implementor1.class);
+
+			Set<Class<?>> implementors = implementation.getImplementors();
+
+			assertThat(implementors,
+					Matchers.containsInAnyOrder(
+							GetImplementorsTest.Implementor0.class,
+							GetImplementorsTest.Implementor1.class));
+		}
+	}
+
+	protected static class GetImplementorsTest
+	{
+		public static interface Implementee
+		{
+			Number plus(Number a, Number b);
+
+			Number minus(Number a, Number b);
+		}
+
+		public static class Implementor0 implements Implementee
+		{
+			@Override
+			public Number plus(Number a, Number b)
+			{
+				return null;
+			}
+
+			@Override
+			public Number minus(Number a, Number b)
+			{
+				return null;
+			}
+		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor1
+		{
+			@Implement
 			public Number plus(Number a, Number b)
 			{
 				return null;
