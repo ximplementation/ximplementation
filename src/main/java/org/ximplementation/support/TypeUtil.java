@@ -37,8 +37,8 @@ public class TypeUtil
 	}
 
 	/**
-	 * Return the wrapper type of the specified type if it is a primitive,
-	 * returns itself if not.
+	 * Return the wrapper type of given type if it is a primitive, returns
+	 * itself if not.
 	 * 
 	 * @param type
 	 * @return
@@ -70,8 +70,8 @@ public class TypeUtil
 	/**
 	 * Resolve type parameter map.
 	 * <p>
-	 * It resolves {@linkplain TypeVariable}s and their mapped types of a
-	 * specified type hierarchy.
+	 * It resolves {@linkplain TypeVariable}s and their mapped types of given
+	 * type hierarchy.
 	 * </p>
 	 * <p>
 	 * For example :

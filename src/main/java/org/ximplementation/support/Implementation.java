@@ -98,7 +98,7 @@ public class Implementation<T> implements Serializable
 	}
 
 	/**
-	 * Get the {@code ImplementInfo} for a specified <i>implementee</i> method.
+	 * Get the {@code ImplementInfo} for given <i>implementee</i> method.
 	 * 
 	 * @param implementeeMethod
 	 *            The <i>implementee method</i> int the <i>implementee</i>.

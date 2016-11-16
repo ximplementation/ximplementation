@@ -23,7 +23,7 @@ import org.ximplementation.Priority;
 /**
  * Implement method info.
  * <p>
- * It describes an <i>implement method</i> info of a specified <i>implementee
+ * It describes an <i>implement method</i> info of a given <i>implementee
  * method</i>.
  * </p>
  * 
@@ -190,8 +190,8 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Get the parameter array of this <i>implement method</i> for the
-	 * specified <i>implementee method</i> parameter array.
+	 * Get the parameter array of this <i>implement method</i> for given
+	 * <i>implementee method</i> parameter array.
 	 * 
 	 * @param implementeeMethodParams
 	 *            The <i>implementee method</i> parameter array.
@@ -257,8 +257,8 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Get the parameter array of the validity method for the specified
-	 * <i>implementee method</i> parameter array.
+	 * Get the parameter array of the validity method for given <i>implementee
+	 * method</i> parameter array.
 	 * 
 	 * @param implementeeMethodParams
 	 *            The <i>implementee method</i> parameter array.
@@ -345,8 +345,8 @@ public class ImplementMethodInfo implements Serializable
 	}
 
 	/**
-	 * Get the parameter array of the priority method for the specified
-	 * <i>implementee method</i> parameter array.
+	 * Get the parameter array of the priority method for given <i>implementee
+	 * method</i> parameter array.
 	 * 
 	 * @param implementeeMethodParams
 	 *            The <i>implementee method</i> parameter array.

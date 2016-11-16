@@ -541,8 +541,8 @@ public class DefaultImplementeeMethodInvocationFactory
 	}
 
 	/**
-	 * Return the wrapper type of the specified type if it is a primitive,
-	 * returns itself if not.
+	 * Return the wrapper type of the given type if it is a primitive, returns
+	 * itself if not.
 	 * 
 	 * @param type
 	 * @return

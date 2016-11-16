@@ -87,7 +87,7 @@ public class ProxyImplementeeInvocationSupport
 	}
 
 	/**
-	 * Invoke the specified <i>implementee method</i>.
+	 * Invoke given <i>implementee method</i>.
 	 * 
 	 * @param implementeeMethod
 	 *            The <i>implementee method</i> to be invoked.

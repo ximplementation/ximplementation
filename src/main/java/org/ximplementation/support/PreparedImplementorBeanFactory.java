@@ -90,7 +90,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * Return if a specified <i>implementor</i> is acceptable.
+	 * Return if given <i>implementor</i> is acceptable.
 	 * 
 	 * @param implementor
 	 *            The <i>implementor</i> to be checked.
@@ -102,7 +102,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * Return if a specified <i>implementor</i> bean is acceptable.
+	 * Return if given <i>implementor</i> bean is acceptable.
 	 * 
 	 * @param implementorBean
 	 *            The <i>implementor</i> bean to be checked.

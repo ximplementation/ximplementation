@@ -99,7 +99,7 @@ public class ImplementorManager
 	}
 
 	/**
-	 * Get <i>implementor</i> set for the specified <i>implementee</i>.
+	 * Get <i>implementor</i> set for given <i>implementee</i>.
 	 * 
 	 * @param implementee
 	 *            The <i>implementee</i>.
@@ -143,7 +143,7 @@ public class ImplementorManager
 	}
 
 	/**
-	 * Add <i>implementor</i>s only for the specified <i>implementee</i>.
+	 * Add <i>implementor</i>s only for given <i>implementee</i>.
 	 * 
 	 * @param implementee
 	 *            The <i>implementee</i>.
@@ -156,7 +156,7 @@ public class ImplementorManager
 	}
 
 	/**
-	 * Add <i>implementor</i>s only for the specified <i>implementee</i>.
+	 * Add <i>implementor</i>s only for given <i>implementee</i>.
 	 * 
 	 * @param implementee
 	 *            The <i>implementee</i>.
@@ -207,7 +207,7 @@ public class ImplementorManager
 	}
 
 	/**
-	 * Remove the specified <i>implementor</i>s only for the <i>implementee</i>.
+	 * Remove <i>implementor</i>s only for given <i>implementee</i>.
 	 * 
 	 * @param implementee
 	 *            The <i>implementee</i> to be removed.
@@ -220,7 +220,7 @@ public class ImplementorManager
 	}
 
 	/**
-	 * Remove the specified <i>implementor</i>s only for the <i>implementee</i>.
+	 * Remove <i>implementor</i>s only for given <i>implementee</i>.
 	 * 
 	 * @param implementee
 	 *            The <i>implementee</i> to be removed.
@@ -404,7 +404,7 @@ public class ImplementorManager
 	}
 
 	/**
-	 * Get super classes for the specified class.
+	 * Get super classes for given class.
 	 * 
 	 * @param clazz
 	 * @return
@@ -432,7 +432,7 @@ public class ImplementorManager
 	}
 
 	/**
-	 * Get <i>implementee</i>s for the specified <i>implementor</i> by
+	 * Get <i>implementee</i>s for given <i>implementor</i> by
 	 * {@linkplain Implement} annotation.
 	 * <p>
 	 * If none, a zero length array will be returned.

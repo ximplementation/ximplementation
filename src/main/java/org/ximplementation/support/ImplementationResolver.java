@@ -416,7 +416,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Get <i>implementee method</i>s for the specified <i>implementee</i>.
+	 * Get <i>implementee method</i>s for given <i>implementee</i>.
 	 * 
 	 * @param implementee
 	 *            The <i>implementee</i> to be got.
@@ -433,7 +433,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Do get <i>implementee method</i>s for the specified <i>implementee</i>.
+	 * Do get <i>implementee method</i>s for given <i>implementee</i>.
 	 * 
 	 * @param implementee
 	 *            The <i>implementee</i> to be got.
@@ -522,7 +522,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Do get <i>implement method</i>s for the specified <i>implementor</i>.
+	 * Do get <i>implement method</i>s for given <i>implementor</i>.
 	 * 
 	 * @param implementor
 	 *            The <i>implementor</i> to be got.
@@ -933,7 +933,7 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Get the specified annotation of an element.
+	 * Get annotation of given type on an element.
 	 * 
 	 * @param element
 	 * @param clazz
