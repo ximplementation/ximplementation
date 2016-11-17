@@ -345,12 +345,20 @@ public class ImplementationResolver
 			Class<?> returnType = toWrapperType(validityMethod.getReturnType());
 			
 			if (!Boolean.class.equals(returnType))
-				throw new ImplementationResolveException("Class [" + implementor
+				throw new ImplementationResolveException("Class ["
+						+ implementor.getName()
 						+ "] : Validity method [" + validityMethod
 						+ "] must return [" + boolean.class.getSimpleName()
 						+ "] or [" + Boolean.class.getSimpleName() + "] type");
 
-			// TODO check if parameters compatible
+			if (!isParameterCompatible(implementeeMethod, implementee,
+					validityMethod, implementor))
+				throw new ImplementationResolveException(
+						"Class [" + implementor.getName()
+						+ "] : Validity method [" + validityMethod
+						+ "] is not parameter-compatible with ["
+						+ implementeeMethod + "] in ["
+								+ implementee.getName() + "]");
 
 			int[] validityParamIndexes = getMethodParamIndexes(implementor, validityMethod);
 
@@ -390,7 +398,8 @@ public class ImplementationResolver
 				priorityMethod = findMethod(implementor, priorityMethodMatcher);
 
 				if (priorityMethod == null)
-					throw new ImplementationResolveException("Class [" + implementor
+					throw new ImplementationResolveException(
+							"Class [" + implementor.getName()
 							+ "] : No method is found for [@Priority(\"" + priorityMethodMatcher + "\")] reference");
 
 				Class<?> returnType = toWrapperType(
@@ -398,13 +407,21 @@ public class ImplementationResolver
 
 				if (!Integer.class.equals(returnType))
 					throw new ImplementationResolveException(
-							"Class [" + implementor + "] : Priority method ["
+							"Class [" + implementor.getName()
+									+ "] : Priority method ["
 									+ priorityMethod
 									+ "] must return ["
 									+ int.class.getSimpleName() + "] or ["
 									+ Integer.class.getSimpleName() + "] type");
 
-				// TODO check if parameters compatible
+				if (!isParameterCompatible(implementeeMethod, implementee,
+						priorityMethod, implementor))
+					throw new ImplementationResolveException(
+							"Class [" + implementor.getName()
+									+ "] : Priority method [" + priorityMethod
+									+ "] is not parameter-compatible with ["
+									+ implementeeMethod + "] in ["
+									+ implementee.getName() + "]");
 
 				priorityParamIndexes = getMethodParamIndexes(implementor, priorityMethod);
 			}
@@ -659,8 +676,8 @@ public class ImplementationResolver
 			if (this.methodMatcher.match(implementAnoValue, implementeeMethod,
 					implementee))
 			{
-				if (!isInvocationCompatible(implementee, implementeeMethod,
-						implementor, implementMethod))
+				if (!isInvocationCompatible(implementeeMethod, implementee,
+						implementMethod, implementor))
 					throw new ImplementationResolveException(
 							"Class [" + implementor.getName() + "] : method ["
 									+ implementMethod
@@ -772,67 +789,84 @@ public class ImplementationResolver
 	}
 
 	/**
-	 * Return if the {@code implementMethod} method is invocation compatible to
-	 * the {@code implementeeMethod} method.
+	 * Check if method {@code beChecked} is invocation-compatible with method
+	 * {@code base}.
 	 * <p>
-	 * Method {@code A} is invocation compatible to method {@code B} if :
+	 * Method {@code A} is invocation-compatible with method {@code B} if :
 	 * </p>
 	 * <ul>
 	 * <li>The return type of {@code A} is sub type of {@code B} after both are
 	 * wrapped if primitive type;</li>
-	 * <li>Each parameter type of {@code A} is sub or super type of {@code B}
-	 * after both are wrapped if primitive type.</li>
+	 * <li>{@code A} is parameter-compatible width {@code B}.</li>
 	 * </ul>
 	 * 
-	 * @param implementee
-	 * @param implementeeMethod
-	 * @param implementor
-	 * @param implementMethod
+	 * @param base
+	 * @param baseClass
+	 * @param beChecked
+	 * @param beCheckedClass
 	 * @return
 	 */
-	protected boolean isInvocationCompatible(Class<?> implementee,
-			Method implementeeMethod, Class<?> implementor,
-			Method implementMethod)
+	protected boolean isInvocationCompatible(Method base, Class<?> baseClass,
+			Method beChecked, Class<?> beCheckedClass)
 	{
-		// 返回值类型
-		Class<?> implementeeReturnType = toWrapperType(
-				implementeeMethod.getReturnType());
-		Class<?> implementorReturnType = toWrapperType(
-				implementMethod.getReturnType());
-
-		if (!implementeeReturnType
-				.isAssignableFrom(implementorReturnType))
+		// return type
+		if (!toWrapperType(base.getReturnType())
+				.isAssignableFrom(toWrapperType(beChecked.getReturnType())))
 			return false;
 
-		// 参数类型
-		Class<?>[] implementeeParamTypes = implementeeMethod
-				.getParameterTypes();
-		Class<?>[] implementorParamTypes = implementMethod.getParameterTypes();
+		// parameter type
+		return isParameterCompatible(base, baseClass,
+				beChecked, beCheckedClass);
+	}
 
-		if (implementorParamTypes.length > implementeeParamTypes.length)
+	/**
+	 * Check if method {@code beChecked} is parameter-compatible with given
+	 * {@code base} method.
+	 * <p>
+	 * Method {@code A} is parameter-compatible with method {@code B} if :
+	 * </p>
+	 * <p>
+	 * Each parameter type of {@code A} is sub or super type of {@code B} after
+	 * both are wrapped if primitive type.
+	 * </p>
+	 * 
+	 * @param base
+	 * @param baseClass
+	 * @param beChecked
+	 * @param beCheckedClass
+	 * @return
+	 */
+	protected boolean isParameterCompatible(Method base,
+			Class<?> baseClass, Method beChecked,
+			Class<?> beCheckedClass)
+	{
+		Class<?>[] baseParamTypes = base.getParameterTypes();
+		Class<?>[] checkedParamTypes = beChecked.getParameterTypes();
+	
+		if (checkedParamTypes.length > baseParamTypes.length)
 			return false;
-
-		int[] implementParamIndexes = getMethodParamIndexes(implementor, implementMethod);
-
-		for (int i = 0; i < implementorParamTypes.length; i++)
+	
+		int[] checkedParamIndexes = getMethodParamIndexes(beCheckedClass,
+				beChecked);
+	
+		for (int i = 0; i < checkedParamTypes.length; i++)
 		{
-			int myParamIndex = implementParamIndexes[i];
-
-			if (myParamIndex >= implementeeParamTypes.length)
+			int myParamIndex = checkedParamIndexes[i];
+	
+			if (myParamIndex >= baseParamTypes.length)
 				return false;
-
-			Class<?> implementeeParamType = toWrapperType(
-					implementeeParamTypes[myParamIndex]);
-			Class<?> implementorParamType = toWrapperType(
-					implementorParamTypes[i]);
-
-			if (!implementeeParamType
-					.isAssignableFrom(implementorParamType)
-					&& !implementorParamType
-							.isAssignableFrom(implementeeParamType))
+	
+			Class<?> baseParamType = toWrapperType(
+					baseParamTypes[myParamIndex]);
+			Class<?> checkedParamType = toWrapperType(
+					checkedParamTypes[i]);
+	
+			if (!baseParamType.isAssignableFrom(checkedParamType)
+					&& !checkedParamType
+							.isAssignableFrom(baseParamType))
 				return false;
 		}
-
+	
 		return true;
 	}
 

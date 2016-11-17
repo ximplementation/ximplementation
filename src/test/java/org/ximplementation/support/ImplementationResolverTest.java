@@ -611,6 +611,49 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	}
 
 	@Test
+	public void resolveImplementMethodInfoValidityTest_notParameterCompatible()
+	{
+		Class<?> implementee = ResolveImplementMethodInfoValidity_notParameterCompatible.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "handle");
+		Class<?> implementor = ResolveImplementMethodInfoValidity_notParameterCompatible.Implementor.class;
+		Method implementMethod = getMethodByName(implementor, "handle");
+
+		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
+				implementor, implementMethod);
+
+		expectedException.expect(ImplementationResolveException.class);
+		expectedException
+				.expectMessage("is not parameter-compatible with");
+
+		this.implementationResolver.resolveImplementMethodInfoValidity(
+				implementee, implementeeMethod, implementMethodInfo);
+	}
+
+	public static class ResolveImplementMethodInfoValidity_notParameterCompatible
+	{
+		public static class Implementee
+		{
+			public void handle(int a)
+			{
+			}
+		}
+
+		public static class Implementor extends Implementee
+		{
+			@Override
+			@Validity("isValid")
+			public void handle(int a)
+			{
+			}
+
+			public boolean isValid(float a)
+			{
+				return true;
+			}
+		}
+	}
+
+	@Test
 	public void resolveImplementMethodInfoPriorityTest()
 	{
 		// int return type
@@ -703,6 +746,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 
 		expectedException
 				.expect(ImplementationResolveException.class);
+		expectedException.expectMessage("No method is found");
 
 		this.implementationResolver.resolveImplementMethodInfoPriority(
 				implementee, implementeeMethod, implementMethodInfo);
@@ -739,6 +783,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 				implementor, implementMethod);
 
 		expectedException.expect(ImplementationResolveException.class);
+		expectedException.expectMessage("must return");
 
 		this.implementationResolver.resolveImplementMethodInfoPriority(
 				implementee, implementeeMethod, implementMethodInfo);
@@ -764,6 +809,48 @@ public class ImplementationResolverTest extends AbstractTestSupport
 			public boolean getPriority()
 			{
 				return true;
+			}
+		}
+	}
+
+	@Test
+	public void resolveImplementMethodInfoPriorityTest_notParameterCompatible()
+	{
+		Class<?> implementee = ResolveImplementMethodInfoPriority_notParameterCompatible.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "handle");
+		Class<?> implementor = ResolveImplementMethodInfoPriority_notParameterCompatible.Implementor.class;
+		Method implementMethod = getMethodByName(implementor, "handle");
+
+		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(
+				implementor, implementMethod);
+
+		expectedException.expect(ImplementationResolveException.class);
+		expectedException.expectMessage("is not parameter-compatible with");
+
+		this.implementationResolver.resolveImplementMethodInfoPriority(
+				implementee, implementeeMethod, implementMethodInfo);
+	}
+
+	public static class ResolveImplementMethodInfoPriority_notParameterCompatible
+	{
+		public static class Implementee
+		{
+			public void handle(int a)
+			{
+			}
+		}
+
+		public static class Implementor extends Implementee
+		{
+			@Override
+			@Priority("getPriority")
+			public void handle(int a)
+			{
+			}
+
+			public int getPriority(float f)
+			{
+				return 1;
 			}
 		}
 	}
@@ -1595,114 +1682,156 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	{
 		Class<?> implementee = IsInvocationCompatibleTest.Implementee.class;
 
-		// !implementeeReturnType.isAssignableFrom(implementorReturnType)
 		assertFalse(
-				this.implementationResolver.isInvocationCompatible(implementee,
-						getMethodByName(implementee, "plus"),
-						IsInvocationCompatibleTest.Implementor0.class,
+				this.implementationResolver.isInvocationCompatible(
+						getMethodByName(implementee, "plus"), implementee,
 						getMethodByName(
 								IsInvocationCompatibleTest.Implementor0.class,
-								"plus")));
+								"plus"),
+						IsInvocationCompatibleTest.Implementor0.class));
 
-		// implementorParamTypes.length > implementeeParamTypes.length
-		assertFalse(
-				this.implementationResolver.isInvocationCompatible(implementee,
-						getMethodByName(implementee, "plus"),
-						IsInvocationCompatibleTest.Implementor1.class,
+		assertTrue(
+				this.implementationResolver.isInvocationCompatible(
+						getMethodByName(implementee, "plus"), implementee,
 						getMethodByName(
 								IsInvocationCompatibleTest.Implementor1.class,
-								"plus")));
+								"plus"),
+						IsInvocationCompatibleTest.Implementor1.class));
 
-		// myParamIndex >= implementeeParamTypes.length
-		assertFalse(
-				this.implementationResolver.isInvocationCompatible(implementee,
-						getMethodByName(implementee, "plus"),
-						IsInvocationCompatibleTest.Implementor2.class,
-						getMethodByName(
-								IsInvocationCompatibleTest.Implementor2.class,
-								"plus")));
-
-		// !implementeeParamType.isAssignableFrom(implementorParamType)
-		assertFalse(
-				this.implementationResolver.isInvocationCompatible(implementee,
-						getMethodByName(implementee, "plus"),
-						IsInvocationCompatibleTest.Implementor3.class,
-						getMethodByName(
-								IsInvocationCompatibleTest.Implementor3.class,
-								"plus")));
-
-		// implementorParamType.isAssignableFrom(implementeeParamType)
-		assertTrue(
-				this.implementationResolver.isInvocationCompatible(implementee,
-						getMethodByName(implementee, "plus"),
-						IsInvocationCompatibleTest.Implementor4.class,
-						getMethodByName(
-								IsInvocationCompatibleTest.Implementor4.class,
-								"plus")));
-
-		// primitive return type in implementor
-		assertTrue(
-				this.implementationResolver.isInvocationCompatible(implementee,
-						getMethodByName(implementee, "plus"),
-						IsInvocationCompatibleTest.Implementor5.class,
-						getMethodByName(
-								IsInvocationCompatibleTest.Implementor5.class,
-								"plus")));
-
-		// primitive parameter type in implementor
 		assertTrue(this.implementationResolver.isInvocationCompatible(
-				implementee, getMethodByName(implementee, "plus"),
-				IsInvocationCompatibleTest.Implementor6.class,
-						getMethodByName(
-						IsInvocationCompatibleTest.Implementor6.class,
-								"plus")));
-
-		// super parameter type in implementor
-		assertTrue(
-				this.implementationResolver.isInvocationCompatible(implementee,
-						getMethodByName(implementee, "plus"),
-						IsInvocationCompatibleTest.Implementor7.class,
-						getMethodByName(
-								IsInvocationCompatibleTest.Implementor7.class,
-								"plus")));
-
-		// subset of parameters
-		assertTrue(
-				this.implementationResolver.isInvocationCompatible(implementee,
-						getMethodByName(implementee, "plus"),
-						IsInvocationCompatibleTest.Implementor8.class,
-						getMethodByName(
-								IsInvocationCompatibleTest.Implementor8.class,
-								"plus")));
-
-		//// subset of parameters
-		assertTrue(
-				this.implementationResolver.isInvocationCompatible(implementee,
-						getMethodByName(implementee, "plus"),
-						IsInvocationCompatibleTest.Implementor9.class,
-						getMethodByName(
-								IsInvocationCompatibleTest.Implementor9.class,
-								"plus")));
-
-		// the same return type and parameter types
-		assertTrue(
-				this.implementationResolver.isInvocationCompatible(implementee,
-						getMethodByName(implementee, "minus"),
-						IsInvocationCompatibleTest.Implementor10.class,
-						getMethodByName(
-								IsInvocationCompatibleTest.Implementor10.class,
-								"minus")));
+				getMethodByName(implementee, "minus"), implementee,
+				getMethodByName(IsInvocationCompatibleTest.Implementor2.class,
+						"minus"),
+				IsInvocationCompatibleTest.Implementor2.class));
 
 		// generic
 		assertTrue(this.implementationResolver.isInvocationCompatible(
-				implementee, getMethodByName(implementee, "gplus"),
-				IsInvocationCompatibleTest.Implementor11.class,
+				getMethodByName(implementee, "gplus"), implementee,
 				getMethodByName(
-						IsInvocationCompatibleTest.Implementor11.class,
-						"gplus")));
+						IsInvocationCompatibleTest.Implementor3.class,
+						"gplus"),
+				IsInvocationCompatibleTest.Implementor3.class));
 	}
 
 	public static class IsInvocationCompatibleTest
+	{
+		public static interface Implementee<T extends Number>
+		{
+			Integer plus();
+
+			int minus();
+
+			T gplus(T a, T b);
+		}
+
+		public static interface Implementor0
+		{
+			Float plus();
+		}
+
+		public static interface Implementor1
+		{
+			int plus();
+		}
+
+		public static interface Implementor2
+		{
+			Integer minus();
+		}
+
+		public static class Implementor3<T extends AtomicInteger>
+		{
+			public T gplus(T a, T b)
+			{
+				return null;
+			}
+		}
+	}
+
+	@Test
+	public void isParameterCompatibleTest()
+	{
+		Class<?> baseClass = IsParameterCompatibleTest.Implementee.class;
+
+		// beCheckedParamTypes.length > baseParamTypes.length
+		assertFalse(this.implementationResolver.isParameterCompatible(
+				getMethodByName(baseClass, "plus"), baseClass,
+				getMethodByName(IsParameterCompatibleTest.Implementor1.class,
+						"plus"),
+				IsParameterCompatibleTest.Implementor1.class));
+
+		// myParamIndex >= baseParamTypes.length
+		assertFalse(this.implementationResolver.isParameterCompatible(
+				getMethodByName(baseClass, "plus"), baseClass,
+				getMethodByName(IsParameterCompatibleTest.Implementor2.class,
+						"plus"),
+				IsParameterCompatibleTest.Implementor2.class));
+
+		// !baseParamType.isAssignableFrom(beCheckedParamType)
+		assertFalse(this.implementationResolver.isParameterCompatible(
+				getMethodByName(baseClass, "plus"), baseClass,
+				getMethodByName(IsParameterCompatibleTest.Implementor3.class,
+						"plus"),
+				IsParameterCompatibleTest.Implementor3.class));
+
+		// beCheckedParamType.isAssignableFrom(baseParamType)
+		assertTrue(this.implementationResolver.isParameterCompatible(
+				getMethodByName(baseClass, "plus"), baseClass,
+				getMethodByName(IsParameterCompatibleTest.Implementor4.class,
+						"plus"),
+				IsParameterCompatibleTest.Implementor4.class));
+
+		// primitive return type in beChecked
+		assertTrue(this.implementationResolver.isParameterCompatible(
+				getMethodByName(baseClass, "plus"), baseClass,
+				getMethodByName(IsParameterCompatibleTest.Implementor5.class,
+						"plus"),
+				IsParameterCompatibleTest.Implementor5.class));
+
+		// primitive parameter type in beChecked
+		assertTrue(this.implementationResolver.isParameterCompatible(
+				getMethodByName(baseClass, "plus"), baseClass,
+				getMethodByName(IsParameterCompatibleTest.Implementor6.class,
+						"plus"),
+				IsParameterCompatibleTest.Implementor6.class));
+
+		// super parameter type in beChecked
+		assertTrue(this.implementationResolver.isParameterCompatible(
+				getMethodByName(baseClass, "plus"), baseClass,
+				getMethodByName(IsParameterCompatibleTest.Implementor7.class,
+						"plus"),
+				IsParameterCompatibleTest.Implementor7.class));
+
+		// subset of parameters
+		assertTrue(this.implementationResolver.isParameterCompatible(
+				getMethodByName(baseClass, "plus"), baseClass,
+				getMethodByName(IsParameterCompatibleTest.Implementor8.class,
+						"plus"),
+				IsParameterCompatibleTest.Implementor8.class));
+
+		//// subset of parameters
+		assertTrue(this.implementationResolver.isParameterCompatible(
+				getMethodByName(baseClass, "plus"), baseClass,
+				getMethodByName(IsParameterCompatibleTest.Implementor9.class,
+						"plus"),
+				IsParameterCompatibleTest.Implementor9.class));
+
+		// the same return type and parameter types
+		assertTrue(this.implementationResolver.isParameterCompatible(
+				getMethodByName(baseClass, "minus"), baseClass,
+				getMethodByName(IsParameterCompatibleTest.Implementor10.class,
+						"minus"),
+				IsParameterCompatibleTest.Implementor10.class));
+
+		// generic
+		assertTrue(this.implementationResolver.isParameterCompatible(
+				getMethodByName(baseClass, "gplus"), baseClass,
+				getMethodByName(IsParameterCompatibleTest.Implementor11.class,
+						"gplus"),
+				IsParameterCompatibleTest.Implementor11.class));
+	}
+
+	public static class IsParameterCompatibleTest
 	{
 		public static interface Implementee<T extends Number>
 		{
@@ -1711,14 +1840,6 @@ public class ImplementationResolverTest extends AbstractTestSupport
 			int minus(int a, int b);
 
 			T gplus(T a, T b);
-		}
-
-		public static class Implementor0
-		{
-			public Float plus(Integer a, Integer b)
-			{
-				return null;
-			}
 		}
 
 		public static class Implementor1
