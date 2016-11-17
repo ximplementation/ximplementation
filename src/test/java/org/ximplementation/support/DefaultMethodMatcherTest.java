@@ -133,6 +133,29 @@ public class DefaultMethodMatcherTest extends AbstractTestSupport
 									DoMatchTest.class));
 		}
 
+		// array type
+		{
+			assertTrue(this.defaultMethodMatcher.doMatch(
+					this.defaultMethodMatcher.parseMethodPattern("m(String[])"),
+					getMethodByNameAndType(DoMatchTest.class, "m",
+							String[].class),
+					DoMatchTest.class));
+
+			assertTrue(this.defaultMethodMatcher.doMatch(
+					this.defaultMethodMatcher
+							.parseMethodPattern("m1(String[])"),
+					getMethodByNameAndType(DoMatchTest.class, "m1",
+							String[].class),
+					DoMatchTest.class));
+
+			assertTrue(this.defaultMethodMatcher.doMatch(
+					this.defaultMethodMatcher
+							.parseMethodPattern("m2(String[][][])"),
+					getMethodByNameAndType(DoMatchTest.class, "m2",
+							String[][][].class),
+					DoMatchTest.class));
+		}
+
 		{
 			assertTrue(this.defaultMethodMatcher.doMatch(
 					this.defaultMethodMatcher.parseMethodPattern("m()"),
@@ -168,6 +191,52 @@ public class DefaultMethodMatcherTest extends AbstractTestSupport
 		void m(int a);
 
 		void m(String s, Long l);
+
+		void m(String[] s);
+
+		void m1(String... s);
+
+		void m2(String[][][] s);
+	}
+
+	@Test
+	public void toReadableClassNameTest_Class()
+	{
+		assertEquals("java.lang.String",
+				this.defaultMethodMatcher.toReadableClassName(String.class));
+
+		assertEquals("java.lang.String[]",
+				this.defaultMethodMatcher.toReadableClassName(String[].class));
+	}
+
+	@Test
+	public void toReadableClassNameTest_Class_StringBuilder()
+	{
+		{
+			StringBuilder sb = new StringBuilder();
+			
+			this.defaultMethodMatcher
+			.toReadableClassName(String.class, sb);
+			
+			assertEquals("java.lang.String", sb.toString());
+		}
+
+		{
+			StringBuilder sb = new StringBuilder();
+
+			this.defaultMethodMatcher.toReadableClassName(String[].class, sb);
+
+			assertEquals("java.lang.String[]", sb.toString());
+		}
+
+		{
+			StringBuilder sb = new StringBuilder();
+
+			this.defaultMethodMatcher.toReadableClassName(String[][][][].class,
+					sb);
+
+			assertEquals("java.lang.String[][][][]", sb.toString());
+		}
 	}
 
 	@Test

@@ -174,7 +174,7 @@ public @interface Implement
 	 * </p>
 	 * <p>
 	 * <i>&lt;class-name&gt</i> : The {@linkplain Class#getSimpleName()} or The
-	 * right-sub {@linkplain Class#getName()}.
+	 * right-sub {@linkplain Class#getName()}, with array type pretty converted.
 	 * </p>
 	 * <p>
 	 * <i>&lt;method-name&gt</i> : The {@linkplain Method#getName()}.
@@ -182,7 +182,8 @@ public @interface Implement
 	 * <p>
 	 * Examples :
 	 * <code>"plus", "Foo.plus", "org.example.Foo.plus", "plus(int, int)", "Foo.plus(int, int)",
-	 * "plus(Integer, java.lang.Integer)", "plus(Date, Date)"</code>.
+	 * "plus(Integer, java.lang.Integer)", "plus(Date, Date)", "plus(Date[], Date[])"</code>
+	 * .
 	 * </p>
 	 * <p>
 	 * If not set, its value will be treated as this <i>implement method</i>

@@ -75,7 +75,7 @@ public class DefaultMethodMatcher implements MethodMatcher
 
 		for (int i = 0; i < paramTypes.length; i++)
 		{
-			String paramClassName = paramTypes[i].getName();
+			String paramClassName = toReadableClassName(paramTypes[i]);
 			String paramPattern = paramPatterns[i];
 
 			if (!paramClassName.endsWith(paramPattern))
@@ -83,6 +83,43 @@ public class DefaultMethodMatcher implements MethodMatcher
 		}
 
 		return true;
+	}
+
+	/**
+	 * To readable class name, with array type to {@code "Type[]"}.
+	 * 
+	 * @param clazz
+	 * @return
+	 */
+	protected String toReadableClassName(Class<?> clazz)
+	{
+		if (!clazz.isArray())
+			return clazz.getName();
+		else
+		{
+			StringBuilder nameBuilder = new StringBuilder();
+			toReadableClassName(clazz, nameBuilder);
+
+			return nameBuilder.toString();
+		}
+	}
+
+	/**
+	 * To readable class name, with array type to {@code "Type[]"}.
+	 * 
+	 * @param clazz
+	 * @param nameBuilder
+	 */
+	protected void toReadableClassName(Class<?> clazz,
+			StringBuilder nameBuilder)
+	{
+		if (clazz.isArray())
+		{
+			toReadableClassName(clazz.getComponentType(), nameBuilder);
+			nameBuilder.append("[]");
+		}
+		else
+			nameBuilder.append(clazz.getName());
 	}
 
 	/**

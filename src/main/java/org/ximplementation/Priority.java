@@ -56,7 +56,7 @@ public @interface Priority
 	 * <p>
 	 * Examples :
 	 * <code>"getPriority", "Foo.getPriority", "org.example.Foo.getPriority", "getPriority(int, int)", "Foo.getPriority(int, int)",
-	 * "getPriority(Integer, java.lang.Integer)", "getPriority(Date, Date)"</code>
+	 * "getPriority(Integer, java.lang.Integer)", "getPriority(Date, Date)", "getPriority(Date[], Date[])"</code>
 	 * .
 	 * </p>
 	 * 

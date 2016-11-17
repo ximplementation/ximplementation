@@ -55,7 +55,8 @@ public @interface Validity
 	 * <p>
 	 * Examples :
 	 * <code>"isValid", "Foo.isValid", "org.example.Foo.isValid", "isValid(int, int)", "Foo.isValid(int, int)",
-	 * "isValid(Integer, java.lang.Integer)", "isValid(Date, Date)"</code>.
+	 * "isValid(Integer, java.lang.Integer)", "isValid(Date, Date)", "isValid(Date[], Date[])"</code>
+	 * .
 	 * </p>
 	 * 
 	 * @return
