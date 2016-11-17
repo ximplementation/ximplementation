@@ -272,6 +272,18 @@ public class DefaultMethodMatcherTest extends AbstractTestSupport
 			assertEquals("lang.Integer", methodPattern.getParamPatterns()[0]);
 			assertEquals("java.lang.Long", methodPattern.getParamPatterns()[1]);
 		}
+
+		// blank chars
+		{
+			MethodPattern methodPattern = this.defaultMethodMatcher
+					.parseMethodPattern(
+							"Foo\t.m ( lang .Integer , java\r\n.lang.Long\r)");
+
+			assertEquals("Foo.m", methodPattern.getNamePattern());
+			assertEquals(2, methodPattern.getParamPatterns().length);
+			assertEquals("lang.Integer", methodPattern.getParamPatterns()[0]);
+			assertEquals("java.lang.Long", methodPattern.getParamPatterns()[1]);
+		}
 	}
 
 	@Test
