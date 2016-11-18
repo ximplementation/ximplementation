@@ -14,8 +14,9 @@
 
 package org.ximplementation;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.ximplementation.support.Implementation;
@@ -53,51 +54,51 @@ public class FrameworkTest
 	public void test()
 	{
 		@SuppressWarnings("rawtypes")
-		Implementation<TService> implementation = this.implementationResolver
+		Implementation<Service> implementation = this.implementationResolver
 				.resolve(
-				TService.class, TServiceImplDefault.class, TServiceImplSpecial.class,
-				TServiceImplInteger.class, TServiceImplDouble.class);
+				Service.class, ServiceImplDefault.class, ServiceImplAnother.class,
+				ServiceImplInteger.class, ServiceImplDouble.class);
 
 		ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory
-				.valueOf(new TServiceImplDefault<Number>(),
-						new TServiceImplSpecial<Number>(),
-						new TServiceImplInteger(), new TServiceImplDouble());
+				.valueOf(new ServiceImplDefault<Number>(),
+						new ServiceImplAnother<Number>(),
+						new ServiceImplInteger(), new ServiceImplDouble());
 
 		@SuppressWarnings("unchecked")
-		TService<Number> tservice = this.implementeeBeanBuilder
+		Service<Number> tservice = this.implementeeBeanBuilder
 				.build(implementation,
 						implementorBeanFactory);
 
 		{
 			String re = tservice.handle(1.0F, 2.0F);
-			Assert.assertEquals(TServiceImplDefault.MY_RE, re);
+			assertEquals(ServiceImplDefault.MY_RE, re);
 		}
 
 		{
-			String re = tservice.handle(1.0F, TServiceImplSpecial.B);
-			Assert.assertEquals(TServiceImplSpecial.MY_RE, re);
+			String re = tservice.handle(1.0F, ServiceImplAnother.B);
+			assertEquals(ServiceImplAnother.MY_RE, re);
 		}
 
 		{
 			String re = tservice.handle(1, 2);
-			Assert.assertEquals(TServiceImplInteger.MY_RE, re);
+			assertEquals(ServiceImplInteger.MY_RE, re);
 		}
 
 		{
 			String re = tservice.handle(1.0D, 2.0D);
-			Assert.assertEquals(TServiceImplDouble.MY_RE, re);
+			assertEquals(ServiceImplDouble.MY_RE, re);
 		}
 	}
 
-	public static interface TService<T extends Number>
+	public static interface Service<T extends Number>
 	{
 		String handle(T a, T b);
 	}
 
-	public static class TServiceImplDefault<T extends Number>
-			implements TService<T>
+	public static class ServiceImplDefault<T extends Number>
+			implements Service<T>
 	{
-		public static final String MY_RE = TServiceImplDefault.class
+		public static final String MY_RE = ServiceImplDefault.class
 				.getSimpleName();
 
 		@Override
@@ -107,10 +108,10 @@ public class FrameworkTest
 		}
 	}
 
-	public static class TServiceImplSpecial<T extends Number>
-			implements TService<T>
+	public static class ServiceImplAnother<T extends Number>
+			implements Service<T>
 	{
-		public static final String MY_RE = TServiceImplSpecial.class
+		public static final String MY_RE = ServiceImplAnother.class
 				.getSimpleName();
 
 		public static final Number B = new Float(11.1F);
@@ -128,26 +129,25 @@ public class FrameworkTest
 		}
 	}
 
-	public static class TServiceImplInteger implements TService<Integer>
+	public static class ServiceImplInteger implements Service<Integer>
 	{
-		public static final String MY_RE = TServiceImplInteger.class
+		public static final String MY_RE = ServiceImplInteger.class
 				.getSimpleName();
 
 		@Override
-		@Implement("handle")
 		public String handle(Integer a, Integer b)
 		{
 			return MY_RE;
 		}
 	}
 
-	@Implementor(TService.class)
-	public static class TServiceImplDouble
+	@Implementor(Service.class)
+	public static class ServiceImplDouble
 	{
-		public static final String MY_RE = TServiceImplDouble.class
+		public static final String MY_RE = ServiceImplDouble.class
 				.getSimpleName();
 
-		@Implement("handle")
+		@Implement
 		public String handle(@Index(1) Double b)
 		{
 			return MY_RE;
