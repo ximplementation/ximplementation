@@ -144,6 +144,48 @@ public class PreparedImplementorBeanFactoryTest extends AbstractTestSupport
 	}
 
 	@Test
+	public void prepareTest_ClassArray()
+	{
+		PreparedImplementorBeanFactory factory = new PreparedImplementorBeanFactory();
+
+		assertFalse(factory.accept(PrepareTest.Implementor0.class));
+		assertFalse(factory.accept(PrepareTest.Implementor1.class));
+
+		factory.prepare(PrepareTest.Implementor0.class,
+				PrepareTest.Implementor1.class);
+
+		assertTrue(factory.accept(PrepareTest.Implementor0.class));
+		assertTrue(factory.accept(PrepareTest.Implementor1.class));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void prepareTest_Collection()
+	{
+		PreparedImplementorBeanFactory factory = new PreparedImplementorBeanFactory();
+
+		assertFalse(factory.accept(PrepareTest.Implementor0.class));
+		assertFalse(factory.accept(PrepareTest.Implementor1.class));
+
+		factory.prepare(Arrays.asList(PrepareTest.Implementor0.class,
+				PrepareTest.Implementor1.class));
+
+		assertTrue(factory.accept(PrepareTest.Implementor0.class));
+		assertTrue(factory.accept(PrepareTest.Implementor1.class));
+	}
+
+	public static class PrepareTest
+	{
+		public static class Implementor0
+		{
+		}
+
+		public static class Implementor1
+		{
+		}
+	}
+
+	@Test
 	public void acceptTestByImplementor()
 	{
 		Set<Class<?>> implementors = new HashSet<Class<?>>();
@@ -191,33 +233,33 @@ public class PreparedImplementorBeanFactoryTest extends AbstractTestSupport
 	}
 
 	@Test
-	public void addImplementorBeanTest()
+	public void addTest()
 	{
 		Set<Class<?>> implementors = new HashSet<Class<?>>();
-		implementors.add(AddImplementorBeanTest.Implementor0.class);
+		implementors.add(AddTest.Implementor0.class);
 
-		AddImplementorBeanTest.Implementor0 expected0 = new AddImplementorBeanTest.Implementor0();
-		AddImplementorBeanTest.Implementor0 expected1 = new AddImplementorBeanTest.Implementor0();
+		AddTest.Implementor0 expected0 = new AddTest.Implementor0();
+		AddTest.Implementor0 expected1 = new AddTest.Implementor0();
 
 		PreparedImplementorBeanFactory factory = new PreparedImplementorBeanFactory(
 				implementors);
 
 		assertTrue(factory
-				.addImplementorBean(expected0));
+				.add(expected0));
 		assertTrue(factory
-				.addImplementorBean(expected1));
+				.add(expected1));
 		assertFalse(factory
-				.addImplementorBean(new AddImplementorBeanTest.Implementor1()));
+				.add(new AddTest.Implementor1()));
 
 		ArrayList<?> actual = (ArrayList<?>) factory
-				.getImplementorBeans(AddImplementorBeanTest.Implementor0.class);
+				.getImplementorBeans(AddTest.Implementor0.class);
 
 		assertEquals(2, actual.size());
 		assertEquals(expected0, actual.get(0));
 		assertEquals(expected1, actual.get(1));
 	}
 
-	public static class AddImplementorBeanTest
+	public static class AddTest
 	{
 		public static class Implementor0
 		{
@@ -241,8 +283,8 @@ public class PreparedImplementorBeanFactoryTest extends AbstractTestSupport
 
 		assertEquals(0, implementorBeans.size());
 
-		beanFactory.addImplementorBean(new Integer(1));
-		beanFactory.addImplementorBean(new Float(1));
+		beanFactory.add(new Integer(1));
+		beanFactory.add(new Float(1));
 
 		assertEquals(1, implementorBeans.size());
 		Assert.assertThat(implementorBeans, Matchers.contains(new Integer(1)));

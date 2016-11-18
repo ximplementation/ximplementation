@@ -25,7 +25,7 @@ import java.util.Set;
  * Prepared implementor bean factory.
  * <p>
  * It is initialized by prepared <i>implementor</i>s, then only beans which are
- * instance of these <i>implementor</i>s can be added.
+ * instances of them can be added.
  * 
  * @author earthangry@gmail.com
  * @date 2016-8-15
@@ -34,6 +34,14 @@ import java.util.Set;
 public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 {
 	private Map<Class<?>, List<Object>> implementorBeansMap = new HashMap<Class<?>, List<Object>>();
+
+	/**
+	 * Create an empty instance.
+	 */
+	public PreparedImplementorBeanFactory()
+	{
+		super();
+	}
 
 	/**
 	 * Create an instance by <i>implementor</i> set.
@@ -77,6 +85,40 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
+	 * Prepare <i>implementor</i>s.
+	 * <p>
+	 * After prepared, beans of them then can be added.
+	 * </p>
+	 * 
+	 * @param implementors
+	 *            The <i>implementor</i>s to be prepared.
+	 */
+	public void prepare(Class<?>... implementors)
+	{
+		for (Class<?> implementor : implementors)
+		{
+			this.implementorBeansMap.put(implementor, new ArrayList<Object>(1));
+		}
+	}
+
+	/**
+	 * Prepare <i>implementor</i>s.
+	 * <p>
+	 * After prepared, beans of them then can be added.
+	 * </p>
+	 * 
+	 * @param implementors
+	 *            The <i>implementor</i>s to be prepared.
+	 */
+	public void prepare(Collection<? extends Class<?>> implementors)
+	{
+		for (Class<?> implementor : implementors)
+		{
+			this.implementorBeansMap.put(implementor, new ArrayList<Object>(1));
+		}
+	}
+
+	/**
 	 * Return if given <i>implementor</i> is acceptable.
 	 * 
 	 * @param implementor
@@ -85,7 +127,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	 */
 	public boolean accept(Class<?> implementor)
 	{
-		return (getImplementorBeansList(implementor) != null);
+		return this.implementorBeansMap.containsKey(implementor);
 	}
 
 	/**
@@ -97,7 +139,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	 */
 	public boolean accept(Object implementorBean)
 	{
-		return (getImplementorBeansList(implementorBean.getClass()) != null);
+		return this.implementorBeansMap.containsKey(implementorBean.getClass());
 	}
 
 	/**
@@ -108,7 +150,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	 * @return {@code true} if the <i>implementor</i> bean is acceptable,
 	 *         {@code false} if not.
 	 */
-	public boolean addImplementorBean(Object implementorBean)
+	public boolean add(Object implementorBean)
 	{
 		List<Object> implementorBeans = getImplementorBeansList(
 				implementorBean.getClass());
