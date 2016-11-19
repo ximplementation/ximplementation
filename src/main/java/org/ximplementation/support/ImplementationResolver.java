@@ -53,8 +53,6 @@ import org.ximplementation.Validity;
  */
 public class ImplementationResolver
 {
-	protected static final String METHOD_SIGNATURE_PART_REGEX = ".*\\(.*\\).*";
-
 	private Map<Type, Map<TypeVariable<?>, Type>> typeVariablesMap = new WeakHashMap<Type, Map<TypeVariable<?>, Type>>();
 
 	private MethodMatcher methodMatcher = new DefaultMethodMatcher();
