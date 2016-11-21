@@ -97,14 +97,14 @@ public class TypeUtil
 	 * </code>
 	 * </pre>
 	 * <p>
-	 * The result of {@code resolve(B.class)} will be :
+	 * The result of {@code resolveTypeParams(B.class)} will be :
 	 * </p>
 	 * 
 	 * <pre>
 	 * T  ---&gt;  Integer
 	 * </pre>
 	 * <p>
-	 * And the result of {@code resolve(D.class)} will be :
+	 * And the result of {@code resolveTypeParams(D.class)} will be :
 	 * </p>
 	 * 
 	 * <pre>
