@@ -71,7 +71,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 		Set<Class<?>> implementors = implementation.getImplementors();
 
 		for (Class<?> implementor : implementors)
-			setImplementorBeansList(implementor, new ArrayList<Object>(1));
+			initImplementorBeansList(implementor);
 	}
 
 	/**
@@ -96,9 +96,7 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	public void prepare(Class<?>... implementors)
 	{
 		for (Class<?> implementor : implementors)
-		{
-			this.implementorBeansMap.put(implementor, new ArrayList<Object>(1));
-		}
+			initImplementorBeansList(implementor);
 	}
 
 	/**
@@ -113,9 +111,25 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	public void prepare(Collection<? extends Class<?>> implementors)
 	{
 		for (Class<?> implementor : implementors)
-		{
-			this.implementorBeansMap.put(implementor, new ArrayList<Object>(1));
-		}
+			initImplementorBeansList(implementor);
+	}
+
+	/**
+	 * Prepare <i>implementor</i>s of an {@linkplain Implementation}.
+	 * <p>
+	 * After prepared, beans of them then can be added.
+	 * </p>
+	 * 
+	 * @param implementation
+	 *            The {@linkplain Implementation} whose <i>implementor</i>s to
+	 *            be prepared.
+	 */
+	public void prepare(Implementation<?> implementation)
+	{
+		Set<Class<?>> implementors = implementation.getImplementors();
+
+		for (Class<?> implementor : implementors)
+			initImplementorBeansList(implementor);
 	}
 
 	/**
@@ -143,22 +157,97 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
+	 * Return if given <i>implementor</i> bean is added.
+	 * 
+	 * @param implementorBean
+	 *            The <i>implementor</i> bean to be checked.
+	 * @return {@code true} if yes, {@code false} if no.
+	 */
+	public boolean contains(Object implementorBean)
+	{
+		return contains(implementorBean.getClass(), implementorBean);
+	}
+
+	/**
+	 * Return if given <i>implementor</i> bean is added.
+	 * 
+	 * @param implementor
+	 *            The <i>implementor</i>.
+	 * @param implementorBean
+	 *            The <i>implementor</i> bean to be checked.
+	 * @return {@code true} if yes, {@code false} if no.
+	 */
+	public boolean contains(Class<?> implementor, Object implementorBean)
+	{
+		List<Object> implementorBeaList = getImplementorBeansList(implementor);
+
+		if (implementorBeaList == null)
+			return false;
+
+		for (int i = 0, len = implementorBeaList.size(); i < len; i++)
+		{
+			if (implementorBeaList.get(i).equals(implementorBean))
+				return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Add an <i>implementor</i> bean.
 	 * 
 	 * @param implementorBean
 	 *            The <i>implementor</i> bean to be added.
-	 * @return {@code true} if the <i>implementor</i> bean is acceptable,
-	 *         {@code false} if not.
+	 * @return {@code true} if the <i>implementor</i> bean is acceptable and
+	 *         added, {@code false} if not.
 	 */
 	public boolean add(Object implementorBean)
 	{
-		List<Object> implementorBeans = getImplementorBeansList(
-				implementorBean.getClass());
+		return add(implementorBean.getClass(), implementorBean);
+	}
 
-		if (implementorBeans == null)
+	/**
+	 * Add <i>implementor</i> beans for given <i>implementor</i>.
+	 * 
+	 * @param implementor
+	 *            The <i>implementor</i>.
+	 * @param implementorBeans
+	 *            The <i>implementor</i> beans to be added.
+	 * @return {@code true} if the <i>implementor</i> is acceptable and the
+	 *         <i>implementor</i> beans are added, {@code false} if not.
+	 */
+	public boolean add(Class<?> implementor, Object... implementorBeans)
+	{
+		List<Object> implementorBeaList = getImplementorBeansList(implementor);
+
+		if (implementorBeaList == null)
 			return false;
 
-		implementorBeans.add(implementorBean);
+		for (Object implementorBean : implementorBeans)
+			implementorBeaList.add(implementorBean);
+
+		return true;
+	}
+
+	/**
+	 * Add <i>implementor</i> beans for given <i>implementor</i>.
+	 * 
+	 * @param implementor
+	 *            The <i>implementor</i>.
+	 * @param implementorBeans
+	 *            The <i>implementor</i> beans to be added.
+	 * @return {@code true} if the <i>implementor</i> is acceptable and the
+	 *         <i>implementor</i> beans are added, {@code false} if not.
+	 */
+	public boolean add(Class<?> implementor, Collection<?> implementorBeans)
+	{
+		List<Object> implementorBeaList = getImplementorBeansList(implementor);
+
+		if (implementorBeaList == null)
+			return false;
+
+		for (Object implementorBean : implementorBeans)
+			implementorBeaList.add(implementorBean);
 
 		return true;
 	}
@@ -168,6 +257,16 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	public <T> Collection<T> getImplementorBeans(Class<T> implementor)
 	{
 		return (Collection<T>) getImplementorBeansList(implementor);
+	}
+
+	/**
+	 * Init <i>implementor</i> beans list.
+	 * 
+	 * @param implementor
+	 */
+	protected void initImplementorBeansList(Class<?> implementor)
+	{
+		this.implementorBeansMap.put(implementor, new ArrayList<Object>(1));
 	}
 
 	/**
