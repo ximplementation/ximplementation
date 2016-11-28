@@ -26,6 +26,7 @@ import java.util.Set;
  * <p>
  * It is initialized by prepared <i>implementor</i>s, then only beans which are
  * instances of them can be added.
+ * </p>
  * 
  * @author earthangry@gmail.com
  * @date 2016-8-15
