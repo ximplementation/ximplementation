@@ -301,38 +301,6 @@ public class PreparedImplementorBeanFactoryTest extends AbstractTestSupport
 	}
 
 	@Test
-	public void containsTest_Object()
-	{
-		Integer bean = new Integer(1);
-
-		PreparedImplementorBeanFactory factory = new PreparedImplementorBeanFactory();
-		factory.prepare(Integer.class);
-
-		assertFalse(factory.contains(bean));
-
-		factory.add(bean);
-
-		assertTrue(factory.contains(bean));
-		assertFalse(factory.contains(new Integer(2)));
-	}
-
-	@Test
-	public void containsTest_ClassObject()
-	{
-		Integer bean = new Integer(1);
-
-		PreparedImplementorBeanFactory factory = new PreparedImplementorBeanFactory();
-		factory.prepare(Integer.class);
-
-		assertFalse(factory.contains(Integer.class, bean));
-
-		factory.add(bean);
-
-		assertTrue(factory.contains(Integer.class, bean));
-		assertFalse(factory.contains(Integer.class, new Integer(2)));
-	}
-
-	@Test
 	public void addTest()
 	{
 		Set<Class<?>> implementors = new HashSet<Class<?>>();
@@ -419,6 +387,38 @@ public class PreparedImplementorBeanFactoryTest extends AbstractTestSupport
 		public static class Implementor1
 		{
 		}
+	}
+
+	@Test
+	public void containsTest_Object()
+	{
+		Integer bean = new Integer(1);
+	
+		PreparedImplementorBeanFactory factory = new PreparedImplementorBeanFactory();
+		factory.prepare(Integer.class);
+	
+		assertFalse(factory.contains(bean));
+	
+		factory.add(bean);
+	
+		assertTrue(factory.contains(bean));
+		assertFalse(factory.contains(new Integer(2)));
+	}
+
+	@Test
+	public void containsTest_ClassObject()
+	{
+		Integer bean = new Integer(1);
+	
+		PreparedImplementorBeanFactory factory = new PreparedImplementorBeanFactory();
+		factory.prepare(Integer.class);
+	
+		assertFalse(factory.contains(Integer.class, bean));
+	
+		factory.add(bean);
+	
+		assertTrue(factory.contains(Integer.class, bean));
+		assertFalse(factory.contains(Integer.class, new Integer(2)));
 	}
 
 	@Test

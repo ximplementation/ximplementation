@@ -76,16 +76,6 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * Get all the <i>implementor</i>s.
-	 * 
-	 * @return
-	 */
-	public Set<Class<?>> getAllImplementors()
-	{
-		return this.implementorBeansMap.keySet();
-	}
-
-	/**
 	 * Prepare <i>implementor</i>s.
 	 * <p>
 	 * After prepared, beans of them then can be added.
@@ -158,43 +148,6 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * Return if given <i>implementor</i> bean is added.
-	 * 
-	 * @param implementorBean
-	 *            The <i>implementor</i> bean to be checked.
-	 * @return {@code true} if yes, {@code false} if no.
-	 */
-	public boolean contains(Object implementorBean)
-	{
-		return contains(implementorBean.getClass(), implementorBean);
-	}
-
-	/**
-	 * Return if given <i>implementor</i> bean is added.
-	 * 
-	 * @param implementor
-	 *            The <i>implementor</i>.
-	 * @param implementorBean
-	 *            The <i>implementor</i> bean to be checked.
-	 * @return {@code true} if yes, {@code false} if no.
-	 */
-	public boolean contains(Class<?> implementor, Object implementorBean)
-	{
-		List<Object> implementorBeaList = getImplementorBeansList(implementor);
-
-		if (implementorBeaList == null)
-			return false;
-
-		for (int i = 0, len = implementorBeaList.size(); i < len; i++)
-		{
-			if (implementorBeaList.get(i).equals(implementorBean))
-				return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Add an <i>implementor</i> bean.
 	 * 
 	 * @param implementorBean
@@ -251,6 +204,115 @@ public class PreparedImplementorBeanFactory implements ImplementorBeanFactory
 			implementorBeaList.add(implementorBean);
 
 		return true;
+	}
+
+	/**
+	 * Remove <i>implementor</i> beans.
+	 * 
+	 * @param implementorBeans
+	 *            The <i>implementor</i> beans to be removed.
+	 */
+	public void remove(Object... implementorBeans)
+	{
+		for (Object implementorBean : implementorBeans)
+			remove(implementorBean.getClass(), implementorBean);
+	}
+
+	/**
+	 * Remove <i>implementor</i> beans for given <i>implementor</i>.
+	 * 
+	 * @param implementor
+	 *            The <i>implementor</i>.
+	 * @param implementorBeans
+	 *            The <i>implementor</i> beans to be removed.
+	 */
+	public void remove(Class<?> implementor, Object... implementorBeans)
+	{
+		List<Object> implementorBeaList = getImplementorBeansList(implementor);
+
+		if (implementorBeaList == null)
+			return;
+
+		for (Object implementorBean : implementorBeans)
+			implementorBeaList.remove(implementorBean);
+	}
+
+	/**
+	 * Remove <i>implementor</i> beans for given <i>implementor</i>.
+	 * 
+	 * @param implementor
+	 *            The <i>implementor</i>.
+	 * @param implementorBeans
+	 *            The <i>implementor</i> beans to be removed.
+	 */
+	public void remove(Class<?> implementor, Collection<?> implementorBeans)
+	{
+		List<Object> implementorBeaList = getImplementorBeansList(implementor);
+
+		if (implementorBeaList == null)
+			return;
+
+		for (Object implementorBean : implementorBeans)
+			implementorBeaList.remove(implementorBean);
+	}
+
+	/**
+	 * Return if given <i>implementor</i> bean is added.
+	 * 
+	 * @param implementorBean
+	 *            The <i>implementor</i> bean to be checked.
+	 * @return {@code true} if yes, {@code false} if no.
+	 */
+	public boolean contains(Object implementorBean)
+	{
+		return contains(implementorBean.getClass(), implementorBean);
+	}
+
+	/**
+	 * Return if given <i>implementor</i> bean is added.
+	 * 
+	 * @param implementor
+	 *            The <i>implementor</i>.
+	 * @param implementorBean
+	 *            The <i>implementor</i> bean to be checked.
+	 * @return {@code true} if yes, {@code false} if no.
+	 */
+	public boolean contains(Class<?> implementor, Object implementorBean)
+	{
+		List<Object> implementorBeaList = getImplementorBeansList(implementor);
+	
+		if (implementorBeaList == null)
+			return false;
+	
+		for (int i = 0, len = implementorBeaList.size(); i < len; i++)
+		{
+			if (implementorBeaList.get(i).equals(implementorBean))
+				return true;
+		}
+	
+		return false;
+	}
+
+	/**
+	 * Get all the <i>implementor</i>s.
+	 * 
+	 * @return
+	 */
+	public Set<Class<?>> getAllImplementors()
+	{
+		return this.implementorBeansMap.keySet();
+	}
+
+	/**
+	 * Get <i>implementor</i> beans list for given <i>implementor</i>.
+	 * 
+	 * @param implementor
+	 *            The <i>implementor</i>.
+	 * @return The <i>implementor</i> beans list, {@code null} if none.
+	 */
+	public List<Object> get(Class<?> implementor)
+	{
+		return this.implementorBeansMap.get(implementor);
 	}
 
 	@SuppressWarnings("unchecked")
