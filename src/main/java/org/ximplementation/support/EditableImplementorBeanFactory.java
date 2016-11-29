@@ -25,7 +25,7 @@ import java.util.Set;
  * Editable <i>implementor</i> bean factory.
  * 
  * @author earthangry@gmail.com
- * @date 2016-11-28
+ * @date 2016-8-15
  *
  */
 public class EditableImplementorBeanFactory implements ImplementorBeanFactory
@@ -81,6 +81,77 @@ public class EditableImplementorBeanFactory implements ImplementorBeanFactory
 
 		for (Object implementorBean : implementorBeans)
 			implementorBeaList.add(implementorBean);
+	}
+
+	/**
+	 * Add <i>implementor</i> bean.
+	 * <p>
+	 * Note that the <i>implementor</i> bean will not be added if the
+	 * <i>implementor</i> {@code implementorBean.getClass()} is not added
+	 * before.
+	 * </p>
+	 * 
+	 * @param implementorBean
+	 *            The <i>implementor</i> bean to be added.
+	 * @return {@code true} if added, {@code false} if not.
+	 */
+	public boolean addFor(Object implementorBean)
+	{
+		return addFor(implementorBean.getClass(), implementorBean);
+	}
+
+	/**
+	 * Add <i>implementor</i> beans for given <i>implementor</i>.
+	 * <p>
+	 * Note that the <i>implementor</i> beans will not be added if the
+	 * <i>implementor</i> is not added before.
+	 * </p>
+	 * 
+	 * @param implementor
+	 *            The <i>implementor</i>.
+	 * @param implementorBeans
+	 *            The <i>implementor</i> beans to be added.
+	 * @return {@code true} if added, {@code false} if not.
+	 */
+	public boolean addFor(Class<?> implementor, Object... implementorBeans)
+	{
+		List<Object> implementorBeaList = getImplementorBeansList(
+				implementor);
+
+		if (implementorBeaList == null)
+			return false;
+
+		for (Object implementorBean : implementorBeans)
+			implementorBeaList.add(implementorBean);
+
+		return true;
+	}
+
+	/**
+	 * Add <i>implementor</i> beans for given <i>implementor</i>.
+	 * <p>
+	 * Note that the <i>implementor</i> beans will not be added if the
+	 * <i>implementor</i> is not added before.
+	 * </p>
+	 * 
+	 * @param implementor
+	 *            The <i>implementor</i>.
+	 * @param implementorBeans
+	 *            The <i>implementor</i> beans to be added.
+	 * @return {@code true} if added, {@code false} if not.
+	 */
+	public boolean addFor(Class<?> implementor, Collection<?> implementorBeans)
+	{
+		List<Object> implementorBeaList = getImplementorBeansList(
+				implementor);
+
+		if (implementorBeaList == null)
+			return false;
+
+		for (Object implementorBean : implementorBeans)
+			implementorBeaList.add(implementorBean);
+
+		return true;
 	}
 
 	/**
