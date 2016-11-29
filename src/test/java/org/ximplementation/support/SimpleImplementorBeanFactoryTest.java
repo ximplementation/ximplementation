@@ -16,13 +16,16 @@ package org.ximplementation.support;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,4 +79,50 @@ public class SimpleImplementorBeanFactoryTest extends AbstractTestSupport
 			assertEquals(integers, factory.getImplementorBeans(Integer.class));
 		}
 	}
+
+	@Test
+	public void valueOf_Objects()
+	{
+		SimpleImplementorBeanFactory beanFactory = SimpleImplementorBeanFactory
+				.valueOf(new Integer(1), new Integer(2), new Float(1),
+						new Float(2));
+
+		assertThat(beanFactory.getImplementorBeans(Integer.class),
+				Matchers.contains(new Integer(1), new Integer(2)));
+		assertThat(beanFactory.getImplementorBeans(Float.class),
+				Matchers.contains(new Float(1), new Float(2)));
+	}
+
+	@Test
+	public void valueOf_Collection()
+	{
+		@SuppressWarnings("unchecked")
+		SimpleImplementorBeanFactory beanFactory = SimpleImplementorBeanFactory
+				.valueOf(Arrays.asList(new Integer(1), new Integer(2),
+						new Float(1), new Float(2)));
+
+		assertThat(beanFactory.getImplementorBeans(Integer.class),
+				Matchers.contains(new Integer(1), new Integer(2)));
+		assertThat(beanFactory.getImplementorBeans(Float.class),
+				Matchers.contains(new Float(1), new Float(2)));
+	}
+
+	@Test
+	public void valueOf_Map()
+	{
+		Map<Class<?>, List<?>> implementorBeansMap = new HashMap<Class<?>, List<?>>();
+		implementorBeansMap.put(Integer.class,
+				Arrays.asList(new Integer(1), new Integer(2)));
+		implementorBeansMap.put(Float.class,
+				Arrays.asList(new Float(1), new Float(2)));
+
+		SimpleImplementorBeanFactory beanFactory = SimpleImplementorBeanFactory
+				.valueOf(implementorBeansMap);
+
+		assertThat(beanFactory.getImplementorBeans(Integer.class),
+				Matchers.contains(new Integer(1), new Integer(2)));
+		assertThat(beanFactory.getImplementorBeans(Float.class),
+				Matchers.contains(new Float(1), new Float(2)));
+	}
+
 }

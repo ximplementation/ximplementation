@@ -66,19 +66,6 @@ public class SimpleImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * Create an instance by <i>implementor</i> beans map.
-	 * 
-	 * @param implementorBeansMap
-	 *            The <i>implementor</i> beans map to be built.
-	 * @return
-	 */
-	public static SimpleImplementorBeanFactory valueOf(
-			Map<Class<?>, ? extends Collection<?>> implementorBeansMap)
-	{
-		return new SimpleImplementorBeanFactory(implementorBeansMap);
-	}
-
-	/**
 	 * Create an instance by <i>implementor</i> beans array.
 	 * 
 	 * @param implementorBeans
@@ -93,6 +80,36 @@ public class SimpleImplementorBeanFactory implements ImplementorBeanFactory
 		for (Object implementorBean : implementorBeans)
 		{
 			Class<?> myClass = implementorBean.getClass();
+	
+			List<Object> myBeanList = implementorBeansMap.get(myClass);
+	
+			if (myBeanList == null)
+			{
+				myBeanList = new ArrayList<Object>(1);
+				implementorBeansMap.put(myClass, myBeanList);
+			}
+	
+			myBeanList.add(implementorBean);
+		}
+		
+		return new SimpleImplementorBeanFactory(implementorBeansMap);
+	}
+
+	/**
+	 * Create an instance by <i>implementor</i> beans collection.
+	 * 
+	 * @param implementorBeans
+	 *            The <i>implementor</i> beans to be built.
+	 * @return
+	 */
+	public static SimpleImplementorBeanFactory valueOf(
+			Collection<?> implementorBeans)
+	{
+		Map<Class<?>, List<Object>> implementorBeansMap = new HashMap<Class<?>, List<Object>>();
+
+		for (Object implementorBean : implementorBeans)
+		{
+			Class<?> myClass = implementorBean.getClass();
 
 			List<Object> myBeanList = implementorBeansMap.get(myClass);
 
@@ -104,7 +121,20 @@ public class SimpleImplementorBeanFactory implements ImplementorBeanFactory
 
 			myBeanList.add(implementorBean);
 		}
-		
+
+		return new SimpleImplementorBeanFactory(implementorBeansMap);
+	}
+
+	/**
+	 * Create an instance by <i>implementor</i> beans map.
+	 * 
+	 * @param implementorBeansMap
+	 *            The <i>implementor</i> beans map to be built.
+	 * @return
+	 */
+	public static SimpleImplementorBeanFactory valueOf(
+			Map<Class<?>, ? extends Collection<?>> implementorBeansMap)
+	{
 		return new SimpleImplementorBeanFactory(implementorBeansMap);
 	}
 }
