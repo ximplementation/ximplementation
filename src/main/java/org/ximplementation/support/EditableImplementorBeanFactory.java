@@ -50,6 +50,18 @@ public class EditableImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
+	 * Add <i>implementor</i> beans.
+	 * 
+	 * @param implementorBeans
+	 *            The <i>implementor</i> beans to be added.
+	 */
+	public void add(Collection<?> implementorBeans)
+	{
+		for (Object implementorBean : implementorBeans)
+			add(implementorBean.getClass(), implementorBean);
+	}
+
+	/**
 	 * Add <i>implementor</i> beans for given <i>implementor</i>.
 	 * 
 	 * @param implementor
@@ -161,6 +173,18 @@ public class EditableImplementorBeanFactory implements ImplementorBeanFactory
 	 *            The <i>implementor</i> beans to be removed.
 	 */
 	public void remove(Object... implementorBeans)
+	{
+		for (Object implementorBean : implementorBeans)
+			remove(implementorBean.getClass(), implementorBean);
+	}
+
+	/**
+	 * Remove <i>implementor</i> beans.
+	 * 
+	 * @param implementorBeans
+	 *            The <i>implementor</i> beans to be removed.
+	 */
+	public void remove(Collection<?> implementorBeans)
 	{
 		for (Object implementorBean : implementorBeans)
 			remove(implementorBean.getClass(), implementorBean);
@@ -313,5 +337,60 @@ public class EditableImplementorBeanFactory implements ImplementorBeanFactory
 			List<Object> implementorBeans)
 	{
 		this.implementorBeansMap.put(implementor, implementorBeans);
+	}
+
+	/**
+	 * Create an instance by <i>implementor</i> beans array.
+	 * 
+	 * @param implementorBeans
+	 *            The <i>implementor</i> beans to be built.
+	 * @return
+	 */
+	public static EditableImplementorBeanFactory valueOf(
+			Object... implementorBeans)
+	{
+		EditableImplementorBeanFactory factory = new EditableImplementorBeanFactory();
+
+		factory.add(implementorBeans);
+		
+		return factory;
+	}
+
+	/**
+	 * Create an instance by <i>implementor</i> beans collection.
+	 * 
+	 * @param implementorBeans
+	 *            The <i>implementor</i> beans to be built.
+	 * @return
+	 */
+	public static EditableImplementorBeanFactory valueOf(
+			Collection<?> implementorBeans)
+	{
+		EditableImplementorBeanFactory factory = new EditableImplementorBeanFactory();
+
+		factory.add(implementorBeans);
+
+		return factory;
+	}
+	
+	/**
+	 * Create an instance by <i>implementor</i> beans map.
+	 * 
+	 * @param implementorBeansMap
+	 *            The <i>implementor</i> beans map to be built.
+	 * @return
+	 */
+	public static EditableImplementorBeanFactory valueOf(
+			Map<Class<?>, ? extends Collection<?>> implementorBeansMap)
+	{
+		EditableImplementorBeanFactory factory = new EditableImplementorBeanFactory();
+
+		for (Map.Entry<Class<?>, ? extends Collection<?>> entry : implementorBeansMap
+				.entrySet())
+		{
+			factory.add(entry.getKey(), entry.getValue());
+		}
+
+		return factory;
 	}
 }

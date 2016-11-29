@@ -23,7 +23,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.hamcrest.Matcher;
@@ -52,15 +55,34 @@ public class EditableImplementorBeanFactoryTest extends AbstractTestSupport
 	}
 
 	@Test
-	public void addTest()
+	public void addTest_Objects()
+	{
+		Implementor0 expected0 = new Implementor0();
+		Implementor0 expected1 = new Implementor0();
+
+		EditableImplementorBeanFactory factory = new EditableImplementorBeanFactory();
+
+		factory.add(expected0);
+		factory.add(expected1);
+		factory.add(new Implementor1());
+
+		ArrayList<?> actual = (ArrayList<?>) factory
+				.getImplementorBeans(Implementor0.class);
+
+		assertEquals(2, actual.size());
+		assertEquals(expected0, actual.get(0));
+		assertEquals(expected1, actual.get(1));
+	}
+
+	@Test
+	public void addTest_Collection()
 	{
 		Implementor0 expected0 = new Implementor0();
 		Implementor0 expected1 = new Implementor0();
 	
 		EditableImplementorBeanFactory factory = new EditableImplementorBeanFactory();
 	
-		factory.add(expected0);
-		factory.add(expected1);
+		factory.add(Arrays.asList(expected0, expected1));
 		factory.add(new Implementor1());
 	
 		ArrayList<?> actual = (ArrayList<?>) factory
@@ -161,7 +183,7 @@ public class EditableImplementorBeanFactoryTest extends AbstractTestSupport
 	}
 
 	@Test
-	public void removeTest()
+	public void removeTest_Objects()
 	{
 		EditableImplementorBeanFactory factory = new EditableImplementorBeanFactory();
 
@@ -171,6 +193,23 @@ public class EditableImplementorBeanFactoryTest extends AbstractTestSupport
 		assertEquals(1, factory.get(Float.class).size());
 
 		factory.remove(new Integer(1), new Float(1));
+
+		assertEquals(0, factory.get(Integer.class).size());
+		assertEquals(0, factory.get(Float.class).size());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void removeTest_Collection()
+	{
+		EditableImplementorBeanFactory factory = new EditableImplementorBeanFactory();
+
+		factory.add(new Integer(1), new Float(1));
+
+		assertEquals(1, factory.get(Integer.class).size());
+		assertEquals(1, factory.get(Float.class).size());
+
+		factory.remove(Arrays.asList(new Integer(1), new Float(1)));
 
 		assertEquals(0, factory.get(Integer.class).size());
 		assertEquals(0, factory.get(Float.class).size());
@@ -273,6 +312,51 @@ public class EditableImplementorBeanFactoryTest extends AbstractTestSupport
 
 		assertEquals(1, implementorBeans.size());
 		assertThat(implementorBeans, Matchers.contains(new Integer(1)));
+	}
+
+	@Test
+	public void valueOf_Objects()
+	{
+		EditableImplementorBeanFactory beanFactory = EditableImplementorBeanFactory
+				.valueOf(new Integer(1), new Integer(2), new Float(1),
+						new Float(2));
+
+		assertThat(beanFactory.getImplementorBeans(Integer.class),
+				Matchers.contains(new Integer(1), new Integer(2)));
+		assertThat(beanFactory.getImplementorBeans(Float.class),
+				Matchers.contains(new Float(1), new Float(2)));
+	}
+
+	@Test
+	public void valueOf_Collection()
+	{
+		@SuppressWarnings("unchecked")
+		EditableImplementorBeanFactory beanFactory = EditableImplementorBeanFactory
+				.valueOf(Arrays.asList(new Integer(1), new Integer(2),
+						new Float(1), new Float(2)));
+
+		assertThat(beanFactory.getImplementorBeans(Integer.class),
+				Matchers.contains(new Integer(1), new Integer(2)));
+		assertThat(beanFactory.getImplementorBeans(Float.class),
+				Matchers.contains(new Float(1), new Float(2)));
+	}
+
+	@Test
+	public void valueOf_Map()
+	{
+		Map<Class<?>, List<?>> implementorBeansMap = new HashMap<Class<?>, List<?>>();
+		implementorBeansMap.put(Integer.class,
+				Arrays.asList(new Integer(1), new Integer(2)));
+		implementorBeansMap.put(Float.class,
+				Arrays.asList(new Float(1), new Float(2)));
+
+		EditableImplementorBeanFactory beanFactory = EditableImplementorBeanFactory
+				.valueOf(implementorBeansMap);
+
+		assertThat(beanFactory.getImplementorBeans(Integer.class),
+				Matchers.contains(new Integer(1), new Integer(2)));
+		assertThat(beanFactory.getImplementorBeans(Float.class),
+				Matchers.contains(new Float(1), new Float(2)));
 	}
 
 	protected static class Implementor0
