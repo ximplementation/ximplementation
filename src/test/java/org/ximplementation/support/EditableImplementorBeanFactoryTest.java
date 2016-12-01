@@ -251,6 +251,40 @@ public class EditableImplementorBeanFactoryTest extends AbstractTestSupport
 	}
 
 	@Test
+	public void clearTest_Class()
+	{
+		EditableImplementorBeanFactory factory = new EditableImplementorBeanFactory();
+
+		assertFalse(factory.exists(Integer.class));
+
+		factory.add(new Integer(1), new Integer(2));
+
+		assertTrue(factory.exists(Integer.class));
+		assertFalse(factory.exists(Float.class));
+
+		factory.clear(Integer.class);
+
+		assertFalse(factory.exists(Integer.class));
+	}
+
+	@Test
+	public void clearTest()
+	{
+		EditableImplementorBeanFactory factory = new EditableImplementorBeanFactory();
+
+		factory.add(new Integer(1), new Float(2));
+
+		assertTrue(factory.exists(Integer.class));
+		assertTrue(factory.exists(Float.class));
+
+		factory.clear();
+
+		assertEquals(0, factory.size());
+		assertFalse(factory.exists(Integer.class));
+		assertFalse(factory.exists(Float.class));
+	}
+
+	@Test
 	public void containsTest_Object()
 	{
 		Integer bean = new Integer(1);
@@ -280,6 +314,20 @@ public class EditableImplementorBeanFactoryTest extends AbstractTestSupport
 		assertFalse(factory.contains(Integer.class, new Integer(2)));
 	}
 
+	@Test
+	public void existsTest()
+	{
+		EditableImplementorBeanFactory factory = new EditableImplementorBeanFactory();
+
+		assertFalse(factory.exists(Integer.class));
+		assertFalse(factory.exists(Float.class));
+
+		factory.add(new Integer(1), new Float(2));
+
+		assertTrue(factory.exists(Integer.class));
+		assertTrue(factory.exists(Float.class));
+	}
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
 	public void getTest()
@@ -293,6 +341,18 @@ public class EditableImplementorBeanFactoryTest extends AbstractTestSupport
 
 		assertThat(factory.get(Integer.class),
 				(Matcher) Matchers.contains(new Integer(1), new Integer(2)));
+	}
+
+	@Test
+	public void sizeTest()
+	{
+		EditableImplementorBeanFactory factory = new EditableImplementorBeanFactory();
+
+		assertEquals(0, factory.size());
+
+		factory.add(new Integer(1), new Float(2));
+
+		assertEquals(2, factory.size());
 	}
 
 	@Test

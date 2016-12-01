@@ -229,6 +229,27 @@ public class EditableImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
+	 * Clear given <i>implementor</i> and its beans.
+	 * <p>
+	 * After clear, the {@linkplain #exists(Class)} will return {@code false}.
+	 * </p>
+	 * 
+	 * @param implementor
+	 */
+	public void clear(Class<?> implementor)
+	{
+		this.implementorBeansMap.remove(implementor);
+	}
+
+	/**
+	 * Clear all <i>implementor</i>s and their beans.
+	 */
+	public void clear()
+	{
+		this.implementorBeansMap.clear();
+	}
+
+	/**
 	 * Return if given <i>implementor</i> bean is added.
 	 * 
 	 * @param implementorBean
@@ -266,6 +287,22 @@ public class EditableImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
+	 * Return if given <i>implementor</i> is existing.
+	 * <p>
+	 * An <i>implementor</i> is existing if its bean has been added and it has
+	 * not been cleared.
+	 * </p>
+	 * 
+	 * @param implementor
+	 *            The <i>implementor</i> to be checked.
+	 * @return {@code true} if yes, {@code false} if no.
+	 */
+	public boolean exists(Class<?> implementor)
+	{
+		return this.implementorBeansMap.containsKey(implementor);
+	}
+
+	/**
 	 * Get all the <i>implementor</i>s.
 	 * 
 	 * @return
@@ -285,6 +322,16 @@ public class EditableImplementorBeanFactory implements ImplementorBeanFactory
 	public List<Object> get(Class<?> implementor)
 	{
 		return this.implementorBeansMap.get(implementor);
+	}
+
+	/**
+	 * Get the size.
+	 * 
+	 * @return
+	 */
+	public int size()
+	{
+		return this.implementorBeansMap.size();
 	}
 
 	@SuppressWarnings("unchecked")
