@@ -136,47 +136,47 @@ public class EditableImplementorBeanFactoryTest extends AbstractTestSupport
 	}
 
 	@Test
-	public void addForTest()
+	public void appendTest()
 	{
 		EditableImplementorBeanFactory factory = new EditableImplementorBeanFactory();
 
-		assertFalse(factory.addFor(new Implementor0()));
+		assertFalse(factory.append(new Implementor0()));
 
 		factory.add(new Implementor0());
 
-		assertTrue(factory.addFor(new Implementor0()));
+		assertTrue(factory.append(new Implementor0()));
 
 		assertEquals(2, factory.get(Implementor0.class).size());
 	}
 
 	@Test
-	public void addForTest_Class_Objects()
+	public void appendTest_Class_Objects()
 	{
 		EditableImplementorBeanFactory factory = new EditableImplementorBeanFactory();
 
-		assertFalse(factory.addFor(Implementor0.class, new Implementor0(),
+		assertFalse(factory.append(Implementor0.class, new Implementor0(),
 				new Implementor0()));
 
 		factory.add(Implementor0.class, new Implementor0());
 
-		assertTrue(factory.addFor(Implementor0.class, new Implementor0(),
+		assertTrue(factory.append(Implementor0.class, new Implementor0(),
 				new Implementor0()));
 
 		assertEquals(3, factory.get(Implementor0.class).size());
 	}
 
 	@Test
-	public void addForTest_Class_Collection()
+	public void appendTest_Class_Collection()
 	{
 		EditableImplementorBeanFactory factory = new EditableImplementorBeanFactory();
 
 		assertFalse(factory
-				.addFor(Arrays.asList(new Implementor0(), new Implementor0())));
+				.append(Arrays.asList(new Implementor0(), new Implementor0())));
 
 		factory.add(new Implementor0());
 
 		assertTrue(factory
-				.addFor(Implementor0.class,
+				.append(Implementor0.class,
 						Arrays.asList(new Implementor0(), new Implementor0())));
 
 		assertEquals(3, factory.get(Implementor0.class).size());

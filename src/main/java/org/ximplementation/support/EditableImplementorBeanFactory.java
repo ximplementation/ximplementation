@@ -96,36 +96,35 @@ public class EditableImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * Add <i>implementor</i> bean.
+	 * Append <i>implementor</i> bean.
 	 * <p>
-	 * Note that the <i>implementor</i> bean will not be added if the
-	 * <i>implementor</i> {@code implementorBean.getClass()} is not added
-	 * before.
+	 * The <i>implementor</i> bean will not be added if the <i>implementor</i>
+	 * {@code implementorBean.getClass()} is not added before.
 	 * </p>
 	 * 
 	 * @param implementorBean
 	 *            The <i>implementor</i> bean to be added.
-	 * @return {@code true} if added, {@code false} if not.
+	 * @return {@code true} if appended, {@code false} if not.
 	 */
-	public boolean addFor(Object implementorBean)
+	public boolean append(Object implementorBean)
 	{
-		return addFor(implementorBean.getClass(), implementorBean);
+		return append(implementorBean.getClass(), implementorBean);
 	}
 
 	/**
-	 * Add <i>implementor</i> beans for given <i>implementor</i>.
+	 * Append <i>implementor</i> beans for given <i>implementor</i>.
 	 * <p>
-	 * Note that the <i>implementor</i> beans will not be added if the
-	 * <i>implementor</i> is not added before.
+	 * The <i>implementor</i> beans will not be added if the <i>implementor</i>
+	 * is not added before.
 	 * </p>
 	 * 
 	 * @param implementor
 	 *            The <i>implementor</i>.
 	 * @param implementorBeans
 	 *            The <i>implementor</i> beans to be added.
-	 * @return {@code true} if added, {@code false} if not.
+	 * @return {@code true} if appended, {@code false} if not.
 	 */
-	public boolean addFor(Class<?> implementor, Object... implementorBeans)
+	public boolean append(Class<?> implementor, Object... implementorBeans)
 	{
 		List<Object> implementorBeaList = getImplementorBeansList(
 				implementor);
@@ -140,19 +139,19 @@ public class EditableImplementorBeanFactory implements ImplementorBeanFactory
 	}
 
 	/**
-	 * Add <i>implementor</i> beans for given <i>implementor</i>.
+	 * Append <i>implementor</i> beans for given <i>implementor</i>.
 	 * <p>
-	 * Note that the <i>implementor</i> beans will not be added if the
-	 * <i>implementor</i> is not added before.
+	 * The <i>implementor</i> beans will not be added if the <i>implementor</i>
+	 * is not added before.
 	 * </p>
 	 * 
 	 * @param implementor
 	 *            The <i>implementor</i>.
 	 * @param implementorBeans
 	 *            The <i>implementor</i> beans to be added.
-	 * @return {@code true} if added, {@code false} if not.
+	 * @return {@code true} if appended, {@code false} if not.
 	 */
-	public boolean addFor(Class<?> implementor, Collection<?> implementorBeans)
+	public boolean append(Class<?> implementor, Collection<?> implementorBeans)
 	{
 		List<Object> implementorBeaList = getImplementorBeansList(
 				implementor);
