@@ -8,7 +8,7 @@ This annotation is annotated on class, indicating that the class is an implement
 This annotation is annotated on method in `@Implementor` class, indicating that the method is an implement method, just as the `@Overriden` annotation.
 
 
-Suppose there is an interface and its default implementation as the following :
+Suppose there is an interface as the following :
 
 	public interface Service<T extends Number>
 	{
@@ -16,17 +16,17 @@ Suppose there is an interface and its default implementation as the following :
 		T minus(T a, T b);
 	}
 	
+You can write its implementation in a very free and different way.
+
+## First
+Write the implementation classes :
+
 	public class ServiceImplDefault<T extends Number> implements Service<T>
 	{
 		public T plus(T a, T b){...}
 		public T minus(T a, T b){...}
 	}
 	
-You can implement the `Service.plus` and `Service.minus` respectively only for `Integer` parameters :
-
-## First
-Writing the implementation classes :
-
 	public class ServiceImplPlusInteger implements Service<Integer>
 	{
 		@Override
@@ -44,10 +44,10 @@ Writing the implementation classes :
 		public Integer minus(Integer a, Integer b){...}
 	}
 
-The `ServiceImplPlusInteger` is written by `implements` keywords, and did not implement the `Service.minus` method by `@NotImplement` annotation, the `ServiceImplMinusInteger` is written by `@Implementor` and only implement the `Service.minus` method.
+The `ServiceImplDefault` and `ServiceImplPlusInteger` are written by `implements` keywords, and `ServiceImplPlusInteger` does not implement the `Service.minus` method by `@NotImplement` annotation, the `ServiceImplMinusInteger` is written by `@Implementor` and only implements the `Service.minus` method.
 
 ## Second
-Creating the `Service` instance :
+Create the `Service` instance :
 
 	Implementation<Service> implementation = new ImplementationResolver().resolve(Service.class,
 			 	ServiceImplDefault.class, ServiceImplPlusInteger.class, ServiceImplMinusInteger.class);
@@ -58,7 +58,7 @@ Creating the `Service` instance :
 	Service<Number> service = new ProxyImplementeeBeanBuilder().build(implementation, implementorBeanFactory);
 	
 ## Finally
-Invoking methods :
+Invoke methods :
 
 	service.plus(1.0F, 2.0F);
 	service.minus(1.0F, 2.0F);

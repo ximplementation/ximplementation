@@ -1,5 +1,5 @@
 # About ximplementation
-Ximplementation is a framework lets you write implementation freely based on Java annotations, and makes you able to change implementation of dependency dynamically without creating new dependency chain.
+Ximplementation is a framework lets you write implementation freely based on Java annotations and makes your program support runtime polymorphism.
 
 [Getting Started](getting-started.html)
 
@@ -9,4 +9,4 @@ Ximplementation is a framework lets you write implementation freely based on Jav
 
 You can get the source [Here](https://github.com/earthangry/ximplementation) in Github.
 
-There is also a <i>ximplementation-spring</i> project [Here](https://github.com/earthangry/ximplementation-spring) in Github, it integrates <i>ximplementation</i> into Spring, makes Spring support multiple dependency injection and more <i>ximplementation</i> features.
+There is also an <i>ximplementation-spring</i> project [Here](https://github.com/earthangry/ximplementation-spring) in Github, it integrates <i>ximplementation</i> into Spring, makes Spring support multiple dependency injection and more <i>ximplementation</i> features.

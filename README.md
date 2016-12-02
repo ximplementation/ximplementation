@@ -1,5 +1,5 @@
 # ximplementation
-Ximplementation lets you write implementation freely based on Java annotation.
+Ximplementation is a framework lets you write implementation freely based on Java annotations and makes your program support runtime polymorphism.
 
 It has two core annotations:
 
@@ -68,69 +68,3 @@ Then, you can get a `Service` instance by:
 ```
 
 The `serivce.plus` method invocation will be delegated to `ServiceImplPlusInteger.plus` method if the parameter type is `Integer`, to `ServiceImplDefault.plus` method otherwise; and the `serivce.minus` method will be delegated to `ServiceImplMinusInteger.minus` method if the parameter type is `Integer`, to `ServiceImplDefault.minus` method otherwise.
-
-## What it can do
-Generally, it makes you able to change implementation of dependency dynamically without creating new dependency chain.
-
-For example :
-
-```java
-
-	public class Controller<T extends Entity>
-	{
-		private Service<T> service;
-		
-		public Controller(Service<T> service)
-		{
-			this.service = service;
-		}
-		
-		public String save(T entity)
-		{
-			service.save(entity);
-			return "ok";
-		}
-	}
-	
-	public interface Service<T extends Entity>
-	{
-		void save(T entity);
-	}
-	
-	public class ServiceImplOneEntity implements Service<OneEntity>
-	{
-		public void save(OneEntity oneEntity){...}
-	}
-	
-	public class ServiceImplAnotherEntity implements Service<AnotherEntity>
-	{
-		public void save(AnotherEntity anotherEntity){...}
-	}
-```
-
-You have to create one dependency chain for each implementation of `Service` traditionally :
-
-```java
-
-	//First
-	Service<OneEntity> serviceOne = new ServiceImplOneEntity();
-	Controller<OneEntity> controllerOne = new Controller<OneEntity>(serviceOne);
-	
-	//Second
-	Service<AnotherEntity> serviceAnother = new ServiceImplAnotherEntity();
-	Controller<AnotherEntity> controllerAnother = new Controller<AnotherEntity>(serviceAnother);
-	
-	//maybe more
-	...
-```
-
-But with ximplementation, you need only to create one dependency chain no matter how many implementations for `Service` there :
-
-```java
-
-	Implementation<Service> implementation = ...;
-	ImplementorBeanFactory implementorBeanFactory = ...;
-	
-	Service<Entity> service = new ProxyImplementeeBeanBuilder().build(implementation, implementorBeanFactory);
-	Controller<Entity> controller = new Controller<Entity>(service);
-```

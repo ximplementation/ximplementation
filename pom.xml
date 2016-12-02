@@ -8,8 +8,7 @@
 	
 	<name>ximplementation</name>
 	<description>
-		The ximplementation is a framework lets you write implementation freely based on Java annotations,
-		and it makes you able to change implementation of dependency dynamically without creating new dependency chain. 
+		Ximplementation is a framework lets you write implementation freely based on Java annotations and makes your program support runtime polymorphism.
 	</description>
 	<url>https://github.com/earthangry/ximplementation</url>
 	
