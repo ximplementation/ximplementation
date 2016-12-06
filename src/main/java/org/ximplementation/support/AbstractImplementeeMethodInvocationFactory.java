@@ -18,143 +18,26 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.ximplementation.Priority;
-import org.ximplementation.Validity;
-
 /**
- * Default {@linkplain ImplementeeMethodInvocationFactory}.
- * <p>
- * It evaluates the <i>implement method</i> with the max priority, then returns
- * an {@linkplain SimpleImplementeeMethodInvocation} instance.
- * </p>
- * <p>
- * The <i>implement method</i> evaluating rule is as following:
- * </p>
- * <ol>
- * <li>Ignores all whose parameter type mismatched or
- * {@linkplain Validity @Validaty} not passed;</li>
- * <li>Gets the one with max {@linkplain Priority @Priority} If there is;</li>
- * <li>Else, gets the one whose method parameter is closest to the invocation
- * parameters;</li>
- * <li>Else, gets the only one which declared {@linkplain Validity @Validaty} ;
- * </li>
- * <li>Else, gets the only one whose <i>implementor</i> is not the same nor the
- * sub package with the <i>implementee</i>;</li>
- * <li>Else, gets one randomly.</li>
- * </ol>
+ * Abstract {@linkplain ImplementeeMethodInvocationFactory}.
  * 
  * @author earthangry@gmail.com
- * @date 2016-8-15
+ * @date 2016-12-06
  *
  */
-public class DefaultImplementeeMethodInvocationFactory
+public abstract class AbstractImplementeeMethodInvocationFactory
 		implements ImplementeeMethodInvocationFactory
 {
-	private ConcurrentHashMap<ImplementMethodInfo, Class<?>[]> implementMethodParamTypes = new ConcurrentHashMap<ImplementMethodInfo, Class<?>[]>();
+	protected static final Class<?>[] EMPTY_CLASS_ARRAY = {};
 
-	public DefaultImplementeeMethodInvocationFactory()
+	protected ConcurrentHashMap<ImplementMethodInfo, Class<?>[]> implementMethodParamTypes = new ConcurrentHashMap<ImplementMethodInfo, Class<?>[]>();
+
+	public AbstractImplementeeMethodInvocationFactory()
 	{
 		super();
-	}
-
-	@Override
-	public ImplementeeMethodInvocation get(
-			Implementation<?> implementation, Method implementeeMethod,
-			Object[] implementeeMethodParams,
-			ImplementorBeanFactory implementorBeanFactory) throws Throwable
-	{
-		ImplementMethodInfo implementMethodInfo = null;
-		Object implementorBean = null;
-		int priority = Integer.MIN_VALUE;
-
-		ImplementInfo implementInfo = findImplementInfo(implementation,
-				implementeeMethod);
-
-		if (implementInfo == null || !implementInfo.hasImplementMethodInfo())
-			return null;
-
-		for (ImplementMethodInfo myImplementMethodInfo : implementInfo
-				.getImplementMethodInfos())
-		{
-			if (!isImplementMethodParamValid(implementation, implementeeMethod,
-					myImplementMethodInfo,
-					implementeeMethodParams))
-				continue;
-
-			Collection<?> implementorBeans = implementorBeanFactory
-					.getImplementorBeans(
-							myImplementMethodInfo.getImplementor());
-
-			if (implementorBeans == null || implementorBeans.isEmpty())
-				continue;
-
-			Method validityMethod = myImplementMethodInfo.getValidityMethod();
-			Object[] validityMethodParams = myImplementMethodInfo
-					.getValidityParams(implementeeMethodParams);
-			Method priorityMethod = myImplementMethodInfo.getPriorityMethod();
-			Object[] priorityMethodParams = myImplementMethodInfo
-					.getPriorityParams(implementeeMethodParams);
-
-			for (Object myImplementorBean : implementorBeans)
-			{
-				if (validityMethod != null)
-				{
-					boolean isValid = invokeValidityMethod(implementation,
-							implementeeMethod, myImplementMethodInfo,
-							validityMethod, validityMethodParams,
-							myImplementorBean);
-
-					if (!isValid)
-						continue;
-				}
-
-				int myPriority = myImplementMethodInfo.getPriorityValue();
-
-				if (priorityMethod != null)
-				{
-					myPriority = invokePriorityMethod(implementation,
-							implementeeMethod, myImplementMethodInfo,
-							myImplementMethodInfo.getPriorityMethod(),
-							priorityMethodParams,
-							myImplementorBean);
-				}
-
-				boolean replace = false;
-
-				if (implementMethodInfo == null)
-					replace = true;
-				else
-				{
-					if (myPriority == priority)
-					{
-						int methodInfoPriority = compareImplementMethodInfoPriority(
-								implementation, implementeeMethod,
-								implementeeMethodParams, implementMethodInfo,
-								myImplementMethodInfo);
-
-						replace = (methodInfoPriority <= 0);
-					}
-					else
-						replace = (myPriority > priority);
-				}
-
-				if (replace)
-				{
-					implementMethodInfo = myImplementMethodInfo;
-					implementorBean = myImplementorBean;
-					priority = myPriority;
-				}
-			}
-		}
-
-		return (implementMethodInfo == null ? null
-				: new SimpleImplementeeMethodInvocation(implementation,
-						implementeeMethod, implementeeMethodParams,
-						implementMethodInfo, implementorBean));
 	}
 
 	/**
@@ -174,7 +57,7 @@ public class DefaultImplementeeMethodInvocationFactory
 	 * Invoke validity method.
 	 * 
 	 * @param implementation
-	 * @param implementeeMethod
+	 * @param implementInfo
 	 * @param implementMethodInfo
 	 * @param validityMethod
 	 * @param validityParams
@@ -183,7 +66,8 @@ public class DefaultImplementeeMethodInvocationFactory
 	 * @throws Throwable
 	 */
 	protected boolean invokeValidityMethod(Implementation<?> implementation,
-			Method implementeeMethod, ImplementMethodInfo implementMethodInfo,
+			ImplementInfo implementInfo,
+			ImplementMethodInfo implementMethodInfo,
 			Method validityMethod,
 			Object[] validityParams, Object implementorBean) throws Throwable
 	{
@@ -197,7 +81,7 @@ public class DefaultImplementeeMethodInvocationFactory
 	 * Invoke priority method.
 	 * 
 	 * @param implementation
-	 * @param implementeeMethod
+	 * @param implementInfo
 	 * @param implementMethodInfo
 	 * @param priorityMethod
 	 * @param priorityParams
@@ -206,7 +90,8 @@ public class DefaultImplementeeMethodInvocationFactory
 	 * @throws Throwable
 	 */
 	protected int invokePriorityMethod(Implementation<?> implementation,
-			Method implementeeMethod, ImplementMethodInfo implementMethodInfo,
+			ImplementInfo implementInfo,
+			ImplementMethodInfo implementMethodInfo,
 			Method priorityMethod, Object[] priorityParams,
 			Object implementorBean) throws Throwable
 	{
@@ -221,44 +106,48 @@ public class DefaultImplementeeMethodInvocationFactory
 
 	/**
 	 * Return if {@linkplain ImplementMethodInfo#getImplementMethod()} parameter
-	 * types are valid for the given parameters.
+	 * types are valid for the given parameter types.
 	 * 
 	 * @param implementation
-	 * @param implementeeMethod
+	 * @param implementInfo
 	 * @param implementMethodInfo
-	 * @param implementeeMethodParams
+	 * @param implementeeMethodParamTypes
 	 * @return
 	 */
-	protected boolean isImplementMethodParamValid(
-			Implementation<?> implementation, Method implementeeMethod,
+	protected boolean isImplementMethodParamTypeValid(
+			Implementation<?> implementation, ImplementInfo implementInfo,
 			ImplementMethodInfo implementMethodInfo,
-			Object[] implementeeMethodParams)
+			Class<?>[] implementeeMethodParamTypes)
 	{
 		Class<?>[] myParamTypes = getActualImplementMethodParamTypes(
-				implementation, implementeeMethod, implementMethodInfo);
+				implementation, implementInfo, implementMethodInfo);
 
 		if (myParamTypes == null || myParamTypes.length == 0)
 			return true;
 
-		if (myParamTypes.length > implementeeMethodParams.length)
+		if (myParamTypes.length > implementeeMethodParamTypes.length)
 			return false;
 
-		Object[] myParams = implementMethodInfo
-				.getParams(implementeeMethodParams);
+		Class<?>[] inputParamTypes = copyArrayByIndex(
+				implementeeMethodParamTypes,
+				implementMethodInfo.getParamIndexes());
 
 		for (int i = 0; i < myParamTypes.length; i++)
 		{
 			Class<?> myParamType = myParamTypes[i];
-			Object myParam = myParams[i];
+			Class<?> inputParamType = inputParamTypes[i];
 
-			if (myParam == null)
+			// the input parameter type is null, primitive implement method
+			// parameter type is invalid
+			if (inputParamType == null)
 			{
 				if (myParamType.isPrimitive())
 					return false;
 			}
 			else
 			{
-				if (!toWrapperType(myParamType).isInstance(myParam))
+				if (!toWrapperType(myParamType)
+						.isAssignableFrom(toWrapperType(inputParamType)))
 					return false;
 			}
 		}
@@ -267,27 +156,28 @@ public class DefaultImplementeeMethodInvocationFactory
 	}
 
 	/**
-	 * Compare two {@linkplain ImplementMethodInfo}'s priority which both are
-	 * valid to {@code implementeeMethodParams}.
+	 * Compare two {@linkplain ImplementMethodInfo}'s priority which both method
+	 * parameter types are assignable to {@code implementeeMethodParamTypes}.
 	 * <p>
 	 * Return {@code >0} if {@code first} is higher; returns {@code <0} if
 	 * {@code second} is higher; returns {@code 0} if they are the same.
 	 * </p>
 	 * 
 	 * @param implementation
-	 * @param implementeeMethod
-	 * @param implementeeMethodParams
+	 * @param implementInfo
+	 * @param implementeeMethodParamTypes
 	 * @param first
 	 * @param second
 	 * @return
 	 */
 	protected int compareImplementMethodInfoPriority(
 			Implementation<?> implementation,
-			Method implementeeMethod, Object[] implementeeMethodParams,
+			ImplementInfo implementInfo,
+			Class<?>[] implementeeMethodParamTypes, 
 			ImplementMethodInfo first, ImplementMethodInfo second)
 	{
 		int priority = compareImplementMethodParamTypePriority(implementation,
-				implementeeMethod, implementeeMethodParams, first, second);
+				implementInfo, implementeeMethodParamTypes, first, second);
 	
 		// the one with @Validity is higher
 		if (priority == 0)
@@ -312,22 +202,23 @@ public class DefaultImplementeeMethodInvocationFactory
 
 	/**
 	 * Compare two {@linkplain ImplementMethodInfo}'s method parameter type
-	 * priority.
+	 * priority which both are assignable to {@code implementeeMethodParamTypes}
+	 * .
 	 * <p>
 	 * Return {@code >0} if {@code first} is higher; returns {@code <0} if
 	 * {@code second} is higher; returns {@code 0} if they are the same.
 	 * </p>
 	 * 
 	 * @param implementation
-	 * @param implementeeMethod
-	 * @param implementeeMethodParams
+	 * @param implementInfo
+	 * @param implementeeMethodParamTypes
 	 * @param first
 	 * @param second
 	 * @return
 	 */
 	protected int compareImplementMethodParamTypePriority(
 			Implementation<?> implementation,
-			Method implementeeMethod, Object[] implementeeMethodParams,
+			ImplementInfo implementInfo, Class<?>[] implementeeMethodParamTypes,
 			ImplementMethodInfo first, ImplementMethodInfo second)
 	{
 		// which is closer to implementee method parameters
@@ -335,10 +226,10 @@ public class DefaultImplementeeMethodInvocationFactory
 		int secondCloserCount = 0;
 	
 		Class<?>[] firstParamTypes = getActualImplementMethodParamTypes(
-				implementation, implementeeMethod, first);
+				implementation, implementInfo, first);
 		int[] firstParamIndexes = first.getParamIndexes();
 		Class<?>[] secondParamTypes = getActualImplementMethodParamTypes(
-				implementation, implementeeMethod, second);
+				implementation, implementInfo, second);
 		int[] secondParamIndexes = second.getParamIndexes();
 	
 		for (int i = 0; i < firstParamTypes.length; i++)
@@ -433,12 +324,12 @@ public class DefaultImplementeeMethodInvocationFactory
 	 * type erased.
 	 * 
 	 * @param implementation
-	 * @param implementeeMethod
+	 * @param implementInfo
 	 * @param implementMethodInfo
 	 * @return
 	 */
 	protected Class<?>[] getActualImplementMethodParamTypes(
-			Implementation<?> implementation, Method implementeeMethod,
+			Implementation<?> implementation, ImplementInfo implementInfo,
 			ImplementMethodInfo implementMethodInfo)
 	{
 		Class<?> implementor = implementMethodInfo.getImplementor();
@@ -514,6 +405,58 @@ public class DefaultImplementeeMethodInvocationFactory
 	{
 		this.implementMethodParamTypes.put(implementMethodInfo,
 				actualImplementMethodParamTypes);
+	}
+
+	/**
+	 * Extract type array.
+	 * <P>
+	 * Return an array of {@code 0} length if the {@code objs} is {@code null}
+	 * or empty.
+	 * </P>
+	 * 
+	 * @param objs
+	 * @return
+	 */
+	protected Class<?>[] extractTypes(Object[] objs)
+	{
+		if (objs == null)
+			return EMPTY_CLASS_ARRAY;
+	
+		Class<?>[] classes = new Class<?>[objs.length];
+	
+		for (int i = 0; i < objs.length; i++)
+		{
+			classes[i] = (objs[i] == null ? null : objs[i].getClass());
+		}
+	
+		return classes;
+	}
+
+	/**
+	 * Copy array by indexes.
+	 * <P>
+	 * Return an array of {@code 0} length if the {@code indexes} is
+	 * {@code null} or empty.
+	 * </P>
+	 * 
+	 * @param source
+	 * @param indexes
+	 * @return
+	 */
+	protected Class<?>[] copyArrayByIndex(Class<?>[] source,
+			int[] indexes)
+	{
+		if (indexes == null)
+			return EMPTY_CLASS_ARRAY;
+	
+		Class<?>[] copied = new Class<?>[indexes.length];
+	
+		for (int i = 0; i < indexes.length; i++)
+		{
+			copied[i] = source[indexes[i]];
+		}
+	
+		return copied;
 	}
 
 	/**

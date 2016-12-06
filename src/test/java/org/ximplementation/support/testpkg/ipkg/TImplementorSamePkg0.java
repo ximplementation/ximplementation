@@ -15,7 +15,7 @@
 package org.ximplementation.support.testpkg.ipkg;
 
 /**
- * {@code DefaultImplementeeMethodInvocationFactoryTest.compareImplementorPriorityTest()}
+ * {@code AbstractImplementeeMethodInvocationFactoryTest.compareImplementorPriorityTest()}
  * test data.
  * 
  * @author earthangry@gmail.com

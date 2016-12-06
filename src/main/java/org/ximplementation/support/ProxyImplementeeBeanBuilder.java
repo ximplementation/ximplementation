@@ -40,7 +40,7 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 	public ProxyImplementeeBeanBuilder()
 	{
 		super();
-		this.implementeeMethodInvocationFactory = new DefaultImplementeeMethodInvocationFactory();
+		this.implementeeMethodInvocationFactory = new CachedImplementeeMethodInvocationFactory();
 	}
 
 	public ImplementeeMethodInvocationFactory getImplementeeMethodInvocationFactory()

@@ -29,8 +29,8 @@ public class SimpleImplementeeMethodInvocation
 	/** The Implementation */
 	private Implementation<?> implementation;
 
-	/** The implementee method */
-	private Method implementeeMethod;
+	/** The implement info */
+	private ImplementInfo implementInfo;
 
 	/** The implementee method parameters */
 	private Object[] implementeeMethodParams;
@@ -54,8 +54,8 @@ public class SimpleImplementeeMethodInvocation
 	 * 
 	 * @param implementation
 	 *            The {@linkplain Implementation} in this invocation.
-	 * @param implementeeMethod
-	 *            The <i>implementee method</i> in this invocation.
+	 * @param implementInfo
+	 *            The {@linkplain ImplementInfo} in this invocation.
 	 * @param implementeeMethodParams
 	 *            The <i>implementee method</i> parameters in this invocation.
 	 * @param implementMethodInfo
@@ -65,7 +65,7 @@ public class SimpleImplementeeMethodInvocation
 	 *            The <i>implementor</i> bean to be invoked in this invocation.
 	 */
 	public SimpleImplementeeMethodInvocation(Implementation<?> implementation,
-			Method implementeeMethod,
+			ImplementInfo implementInfo,
 			Object[] implementeeMethodParams,
 			ImplementMethodInfo implementMethodInfo, Object implementorBean)
 	{
@@ -96,23 +96,23 @@ public class SimpleImplementeeMethodInvocation
 	}
 
 	/**
-	 * Get the <i>implementee method</i> in this invocation.
+	 * Get the {@linkplain ImplementInfo} in this invocation.
 	 * 
 	 * @return
 	 */
-	public Method getImplementeeMethod()
+	public ImplementInfo getImplementInfo()
 	{
-		return implementeeMethod;
+		return implementInfo;
 	}
 
 	/**
-	 * Set the <i>implementee method</i> in this invocation.
+	 * Set the {@linkplain ImplementInfo} in this invocation.
 	 * 
-	 * @param implementeeMethod
+	 * @param implementInfo
 	 */
-	public void setImplementeeMethod(Method implementeeMethod)
+	public void setImplementInfo(ImplementInfo implementInfo)
 	{
-		this.implementeeMethod = implementeeMethod;
+		this.implementInfo = implementInfo;
 	}
 
 	/**
