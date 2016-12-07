@@ -107,8 +107,8 @@ public class CachedImplementeeMethodInvocationFactory
 			Class<?>[] invocationParamTypes)
 	{
 		List<ImplementMethodInfo> staticValidAndDescPrioritizeds = new ArrayList<ImplementMethodInfo>();
-		boolean needInvokeValidityMethod = false;
-		boolean needInvokePriorityMethod = false;
+		boolean validityMethodPresents = false;
+		boolean priorityMethodPresents = false;
 	
 		if(implementInfo.hasImplementMethodInfo())
 		{
@@ -123,13 +123,13 @@ public class CachedImplementeeMethodInvocationFactory
 						invocationParamTypes))
 					continue;
 	
-				if (!needInvokeValidityMethod
+				if (!validityMethodPresents
 						&& implementMethodInfo.hasValidityMethod())
-					needInvokeValidityMethod = true;
+					validityMethodPresents = true;
 	
-				if (!needInvokePriorityMethod
+				if (!priorityMethodPresents
 						&& implementMethodInfo.hasPriorityMethod())
-					needInvokePriorityMethod = true;
+					priorityMethodPresents = true;
 	
 				staticValidAndDescPrioritizeds.add(implementMethodInfo);
 			}
@@ -143,7 +143,7 @@ public class CachedImplementeeMethodInvocationFactory
 				invocationParamTypes, staticValidAndDescPrioritizedAry);
 	
 		return new InvocationCacheValue(staticValidAndDescPrioritizedAry,
-				needInvokeValidityMethod, needInvokePriorityMethod);
+				validityMethodPresents, priorityMethodPresents);
 	}
 
 	/**
