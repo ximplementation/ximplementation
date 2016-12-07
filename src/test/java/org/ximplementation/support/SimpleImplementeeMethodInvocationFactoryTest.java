@@ -155,7 +155,7 @@ public class SimpleImplementeeMethodInvocationFactoryTest
 			implementorBeansMap.put(GetTest.Implementor4.class,
 					Arrays.asList(new GetTest.Implementor4()));
 
-			SimpleImplementeeMethodInvocation implementeeMethodInvocationInfo = (SimpleImplementeeMethodInvocation) this.simpleImplementeeMethodInvocationFactory
+			DefaultImplementeeMethodInvocation implementeeMethodInvocationInfo = (DefaultImplementeeMethodInvocation) this.simpleImplementeeMethodInvocationFactory
 					.get(
 							this.implementationResolver.resolve(implementee,
 									GetTest.Implementor0.class,
@@ -191,7 +191,7 @@ public class SimpleImplementeeMethodInvocationFactoryTest
 			implementorBeansMap.put(GetTest.Implementor5.class,
 					Arrays.asList(new GetTest.Implementor5()));
 
-			SimpleImplementeeMethodInvocation implementeeMethodInvocationInfo = (SimpleImplementeeMethodInvocation) this.simpleImplementeeMethodInvocationFactory
+			DefaultImplementeeMethodInvocation implementeeMethodInvocationInfo = (DefaultImplementeeMethodInvocation) this.simpleImplementeeMethodInvocationFactory
 					.get(
 							this.implementationResolver.resolve(implementee,
 									GetTest.Implementor0.class,
@@ -221,7 +221,7 @@ public class SimpleImplementeeMethodInvocationFactoryTest
 			implementorBeansMap.put(GetTest.Implementor1.class,
 					Arrays.asList(new GetTest.Implementor1()));
 
-			SimpleImplementeeMethodInvocation implementeeMethodInvocationInfo = (SimpleImplementeeMethodInvocation) this.simpleImplementeeMethodInvocationFactory
+			DefaultImplementeeMethodInvocation implementeeMethodInvocationInfo = (DefaultImplementeeMethodInvocation) this.simpleImplementeeMethodInvocationFactory
 					.get(
 							this.implementationResolver.resolve(implementee,
 									GetTest.Implementor0.class,

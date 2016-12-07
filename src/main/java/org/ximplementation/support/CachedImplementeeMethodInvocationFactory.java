@@ -188,7 +188,7 @@ public class CachedImplementeeMethodInvocationFactory
 
 		Object finalBean = getRandomElement(finalBeans);
 
-		return new SimpleImplementeeMethodInvocation(implementation,
+		return new DefaultImplementeeMethodInvocation(implementation,
 				implementInfo, invocationParams, finalMethodInfo,
 				finalBean);
 	}
@@ -275,7 +275,7 @@ public class CachedImplementeeMethodInvocationFactory
 		}
 	
 		return (implementMethodInfo == null ? null
-				: new SimpleImplementeeMethodInvocation(implementation,
+				: new DefaultImplementeeMethodInvocation(implementation,
 						implementInfo,
 						invocationParams,
 						implementMethodInfo, implementorBean));

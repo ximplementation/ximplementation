@@ -25,13 +25,13 @@ import org.ximplementation.Implement;
 import org.ximplementation.Implementor;
 
 /**
- * {@linkplain SimpleImplementeeMethodInvocation} unit tests.
+ * {@linkplain DefaultImplementeeMethodInvocation} unit tests.
  * 
  * @author earthangry@gmail.com
  * @date 2016-11-11
  *
  */
-public class SimpleImplementeeMethodInvocationTest extends AbstractTestSupport
+public class DefaultImplementeeMethodInvocationTest extends AbstractTestSupport
 {
 	private ImplementationResolver implementationResolver;
 
@@ -66,7 +66,7 @@ public class SimpleImplementeeMethodInvocationTest extends AbstractTestSupport
 			Object[] invocationParams = {};
 			Object implementorBean = new InvokeTest.Implementor0();
 			
-			SimpleImplementeeMethodInvocation invocation = new SimpleImplementeeMethodInvocation(
+			DefaultImplementeeMethodInvocation invocation = new DefaultImplementeeMethodInvocation(
 					implementation, implementInfo,
 					invocationParams, implementMethodInfo, implementorBean);
 
@@ -91,7 +91,7 @@ public class SimpleImplementeeMethodInvocationTest extends AbstractTestSupport
 			Object[] invocationParams = {};
 			Object implementorBean = new InvokeTest.Implementor1();
 
-			SimpleImplementeeMethodInvocation invocation = new SimpleImplementeeMethodInvocation(
+			DefaultImplementeeMethodInvocation invocation = new DefaultImplementeeMethodInvocation(
 					implementation, implementInfo, invocationParams,
 					implementMethodInfo, implementorBean);
 
@@ -116,7 +116,7 @@ public class SimpleImplementeeMethodInvocationTest extends AbstractTestSupport
 			Object[] invocationParams = {};
 			Object implementorBean = new InvokeTest.Implementor2();
 
-			SimpleImplementeeMethodInvocation invocation = new SimpleImplementeeMethodInvocation(
+			DefaultImplementeeMethodInvocation invocation = new DefaultImplementeeMethodInvocation(
 					implementation, implementInfo, invocationParams,
 					implementMethodInfo, implementorBean);
 
@@ -141,7 +141,7 @@ public class SimpleImplementeeMethodInvocationTest extends AbstractTestSupport
 			Object[] invocationParams = {};
 			Object implementorBean = new InvokeTest.Implementor3();
 
-			SimpleImplementeeMethodInvocation invocation = new SimpleImplementeeMethodInvocation(
+			DefaultImplementeeMethodInvocation invocation = new DefaultImplementeeMethodInvocation(
 					implementation, implementInfo, invocationParams,
 					implementMethodInfo, implementorBean);
 

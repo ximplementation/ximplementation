@@ -17,13 +17,13 @@ package org.ximplementation.support;
 import java.lang.reflect.Method;
 
 /**
- * Simple {@linkplain ImplementeeMethodInvocation}.
+ * Default {@linkplain ImplementeeMethodInvocation}.
  * 
  * @author earthangry@gmail.com
  * @date 2016-8-15
  *
  */
-public class SimpleImplementeeMethodInvocation
+public class DefaultImplementeeMethodInvocation
 		implements ImplementeeMethodInvocation
 {
 	/** The Implementation */
@@ -44,7 +44,7 @@ public class SimpleImplementeeMethodInvocation
 	/**
 	 * Create a new empty instance.
 	 */
-	public SimpleImplementeeMethodInvocation()
+	public DefaultImplementeeMethodInvocation()
 	{
 		super();
 	}
@@ -64,7 +64,7 @@ public class SimpleImplementeeMethodInvocation
 	 * @param implementorBean
 	 *            The <i>implementor</i> bean to be invoked in this invocation.
 	 */
-	public SimpleImplementeeMethodInvocation(Implementation<?> implementation,
+	public DefaultImplementeeMethodInvocation(Implementation<?> implementation,
 			ImplementInfo implementInfo,
 			Object[] invocationParams,
 			ImplementMethodInfo implementMethodInfo, Object implementorBean)

@@ -24,7 +24,7 @@ import org.ximplementation.Validity;
  * Simple {@linkplain ImplementeeMethodInvocationFactory}.
  * <p>
  * It evaluates the <i>implement method</i> with the max priority, then returns
- * an {@linkplain SimpleImplementeeMethodInvocation} instance.
+ * an {@linkplain DefaultImplementeeMethodInvocation} instance.
  * </p>
  * <p>
  * The <i>implement method</i> evaluating rule is as following:
@@ -149,7 +149,7 @@ public class SimpleImplementeeMethodInvocationFactory
 		}
 
 		return (implementMethodInfo == null ? null
-				: new SimpleImplementeeMethodInvocation(implementation,
+				: new DefaultImplementeeMethodInvocation(implementation,
 						implementInfo, invocationParams,
 						implementMethodInfo, implementorBean));
 	}
