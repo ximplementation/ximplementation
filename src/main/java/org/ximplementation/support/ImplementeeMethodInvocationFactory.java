@@ -31,10 +31,10 @@ public interface ImplementeeMethodInvocationFactory
 	 * method invocation.
 	 * 
 	 * @param implementation
-	 *            The {@code Implementation} about the <i>implementee</i>.
+	 *            The {@code Implementation} for the <i>implementee</i>.
 	 * @param implementeeMethod
 	 *            The <i>implementee method</i> to be invoked.
-	 * @param implementeeMethodParams
+	 * @param invocationParams
 	 *            The invocation parameters of the <i>implementee method</i> to
 	 *            be invoked.
 	 * @param implementorBeanFactory
@@ -45,7 +45,7 @@ public interface ImplementeeMethodInvocationFactory
 	 */
 	ImplementeeMethodInvocation get(
 			Implementation<?> implementation,
-			Method implementeeMethod, Object[] implementeeMethodParams,
+			Method implementeeMethod, Object[] invocationParams,
 			ImplementorBeanFactory implementorBeanFactory)
 			throws Throwable;
 }

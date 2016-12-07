@@ -436,7 +436,7 @@ public class AbstractImplementeeMethodInvocationFactoryTest
 		}
 
 		// implementMethodInfo.getParamTypes().length >
-		// implementeeMethodParams.length
+		// invocationParams.length
 		{
 			ImplementInfo implementInfo = implementation
 					.getImplementInfo(implementeeMethod);
@@ -1269,7 +1269,7 @@ public class AbstractImplementeeMethodInvocationFactoryTest
 	{
 		@Override
 		public ImplementeeMethodInvocation get(Implementation<?> implementation,
-				Method implementeeMethod, Object[] implementeeMethodParams,
+				Method implementeeMethod, Object[] invocationParams,
 				ImplementorBeanFactory implementorBeanFactory) throws Throwable
 		{
 			throw new UnsupportedOperationException();

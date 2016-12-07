@@ -57,7 +57,7 @@ public class SimpleImplementeeMethodInvocationFactory
 	@Override
 	public ImplementeeMethodInvocation get(
 			Implementation<?> implementation, Method implementeeMethod,
-			Object[] implementeeMethodParams,
+			Object[] invocationParams,
 			ImplementorBeanFactory implementorBeanFactory) throws Throwable
 	{
 		ImplementMethodInfo implementMethodInfo = null;
@@ -70,8 +70,7 @@ public class SimpleImplementeeMethodInvocationFactory
 		if (implementInfo == null || !implementInfo.hasImplementMethodInfo())
 			return null;
 		
-		Class<?>[] implementeeMethodParamTypes = extractTypes(
-				implementeeMethodParams);
+		Class<?>[] invocationParamTypes = extractTypes(invocationParams);
 
 		for (ImplementMethodInfo myImplementMethodInfo : implementInfo
 				.getImplementMethodInfos())
@@ -79,7 +78,7 @@ public class SimpleImplementeeMethodInvocationFactory
 			if (!isImplementMethodParamTypeValid(implementation,
 					implementInfo,
 					myImplementMethodInfo,
-					implementeeMethodParamTypes))
+					invocationParamTypes))
 				continue;
 
 			Collection<?> implementorBeans = implementorBeanFactory
@@ -91,10 +90,10 @@ public class SimpleImplementeeMethodInvocationFactory
 
 			Method validityMethod = myImplementMethodInfo.getValidityMethod();
 			Object[] validityMethodParams = myImplementMethodInfo
-					.getValidityParams(implementeeMethodParams);
+					.getValidityParams(invocationParams);
 			Method priorityMethod = myImplementMethodInfo.getPriorityMethod();
 			Object[] priorityMethodParams = myImplementMethodInfo
-					.getPriorityParams(implementeeMethodParams);
+					.getPriorityParams(invocationParams);
 
 			for (Object myImplementorBean : implementorBeans)
 			{
@@ -130,7 +129,7 @@ public class SimpleImplementeeMethodInvocationFactory
 					{
 						int methodInfoPriority = compareImplementMethodInfoPriority(
 								implementation, implementInfo,
-								implementeeMethodParamTypes,
+								invocationParamTypes,
 								implementMethodInfo,
 								myImplementMethodInfo);
 
@@ -151,7 +150,7 @@ public class SimpleImplementeeMethodInvocationFactory
 
 		return (implementMethodInfo == null ? null
 				: new SimpleImplementeeMethodInvocation(implementation,
-						implementInfo, implementeeMethodParams,
+						implementInfo, invocationParams,
 						implementMethodInfo, implementorBean));
 	}
 }

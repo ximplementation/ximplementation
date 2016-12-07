@@ -111,13 +111,13 @@ public abstract class AbstractImplementeeMethodInvocationFactory
 	 * @param implementation
 	 * @param implementInfo
 	 * @param implementMethodInfo
-	 * @param implementeeMethodParamTypes
+	 * @param invocationParamTypes
 	 * @return
 	 */
 	protected boolean isImplementMethodParamTypeValid(
 			Implementation<?> implementation, ImplementInfo implementInfo,
 			ImplementMethodInfo implementMethodInfo,
-			Class<?>[] implementeeMethodParamTypes)
+			Class<?>[] invocationParamTypes)
 	{
 		Class<?>[] myParamTypes = getActualImplementMethodParamTypes(
 				implementation, implementInfo, implementMethodInfo);
@@ -125,21 +125,21 @@ public abstract class AbstractImplementeeMethodInvocationFactory
 		if (myParamTypes == null || myParamTypes.length == 0)
 			return true;
 
-		if (myParamTypes.length > implementeeMethodParamTypes.length)
+		if (myParamTypes.length > invocationParamTypes.length)
 			return false;
 
-		Class<?>[] inputParamTypes = copyArrayByIndex(
-				implementeeMethodParamTypes,
+		Class<?>[] myInvocationParamTypes = copyArrayByIndex(
+				invocationParamTypes,
 				implementMethodInfo.getParamIndexes());
 
 		for (int i = 0; i < myParamTypes.length; i++)
 		{
 			Class<?> myParamType = myParamTypes[i];
-			Class<?> inputParamType = inputParamTypes[i];
+			Class<?> myInvocationParamType = myInvocationParamTypes[i];
 
-			// the input parameter type is null, primitive implement method
+			// the invocation parameter type is null, primitive implement method
 			// parameter type is invalid
-			if (inputParamType == null)
+			if (myInvocationParamType == null)
 			{
 				if (myParamType.isPrimitive())
 					return false;
@@ -147,7 +147,7 @@ public abstract class AbstractImplementeeMethodInvocationFactory
 			else
 			{
 				if (!toWrapperType(myParamType)
-						.isAssignableFrom(toWrapperType(inputParamType)))
+						.isAssignableFrom(toWrapperType(myInvocationParamType)))
 					return false;
 			}
 		}
@@ -157,7 +157,7 @@ public abstract class AbstractImplementeeMethodInvocationFactory
 
 	/**
 	 * Compare two {@linkplain ImplementMethodInfo}'s priority which both method
-	 * parameter types are assignable to {@code implementeeMethodParamTypes}.
+	 * parameter types are assignable to {@code invocationParamTypes}.
 	 * <p>
 	 * Return {@code >0} if {@code first} is higher; returns {@code <0} if
 	 * {@code second} is higher; returns {@code 0} if they are the same.
@@ -165,7 +165,7 @@ public abstract class AbstractImplementeeMethodInvocationFactory
 	 * 
 	 * @param implementation
 	 * @param implementInfo
-	 * @param implementeeMethodParamTypes
+	 * @param invocationParamTypes
 	 * @param first
 	 * @param second
 	 * @return
@@ -173,11 +173,11 @@ public abstract class AbstractImplementeeMethodInvocationFactory
 	protected int compareImplementMethodInfoPriority(
 			Implementation<?> implementation,
 			ImplementInfo implementInfo,
-			Class<?>[] implementeeMethodParamTypes, 
+			Class<?>[] invocationParamTypes, 
 			ImplementMethodInfo first, ImplementMethodInfo second)
 	{
 		int priority = compareImplementMethodParamTypePriority(implementation,
-				implementInfo, implementeeMethodParamTypes, first, second);
+				implementInfo, invocationParamTypes, first, second);
 	
 		// the one with @Validity is higher
 		if (priority == 0)
@@ -202,8 +202,7 @@ public abstract class AbstractImplementeeMethodInvocationFactory
 
 	/**
 	 * Compare two {@linkplain ImplementMethodInfo}'s method parameter type
-	 * priority which both are assignable to {@code implementeeMethodParamTypes}
-	 * .
+	 * priority which both are assignable to {@code invocationParamTypes}.
 	 * <p>
 	 * Return {@code >0} if {@code first} is higher; returns {@code <0} if
 	 * {@code second} is higher; returns {@code 0} if they are the same.
@@ -211,17 +210,17 @@ public abstract class AbstractImplementeeMethodInvocationFactory
 	 * 
 	 * @param implementation
 	 * @param implementInfo
-	 * @param implementeeMethodParamTypes
+	 * @param invocationParamTypes
 	 * @param first
 	 * @param second
 	 * @return
 	 */
 	protected int compareImplementMethodParamTypePriority(
 			Implementation<?> implementation,
-			ImplementInfo implementInfo, Class<?>[] implementeeMethodParamTypes,
+			ImplementInfo implementInfo, Class<?>[] invocationParamTypes,
 			ImplementMethodInfo first, ImplementMethodInfo second)
 	{
-		// which is closer to implementee method parameters
+		// which is closer
 		int firstCloserCount = 0;
 		int secondCloserCount = 0;
 	

@@ -32,8 +32,8 @@ public class SimpleImplementeeMethodInvocation
 	/** The implement info */
 	private ImplementInfo implementInfo;
 
-	/** The implementee method parameters */
-	private Object[] implementeeMethodParams;
+	/** The implementee method invocation parameters */
+	private Object[] invocationParams;
 
 	/** The ImplementMethodInfo to be invoked */
 	private ImplementMethodInfo implementMethodInfo;
@@ -56,7 +56,7 @@ public class SimpleImplementeeMethodInvocation
 	 *            The {@linkplain Implementation} in this invocation.
 	 * @param implementInfo
 	 *            The {@linkplain ImplementInfo} in this invocation.
-	 * @param implementeeMethodParams
+	 * @param invocationParams
 	 *            The <i>implementee method</i> parameters in this invocation.
 	 * @param implementMethodInfo
 	 *            The {@linkplain ImplementMethodInfo} to be invoked in this
@@ -66,11 +66,11 @@ public class SimpleImplementeeMethodInvocation
 	 */
 	public SimpleImplementeeMethodInvocation(Implementation<?> implementation,
 			ImplementInfo implementInfo,
-			Object[] implementeeMethodParams,
+			Object[] invocationParams,
 			ImplementMethodInfo implementMethodInfo, Object implementorBean)
 	{
 		super();
-		this.implementeeMethodParams = implementeeMethodParams;
+		this.invocationParams = invocationParams;
 		this.implementMethodInfo = implementMethodInfo;
 		this.implementorBean = implementorBean;
 	}
@@ -120,19 +120,19 @@ public class SimpleImplementeeMethodInvocation
 	 * 
 	 * @return
 	 */
-	public Object[] getImplementeeMethodParams()
+	public Object[] getInvocationParams()
 	{
-		return implementeeMethodParams;
+		return invocationParams;
 	}
 
 	/**
 	 * Set the <i>implementee method</i> parameters in this invocation.
 	 * 
-	 * @param implementeeMethodParams
+	 * @param invocationParams
 	 */
-	public void setImplementeeMethodParams(Object[] implementeeMethodParams)
+	public void setInvocationParams(Object[] invocationParams)
 	{
-		this.implementeeMethodParams = implementeeMethodParams;
+		this.invocationParams = invocationParams;
 	}
 
 	/**
@@ -180,8 +180,8 @@ public class SimpleImplementeeMethodInvocation
 	@Override
 	public Object invoke() throws Throwable
 	{
-		Object[] implementMethodParams = this.implementMethodInfo
-				.getParams(this.implementeeMethodParams);
+		Object[] myInvocationParams = this.implementMethodInfo
+				.getParams(this.invocationParams);
 
 		Method implementMethod = this.implementMethodInfo.getImplementMethod();
 
@@ -189,6 +189,6 @@ public class SimpleImplementeeMethodInvocation
 			implementMethod.setAccessible(true);
 
 		return implementMethod.invoke(this.implementorBean,
-				implementMethodParams);
+				myInvocationParams);
 	}
 }

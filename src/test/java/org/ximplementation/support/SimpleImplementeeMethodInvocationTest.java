@@ -63,12 +63,12 @@ public class SimpleImplementeeMethodInvocationTest extends AbstractTestSupport
 
 			ImplementMethodInfo implementMethodInfo = implementInfo
 					.getImplementMethodInfos()[0];
-			Object[] implementeeMethodParams = {};
+			Object[] invocationParams = {};
 			Object implementorBean = new InvokeTest.Implementor0();
 			
 			SimpleImplementeeMethodInvocation invocation = new SimpleImplementeeMethodInvocation(
 					implementation, implementInfo,
-					implementeeMethodParams, implementMethodInfo, implementorBean);
+					invocationParams, implementMethodInfo, implementorBean);
 
 			assertEquals(InvokeTest.Implementor0.class.getSimpleName(),
 					invocation.invoke());
@@ -88,11 +88,11 @@ public class SimpleImplementeeMethodInvocationTest extends AbstractTestSupport
 
 			ImplementMethodInfo implementMethodInfo = implementInfo
 					.getImplementMethodInfos()[0];
-			Object[] implementeeMethodParams = {};
+			Object[] invocationParams = {};
 			Object implementorBean = new InvokeTest.Implementor1();
 
 			SimpleImplementeeMethodInvocation invocation = new SimpleImplementeeMethodInvocation(
-					implementation, implementInfo, implementeeMethodParams,
+					implementation, implementInfo, invocationParams,
 					implementMethodInfo, implementorBean);
 
 			assertEquals(InvokeTest.Implementor1.class.getSimpleName(),
@@ -113,11 +113,11 @@ public class SimpleImplementeeMethodInvocationTest extends AbstractTestSupport
 
 			ImplementMethodInfo implementMethodInfo = implementInfo
 					.getImplementMethodInfos()[0];
-			Object[] implementeeMethodParams = {};
+			Object[] invocationParams = {};
 			Object implementorBean = new InvokeTest.Implementor2();
 
 			SimpleImplementeeMethodInvocation invocation = new SimpleImplementeeMethodInvocation(
-					implementation, implementInfo, implementeeMethodParams,
+					implementation, implementInfo, invocationParams,
 					implementMethodInfo, implementorBean);
 
 			assertEquals(InvokeTest.Implementor2.class.getSimpleName(),
@@ -138,11 +138,11 @@ public class SimpleImplementeeMethodInvocationTest extends AbstractTestSupport
 
 			ImplementMethodInfo implementMethodInfo = implementInfo
 					.getImplementMethodInfos()[0];
-			Object[] implementeeMethodParams = {};
+			Object[] invocationParams = {};
 			Object implementorBean = new InvokeTest.Implementor3();
 
 			SimpleImplementeeMethodInvocation invocation = new SimpleImplementeeMethodInvocation(
-					implementation, implementInfo, implementeeMethodParams,
+					implementation, implementInfo, invocationParams,
 					implementMethodInfo, implementorBean);
 
 			assertEquals(InvokeTest.Implementor3.class.getSimpleName(),

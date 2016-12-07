@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>
  * The <i>implement method</i> evaluating rule is the same as
  * {@linkplain SimpleImplementeeMethodInvocationFactory} except caching some
- * static processing for performance (eg. <i>implementor method</i> parameter
+ * static process info for performance (eg. <i>implementor method</i> parameter
  * type validity checking and priority evaluation).
  * 
  * @author earthangry@gmail.com
@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CachedImplementeeMethodInvocationFactory
 		extends AbstractImplementeeMethodInvocationFactory
 {
-	private ConcurrentHashMap<CacheKey, CacheValue> cachedStaticValidAndDescPrioritizeds = new ConcurrentHashMap<CacheKey, CacheValue>();
+	private ConcurrentHashMap<InvocationCacheKey, InvocationCacheValue> cachedStaticValidAndDescPrioritizeds = new ConcurrentHashMap<InvocationCacheKey, InvocationCacheValue>();
 
 	public CachedImplementeeMethodInvocationFactory()
 	{
@@ -47,7 +47,7 @@ public class CachedImplementeeMethodInvocationFactory
 	@Override
 	public ImplementeeMethodInvocation get(
 			Implementation<?> implementation, Method implementeeMethod,
-			Object[] implementeeMethodParams,
+			Object[] invocationParams,
 			ImplementorBeanFactory implementorBeanFactory) throws Throwable
 	{
 		ImplementInfo implementInfo = findImplementInfo(implementation,
@@ -56,131 +56,94 @@ public class CachedImplementeeMethodInvocationFactory
 		if (implementInfo == null || !implementInfo.hasImplementMethodInfo())
 			return null;
 	
-		Class<?>[] implementeeMethodParamTypes = extractTypes(
-				implementeeMethodParams);
+		Class<?>[] invocationParamTypes = extractTypes(invocationParams);
 
-		CacheKey cacheKey = new CacheKey(implementation, implementInfo,
-				implementeeMethodParamTypes);
-		CacheValue cacheValue = getCachedStaticValidAndDescPrioritizeds(
-				cacheKey);
+		InvocationCacheKey invocationCacheKey = new InvocationCacheKey(implementation, implementInfo,
+				invocationParamTypes);
+		InvocationCacheValue invocationCacheValue = getCachedStaticValidAndDescPrioritizeds(
+				invocationCacheKey);
 
-		if (cacheValue == null)
+		if (invocationCacheValue == null)
 		{
-			cacheValue = evalCacheValue(implementation, implementInfo,
-					implementeeMethodParamTypes);
-			cacheStaticValidAndDescPrioritizeds(cacheKey, cacheValue);
+			invocationCacheValue = evalInvocationCacheValue(implementation, implementInfo,
+					invocationParamTypes);
+			cacheStaticValidAndDescPrioritizeds(invocationCacheKey, invocationCacheValue);
 		}
 	
-		ImplementMethodInfo[] staticValidAndDescPrioritizeds = cacheValue
+		ImplementMethodInfo[] staticValidAndDescPrioritizeds = invocationCacheValue
 				.getStaticValidAndDescPrioritizeds();
 
 		if (staticValidAndDescPrioritizeds == null
 				|| staticValidAndDescPrioritizeds.length == 0)
 			return null;
 
-		if (!cacheValue.isNeedInvokeValidityMethod()
-				&& !cacheValue.isNeedInvokePriorityMethod())
+		if (!invocationCacheValue.isValidityMethodPresents()
+				&& !invocationCacheValue.isPriorityMethodPresents())
 		{
 			return createBySelectingFromValidAndDescPrioritizeds(implementation,
-					implementInfo, implementeeMethodParams,
-					implementeeMethodParamTypes, staticValidAndDescPrioritizeds,
+					implementInfo, invocationParams,
+					invocationParamTypes, staticValidAndDescPrioritizeds,
 					implementorBeanFactory);
 		}
 		else
 		{
 			return createByEvalingFromValidAndDescPrioritizeds(implementation,
-					implementInfo, implementeeMethodParams,
-					implementeeMethodParamTypes, staticValidAndDescPrioritizeds,
+					implementInfo, invocationParams,
+					invocationParamTypes, staticValidAndDescPrioritizeds,
 					implementorBeanFactory);
 		}
 	}
 
 	/**
-	 * Create {@linkplain ImplementeeMethodInvocation} by evaluating from valid
-	 * and descendent prioritized {@linkplain ImplementMethodInfo} array.
+	 * Evaluate {@linkplain InvocationCacheValue}.
 	 * 
 	 * @param implementation
 	 * @param implementInfo
-	 * @param implementeeMethodParams
-	 * @param implementeeMethodParamTypes
-	 * @param validAndDescPrioritizeds
-	 * @param implementorBeanFactory
+	 * @param invocationParamTypes
 	 * @return
-	 * @throws Throwable
 	 */
-	protected ImplementeeMethodInvocation createByEvalingFromValidAndDescPrioritizeds(
-			Implementation<?> implementation, ImplementInfo implementInfo,
-			Object[] implementeeMethodParams,
-			Class<?>[] implementeeMethodParamTypes,
-			ImplementMethodInfo[] validAndDescPrioritizeds,
-			ImplementorBeanFactory implementorBeanFactory) throws Throwable
+	protected InvocationCacheValue evalInvocationCacheValue(Implementation<?> implementation,
+			ImplementInfo implementInfo,
+			Class<?>[] invocationParamTypes)
 	{
-		ImplementMethodInfo implementMethodInfo = null;
-		Object implementorBean = null;
-		int priority = Integer.MIN_VALUE;
-
-		for (ImplementMethodInfo myImplementMethodInfo : validAndDescPrioritizeds)
+		List<ImplementMethodInfo> staticValidAndDescPrioritizeds = new ArrayList<ImplementMethodInfo>();
+		boolean needInvokeValidityMethod = false;
+		boolean needInvokePriorityMethod = false;
+	
+		if(implementInfo.hasImplementMethodInfo())
 		{
-			Collection<?> implementorBeans = implementorBeanFactory
-					.getImplementorBeans(
-							myImplementMethodInfo.getImplementor());
-
-			if (implementorBeans == null || implementorBeans.isEmpty())
-				continue;
-
-			Method validityMethod = myImplementMethodInfo.getValidityMethod();
-			Object[] validityMethodParams = myImplementMethodInfo
-					.getValidityParams(implementeeMethodParams);
-			Method priorityMethod = myImplementMethodInfo.getPriorityMethod();
-			Object[] priorityMethodParams = myImplementMethodInfo
-					.getPriorityParams(implementeeMethodParams);
-
-			for (Object myImplementorBean : implementorBeans)
+			ImplementMethodInfo[] implementMethodInfos = implementInfo
+					.getImplementMethodInfos();
+			
+			for (ImplementMethodInfo implementMethodInfo : implementMethodInfos)
 			{
-				if (validityMethod != null)
-				{
-					boolean isValid = invokeValidityMethod(implementation,
-							implementInfo, myImplementMethodInfo,
-							validityMethod, validityMethodParams,
-							myImplementorBean);
-
-					if (!isValid)
-						continue;
-				}
-
-				int myPriority = myImplementMethodInfo.getPriorityValue();
-
-				if (priorityMethod != null)
-				{
-					myPriority = invokePriorityMethod(implementation,
-							implementInfo, myImplementMethodInfo,
-							myImplementMethodInfo.getPriorityMethod(),
-							priorityMethodParams, myImplementorBean);
-				}
-
-				boolean replace = false;
-
-				if (implementMethodInfo == null)
-					replace = true;
-				else
-				{
-					replace = (myPriority > priority);
-				}
-
-				if (replace)
-				{
-					implementMethodInfo = myImplementMethodInfo;
-					implementorBean = myImplementorBean;
-					priority = myPriority;
-				}
+				// ignore parameter type not valid
+				if (!isImplementMethodParamTypeValid(implementation,
+						implementInfo, implementMethodInfo,
+						invocationParamTypes))
+					continue;
+	
+				if (!needInvokeValidityMethod
+						&& implementMethodInfo.hasValidityMethod())
+					needInvokeValidityMethod = true;
+	
+				if (!needInvokePriorityMethod
+						&& implementMethodInfo.hasPriorityMethod())
+					needInvokePriorityMethod = true;
+	
+				staticValidAndDescPrioritizeds.add(implementMethodInfo);
 			}
 		}
-
-		return (implementMethodInfo == null ? null
-				: new SimpleImplementeeMethodInvocation(implementation,
-						implementInfo,
-						implementeeMethodParams,
-						implementMethodInfo, implementorBean));
+		
+		ImplementMethodInfo[] staticValidAndDescPrioritizedAry = staticValidAndDescPrioritizeds.toArray(
+				new ImplementMethodInfo[staticValidAndDescPrioritizeds.size()]);
+	
+		// sort by static priority
+		sortByStaticPriority(implementation, implementInfo,
+				invocationParamTypes, staticValidAndDescPrioritizedAry);
+	
+		return new InvocationCacheValue(staticValidAndDescPrioritizedAry,
+				needInvokeValidityMethod, needInvokePriorityMethod);
 	}
 
 	/**
@@ -189,16 +152,16 @@ public class CachedImplementeeMethodInvocationFactory
 	 * 
 	 * @param implementation
 	 * @param implementInfo
-	 * @param implementeeMethodParams
-	 * @param implementeeMethodParamTypes
+	 * @param invocationParams
+	 * @param invocationParamTypes
 	 * @param validAndDescPrioritizeds
 	 * @param implementorBeanFactory
 	 * @return
 	 */
 	protected ImplementeeMethodInvocation createBySelectingFromValidAndDescPrioritizeds(
 			Implementation<?> implementation, ImplementInfo implementInfo,
-			Object[] implementeeMethodParams,
-			Class<?>[] implementeeMethodParamTypes,
+			Object[] invocationParams,
+			Class<?>[] invocationParamTypes,
 			ImplementMethodInfo[] validAndDescPrioritizeds,
 			ImplementorBeanFactory implementorBeanFactory)
 	{
@@ -226,60 +189,96 @@ public class CachedImplementeeMethodInvocationFactory
 		Object finalBean = getRandomElement(finalBeans);
 
 		return new SimpleImplementeeMethodInvocation(implementation,
-				implementInfo, implementeeMethodParams, finalMethodInfo,
+				implementInfo, invocationParams, finalMethodInfo,
 				finalBean);
 	}
 
 	/**
-	 * Evaluate {@linkplain CacheValue}.
+	 * Create {@linkplain ImplementeeMethodInvocation} by evaluating from valid
+	 * and descendent prioritized {@linkplain ImplementMethodInfo} array.
 	 * 
 	 * @param implementation
 	 * @param implementInfo
-	 * @param implementeeMethodParamTypes
+	 * @param invocationParams
+	 * @param invocationParamTypes
+	 * @param validAndDescPrioritizeds
+	 * @param implementorBeanFactory
 	 * @return
+	 * @throws Throwable
 	 */
-	protected CacheValue evalCacheValue(Implementation<?> implementation,
-			ImplementInfo implementInfo,
-			Class<?>[] implementeeMethodParamTypes)
+	protected ImplementeeMethodInvocation createByEvalingFromValidAndDescPrioritizeds(
+			Implementation<?> implementation, ImplementInfo implementInfo,
+			Object[] invocationParams,
+			Class<?>[] invocationParamTypes,
+			ImplementMethodInfo[] validAndDescPrioritizeds,
+			ImplementorBeanFactory implementorBeanFactory) throws Throwable
 	{
-		List<ImplementMethodInfo> staticValidAndDescPrioritizeds = new ArrayList<ImplementMethodInfo>();
-		boolean needInvokeValidityMethod = false;
-		boolean needInvokePriorityMethod = false;
-
-		if(implementInfo.hasImplementMethodInfo())
+		ImplementMethodInfo implementMethodInfo = null;
+		Object implementorBean = null;
+		int priority = Integer.MIN_VALUE;
+	
+		for (ImplementMethodInfo myImplementMethodInfo : validAndDescPrioritizeds)
 		{
-			ImplementMethodInfo[] implementMethodInfos = implementInfo
-					.getImplementMethodInfos();
-			
-			for (ImplementMethodInfo implementMethodInfo : implementMethodInfos)
+			Collection<?> implementorBeans = implementorBeanFactory
+					.getImplementorBeans(
+							myImplementMethodInfo.getImplementor());
+	
+			if (implementorBeans == null || implementorBeans.isEmpty())
+				continue;
+	
+			Method validityMethod = myImplementMethodInfo.getValidityMethod();
+			Object[] validityMethodParams = myImplementMethodInfo
+					.getValidityParams(invocationParams);
+			Method priorityMethod = myImplementMethodInfo.getPriorityMethod();
+			Object[] priorityMethodParams = myImplementMethodInfo
+					.getPriorityParams(invocationParams);
+	
+			for (Object myImplementorBean : implementorBeans)
 			{
-				// ignore parameter type not valid
-				if (!isImplementMethodParamTypeValid(implementation,
-						implementInfo, implementMethodInfo,
-						implementeeMethodParamTypes))
-					continue;
-
-				if (!needInvokeValidityMethod
-						&& implementMethodInfo.hasValidityMethod())
-					needInvokeValidityMethod = true;
-
-				if (!needInvokePriorityMethod
-						&& implementMethodInfo.hasPriorityMethod())
-					needInvokePriorityMethod = true;
-
-				staticValidAndDescPrioritizeds.add(implementMethodInfo);
+				if (validityMethod != null)
+				{
+					boolean isValid = invokeValidityMethod(implementation,
+							implementInfo, myImplementMethodInfo,
+							validityMethod, validityMethodParams,
+							myImplementorBean);
+	
+					if (!isValid)
+						continue;
+				}
+	
+				int myPriority = myImplementMethodInfo.getPriorityValue();
+	
+				if (priorityMethod != null)
+				{
+					myPriority = invokePriorityMethod(implementation,
+							implementInfo, myImplementMethodInfo,
+							myImplementMethodInfo.getPriorityMethod(),
+							priorityMethodParams, myImplementorBean);
+				}
+	
+				boolean replace = false;
+	
+				if (implementMethodInfo == null)
+					replace = true;
+				else
+				{
+					replace = (myPriority > priority);
+				}
+	
+				if (replace)
+				{
+					implementMethodInfo = myImplementMethodInfo;
+					implementorBean = myImplementorBean;
+					priority = myPriority;
+				}
 			}
 		}
-		
-		ImplementMethodInfo[] staticValidAndDescPrioritizedAry = staticValidAndDescPrioritizeds.toArray(
-				new ImplementMethodInfo[staticValidAndDescPrioritizeds.size()]);
-
-		// sort by static priority
-		sortByStaticPriority(implementation, implementInfo,
-				implementeeMethodParamTypes, staticValidAndDescPrioritizedAry);
-
-		return new CacheValue(staticValidAndDescPrioritizedAry,
-				needInvokeValidityMethod, needInvokePriorityMethod);
+	
+		return (implementMethodInfo == null ? null
+				: new SimpleImplementeeMethodInvocation(implementation,
+						implementInfo,
+						invocationParams,
+						implementMethodInfo, implementorBean));
 	}
 
 	/**
@@ -287,17 +286,17 @@ public class CachedImplementeeMethodInvocationFactory
 	 * 
 	 * @param implementation
 	 * @param implementInfo
-	 * @param implementeeMethodParamTypes
+	 * @param invocationParamTypes
 	 * @param implementMethodInfos
 	 */
 	protected void sortByStaticPriority(Implementation<?> implementation,
 			ImplementInfo implementInfo,
-			Class<?>[] implementeeMethodParamTypes,
+			Class<?>[] invocationParamTypes,
 			ImplementMethodInfo[] implementMethodInfos)
 	{
 		Arrays.sort(implementMethodInfos,
 				new StaticPriorityComparator(implementation,
-						implementInfo, implementeeMethodParamTypes));
+						implementInfo, invocationParamTypes));
 	}
 
 	/**
@@ -320,14 +319,14 @@ public class CachedImplementeeMethodInvocationFactory
 		return null;
 	}
 
-	protected CacheValue getCachedStaticValidAndDescPrioritizeds(
-			CacheKey cacheKey)
+	protected InvocationCacheValue getCachedStaticValidAndDescPrioritizeds(
+			InvocationCacheKey cacheKey)
 	{
 		return this.cachedStaticValidAndDescPrioritizeds.get(cacheKey);
 	}
 
 	protected void cacheStaticValidAndDescPrioritizeds(
-			CacheKey cacheKey, CacheValue cacheValue)
+			InvocationCacheKey cacheKey, InvocationCacheValue cacheValue)
 	{
 		this.cachedStaticValidAndDescPrioritizeds.put(cacheKey, cacheValue);
 	}
@@ -339,21 +338,21 @@ public class CachedImplementeeMethodInvocationFactory
 	 * @date 2016-12-6
 	 *
 	 */
-	protected class StaticPriorityComparator
+	private class StaticPriorityComparator
 			implements Comparator<ImplementMethodInfo>
 	{
 		private Implementation<?> implementation;
 		private ImplementInfo implementInfo;
-		private Class<?>[] implementeeMethodParamTypes;
+		private Class<?>[] invocationParamTypes;
 
 		public StaticPriorityComparator(Implementation<?> implementation,
 				ImplementInfo implementInfo,
-				Class<?>[] implementeeMethodParamTypes)
+				Class<?>[] invocationParamTypes)
 		{
 			super();
 			this.implementation = implementation;
 			this.implementInfo = implementInfo;
-			this.implementeeMethodParamTypes = implementeeMethodParamTypes;
+			this.invocationParamTypes = invocationParamTypes;
 		}
 
 		@Override
@@ -365,7 +364,7 @@ public class CachedImplementeeMethodInvocationFactory
 			{
 				re = compareImplementMethodInfoPriority(this.implementation,
 						this.implementInfo,
-						this.implementeeMethodParamTypes,
+						this.invocationParamTypes,
 						a, b);
 			}
 
@@ -374,62 +373,100 @@ public class CachedImplementeeMethodInvocationFactory
 	}
 
 	/**
-	 * Cache key.
+	 * Invocation cache key.
+	 * <p>
+	 * It encapsulates the static input info of an <i>implementee method</i>
+	 * invocation and be used as the cache key.
+	 * </p>
 	 * 
 	 * @author earthangry@gmail.com
 	 * @date 2016-12-6
 	 *
 	 */
-	protected static class CacheKey
+	protected static class InvocationCacheKey
 	{
+		/** the Implementation of the invocation */
 		private Implementation<?> implementation;
-		private ImplementInfo implementInfo;
-		private Class<?>[] implementeeMethodParamTypes;
 
-		public CacheKey()
+		/** the ImplementInfo of the invocation */
+		private ImplementInfo implementInfo;
+
+		/** the invocation parameter types */
+		private Class<?>[] invocationParamTypes;
+
+		public InvocationCacheKey()
 		{
 			super();
 		}
 
-		public CacheKey(Implementation<?> implementation,
+		public InvocationCacheKey(Implementation<?> implementation,
 				ImplementInfo implementInfo,
-				Class<?>[] implementeeMethodParamTypes)
+				Class<?>[] invocationParamTypes)
 		{
 			super();
 			this.implementation = implementation;
 			this.implementInfo = implementInfo;
-			this.implementeeMethodParamTypes = implementeeMethodParamTypes;
+			this.invocationParamTypes = invocationParamTypes;
 		}
 
+		/**
+		 * Get the Implementation of the invocation.
+		 * 
+		 * @return
+		 */
 		public Implementation<?> getImplementation()
 		{
 			return implementation;
 		}
 
+		/**
+		 * Set the Implementation of the invocation.
+		 * 
+		 * @param implementation
+		 */
 		public void setImplementation(Implementation<?> implementation)
 		{
 			this.implementation = implementation;
 		}
 
+		/**
+		 * Get the ImplementInfo of the invocation.
+		 * 
+		 * @return
+		 */
 		public ImplementInfo getImplementInfo()
 		{
 			return implementInfo;
 		}
 
+		/**
+		 * Set the ImplementInfo of the invocation.
+		 * 
+		 * @param implementInfo
+		 */
 		public void setImplementInfo(ImplementInfo implementInfo)
 		{
 			this.implementInfo = implementInfo;
 		}
 
-		public Class<?>[] getImplementeeMethodParamTypes()
+		/**
+		 * Get the invocation parameter types.
+		 * 
+		 * @return
+		 */
+		public Class<?>[] getInvocationParamTypes()
 		{
-			return implementeeMethodParamTypes;
+			return invocationParamTypes;
 		}
 
-		public void setImplementeeMethodParamTypes(
-				Class<?>[] implementeeMethodParamTypes)
+		/**
+		 * Set the invocation parameter types.
+		 * 
+		 * @param invocationParamTypes
+		 */
+		public void setInvocationParamTypes(Class<?>[] invocationParamTypes)
 		{
-			this.implementeeMethodParamTypes = implementeeMethodParamTypes;
+			this.invocationParamTypes = invocationParamTypes;
 		}
 
 		@Override
@@ -442,7 +479,7 @@ public class CachedImplementeeMethodInvocationFactory
 			result = prime * result + ((implementation == null) ? 0
 					: implementation.hashCode());
 			result = prime * result
-					+ Arrays.hashCode(implementeeMethodParamTypes);
+					+ Arrays.hashCode(invocationParamTypes);
 			return result;
 		}
 
@@ -455,7 +492,7 @@ public class CachedImplementeeMethodInvocationFactory
 				return false;
 			if (getClass() != obj.getClass())
 				return false;
-			CacheKey other = (CacheKey) obj;
+			InvocationCacheKey other = (InvocationCacheKey) obj;
 			if (implementInfo == null)
 			{
 				if (other.implementInfo != null)
@@ -470,75 +507,146 @@ public class CachedImplementeeMethodInvocationFactory
 			}
 			else if (!implementation.equals(other.implementation))
 				return false;
-			if (!Arrays.equals(implementeeMethodParamTypes,
-					other.implementeeMethodParamTypes))
+			if (!Arrays.equals(invocationParamTypes,
+					other.invocationParamTypes))
 				return false;
 			return true;
 		}
 	}
 
 	/**
-	 * Cache value.
+	 * Invocation cache value.
+	 * <p>
+	 * It encapsulates the static process info of an <i>implementee method</i>
+	 * invocation and be used as the cache value.
+	 * </p>
+	 * <p>
+	 * Each element in
+	 * {@linkplain InvocationCacheValue#getStaticValidAndDescPrioritizeds()} 's
+	 * {@linkplain ImplementMethodInfo#getImplementMethod()} parameter types are
+	 * valid to corresponding
+	 * {@linkplain InvocationCacheKey#getInvocationParamTypes()}.
+	 * </p>
+	 * <p>
+	 * The preceding element in
+	 * {@linkplain InvocationCacheValue#getStaticValidAndDescPrioritizeds()} 's
+	 * static priority is higher than subsequent element to corresponding
+	 * {@linkplain InvocationCacheKey#getInvocationParamTypes()} (eg.
+	 * {@linkplain ImplementMethodInfo#getPriorityValue()} is higher or
+	 * {@linkplain ImplementMethodInfo#getImplementMethod()} parameter types are
+	 * closer).
+	 * </p>
 	 * 
 	 * @author earthangry@gmail.com
 	 * @date 2016-12-6
 	 *
 	 */
-	protected static class CacheValue
+	protected static class InvocationCacheValue
 	{
+		/** the static valid and descendent prioritized ImplementMethodInfo */
 		private ImplementMethodInfo[] staticValidAndDescPrioritizeds;
 
-		private boolean needInvokeValidityMethod;
+		/**
+		 * if validity method presents in any of above
+		 * staticValidAndDescPrioritizeds
+		 */
+		private boolean validityMethodPresents;
 
-		private boolean needInvokePriorityMethod;
+		/**
+		 * if priority method presents in any of above
+		 * staticValidAndDescPrioritizeds
+		 */
+		private boolean priorityMethodPresents;
 
-		public CacheValue()
+		public InvocationCacheValue()
 		{
 			super();
 		}
 
-		public CacheValue(
+		public InvocationCacheValue(
 				ImplementMethodInfo[] staticValidAndDescPrioritizeds,
-				boolean needInvokeValidityMethod,
-				boolean needInvokePriorityMethod)
+				boolean validityMethodPresents,
+				boolean priorityMethodPresents)
 		{
 			super();
 			this.staticValidAndDescPrioritizeds = staticValidAndDescPrioritizeds;
-			this.needInvokeValidityMethod = needInvokeValidityMethod;
-			this.needInvokePriorityMethod = needInvokePriorityMethod;
+			this.validityMethodPresents = validityMethodPresents;
+			this.priorityMethodPresents = priorityMethodPresents;
 		}
 
+		/**
+		 * Get the static valid and descendent prioritized
+		 * {@linkplain ImplementMethodInfo}s.
+		 * 
+		 * @return
+		 */
 		public ImplementMethodInfo[] getStaticValidAndDescPrioritizeds()
 		{
 			return staticValidAndDescPrioritizeds;
 		}
 
+		/**
+		 * Set the static valid and descendent prioritized
+		 * {@linkplain ImplementMethodInfo}s.
+		 * 
+		 * @param staticValidAndDescPrioritizeds
+		 */
 		public void setStaticValidAndDescPrioritizeds(
 				ImplementMethodInfo[] staticValidAndDescPrioritizeds)
 		{
 			this.staticValidAndDescPrioritizeds = staticValidAndDescPrioritizeds;
 		}
 
-		public boolean isNeedInvokeValidityMethod()
+		/**
+		 * Returns if validity method presents in any of the
+		 * {@linkplain #getStaticValidAndDescPrioritizeds()}.
+		 * <p>
+		 * If {@code true}, validity should be checked again for every
+		 * invocation.
+		 * </p>
+		 * 
+		 * @return
+		 */
+		public boolean isValidityMethodPresents()
 		{
-			return needInvokeValidityMethod;
+			return validityMethodPresents;
 		}
 
-		public void setNeedInvokeValidityMethod(
-				boolean needInvokeValidityMethod)
+		/**
+		 * Set if validity method presents in any of the
+		 * {@linkplain #getStaticValidAndDescPrioritizeds()}.
+		 * 
+		 * @param validityMethodPresents
+		 */
+		public void setValidityMethodPresents(boolean validityMethodPresents)
 		{
-			this.needInvokeValidityMethod = needInvokeValidityMethod;
+			this.validityMethodPresents = validityMethodPresents;
 		}
 
-		public boolean isNeedInvokePriorityMethod()
+		/**
+		 * Returns if priority method presents in any of the
+		 * {@linkplain #getStaticValidAndDescPrioritizeds()}.
+		 * <p>
+		 * If {@code true}, priority should be checked again for every
+		 * invocation.
+		 * </p>
+		 * 
+		 * @return
+		 */
+		public boolean isPriorityMethodPresents()
 		{
-			return needInvokePriorityMethod;
+			return priorityMethodPresents;
 		}
 
-		public void setNeedInvokePriorityMethod(
-				boolean needInvokePriorityMethod)
+		/**
+		 * Set if priority method presents in any of the
+		 * {@linkplain #getStaticValidAndDescPrioritizeds()}.
+		 * 
+		 * @param priorityMethodPresents
+		 */
+		public void setPriorityMethodPresents(boolean priorityMethodPresents)
 		{
-			this.needInvokePriorityMethod = needInvokePriorityMethod;
+			this.priorityMethodPresents = priorityMethodPresents;
 		}
 	}
 }

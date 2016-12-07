@@ -191,17 +191,17 @@ public class ImplementMethodInfo implements Serializable
 
 	/**
 	 * Get the parameter array of this <i>implement method</i> for given
-	 * <i>implementee method</i> parameter array.
+	 * <i>implementee method</i> invocation parameters.
 	 * 
-	 * @param implementeeMethodParams
-	 *            The <i>implementee method</i> parameter array.
+	 * @param invocationParams
+	 *            The <i>implementee method</i> invocation parameters.
 	 * @return An parameter array for this <i>implement method</i> invocation,
 	 *         {@code 0} length if this <i>implement method</i> has no
 	 *         parameter.
 	 */
-	public Object[] getParams(Object[] implementeeMethodParams)
+	public Object[] getParams(Object[] invocationParams)
 	{
-		return copyArrayByIndex(implementeeMethodParams, this.paramIndexes);
+		return copyArrayByIndex(invocationParams, this.paramIndexes);
 	}
 
 	/**
@@ -258,17 +258,17 @@ public class ImplementMethodInfo implements Serializable
 
 	/**
 	 * Get the parameter array of the validity method for given <i>implementee
-	 * method</i> parameter array.
+	 * method</i> invocation parameters.
 	 * 
-	 * @param implementeeMethodParams
-	 *            The <i>implementee method</i> parameter array.
+	 * @param invocationParams
+	 *            The <i>implementee method</i> invocation parameters.
 	 * @return An parameter array for the validity method invocation, {@code 0}
 	 *         length if {@linkplain #getValidityParamIndexes()} is {@code null}
 	 *         .
 	 */
-	public Object[] getValidityParams(Object[] implementeeMethodParams)
+	public Object[] getValidityParams(Object[] invocationParams)
 	{
-		return copyArrayByIndex(implementeeMethodParams,
+		return copyArrayByIndex(invocationParams,
 				this.validityParamIndexes);
 	}
 
@@ -346,17 +346,17 @@ public class ImplementMethodInfo implements Serializable
 
 	/**
 	 * Get the parameter array of the priority method for given <i>implementee
-	 * method</i> parameter array.
+	 * method</i> invocation parameters.
 	 * 
-	 * @param implementeeMethodParams
-	 *            The <i>implementee method</i> parameter array.
+	 * @param invocationParams
+	 *            The <i>implementee method</i> invocation parameters.
 	 * @return An parameter array for the priority method invocation, {@code 0}
 	 *         length if {@linkplain #getPriorityParamIndexes()} is {@code null}
 	 *         .
 	 */
-	public Object[] getPriorityParams(Object[] implementeeMethodParams)
+	public Object[] getPriorityParams(Object[] invocationParams)
 	{
-		return this.copyArrayByIndex(implementeeMethodParams,
+		return this.copyArrayByIndex(invocationParams,
 				this.priorityParamIndexes);
 	}
 
