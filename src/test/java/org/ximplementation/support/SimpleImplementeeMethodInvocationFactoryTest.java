@@ -62,7 +62,7 @@ public class SimpleImplementeeMethodInvocationFactoryTest
 	@Test
 	public void getTest() throws Throwable
 	{
-		// isImplementMethodParamValid(...) = false
+		// !isImplementMethodParamTypeValid(...)
 		{
 			Class<?> implementee = GetTest.Implementee.class;
 			Method implementeeMethod = getMethodByName(implementee, "plus");

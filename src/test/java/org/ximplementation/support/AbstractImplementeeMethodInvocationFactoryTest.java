@@ -396,7 +396,38 @@ public class AbstractImplementeeMethodInvocationFactoryTest
 				IsImplementMethodParamValidTest.Implementor1.class,
 				IsImplementMethodParamValidTest.Implementor2.class);
 
-		// implementMethodInfo.getParamTypes() = null
+		// Class<?>[] myParamTypes = getActualImplementMethodParamTypes
+		{
+			Implementation<?> myImplementation = this.implementationResolver
+					.resolve(IsImplementMethodParamValidTest.GImplementee.class,
+							IsImplementMethodParamValidTest.GImplementor.class);
+
+			Method myImplementeeMethod = getMethodByName(
+					IsImplementMethodParamValidTest.GImplementee.class,
+					"handle");
+
+			ImplementInfo myImplementInfo = myImplementation
+					.getImplementInfo(myImplementeeMethod);
+
+			ImplementMethodInfo implementMethodInfo = myImplementInfo
+					.getImplementMethodInfo(
+							IsImplementMethodParamValidTest.GImplementor.class,
+							getMethodByName(
+									IsImplementMethodParamValidTest.GImplementor.class,
+									"handle"));
+
+			assertTrue(this.mockAbstractImplementeeMethodInvocationFactory
+					.isImplementMethodParamTypeValid(myImplementation,
+							myImplementInfo, implementMethodInfo,
+							new Class<?>[] { Integer.class }));
+
+			assertFalse(this.mockAbstractImplementeeMethodInvocationFactory
+					.isImplementMethodParamTypeValid(myImplementation,
+							myImplementInfo, implementMethodInfo,
+							new Class<?>[] { Double.class }));
+		}
+
+		// myParamTypes == null
 		{
 			ImplementInfo implementInfo = implementation
 					.getImplementInfo(implementeeMethod);
@@ -417,7 +448,7 @@ public class AbstractImplementeeMethodInvocationFactoryTest
 							new Class<?>[] { Integer.class, Integer.class }));
 		}
 
-		// implementMethodInfo.getParamTypes().length = 0
+		// myParamTypes.length == 0
 		{
 			ImplementInfo implementInfo = implementation
 					.getImplementInfo(implementeeMethod);
@@ -435,8 +466,7 @@ public class AbstractImplementeeMethodInvocationFactoryTest
 							new Class<?>[] { Integer.class, Integer.class }));
 		}
 
-		// implementMethodInfo.getParamTypes().length >
-		// invocationParams.length
+		// myParamTypes.length > invocationParamTypes.length
 		{
 			ImplementInfo implementInfo = implementation
 					.getImplementInfo(implementeeMethod);
@@ -454,7 +484,26 @@ public class AbstractImplementeeMethodInvocationFactoryTest
 							new Class<?>[] { Integer.class }));
 		}
 
-		// !myParamTypes[i].isInstance(myParams[i])
+		// myInvocationParamType == null
+		// myParamType.isPrimitive()
+		{
+			ImplementInfo implementInfo = implementation
+					.getImplementInfo(implementeeMethod);
+
+			ImplementMethodInfo implementMethodInfo = implementInfo
+					.getImplementMethodInfo(
+							IsImplementMethodParamValidTest.Implementor2.class,
+							getMethodByName(
+							IsImplementMethodParamValidTest.Implementor2.class,
+							"plus"));
+
+			assertFalse(this.mockAbstractImplementeeMethodInvocationFactory
+					.isImplementMethodParamTypeValid(implementation,
+							implementInfo, implementMethodInfo,
+							new Class<?>[] { Integer.class, null }));
+		}
+
+		// !toWrapperType(myParamType).isAssignableFrom(toWrapperType(myInvocationParamType))
 		{
 			ImplementInfo implementInfo = implementation
 					.getImplementInfo(implementeeMethod);
@@ -472,6 +521,7 @@ public class AbstractImplementeeMethodInvocationFactoryTest
 							new Class<?>[] { Integer.class, Double.class }));
 		}
 
+		// ok
 		{
 			ImplementInfo implementInfo = implementation
 					.getImplementInfo(implementeeMethod);
@@ -489,7 +539,7 @@ public class AbstractImplementeeMethodInvocationFactoryTest
 							new Class<?>[] { Integer.class, Integer.class }));
 		}
 
-		// primitive parameter types
+		// ok, primitive parameter types
 		{
 			ImplementInfo implementInfo = implementation
 					.getImplementInfo(implementeeMethod);
@@ -498,62 +548,13 @@ public class AbstractImplementeeMethodInvocationFactoryTest
 					.getImplementMethodInfo(
 							IsImplementMethodParamValidTest.Implementor2.class,
 							getMethodByName(
-							IsImplementMethodParamValidTest.Implementor2.class,
-							"plus"));
+									IsImplementMethodParamValidTest.Implementor2.class,
+									"plus"));
 
 			assertTrue(this.mockAbstractImplementeeMethodInvocationFactory
 					.isImplementMethodParamTypeValid(implementation,
 							implementInfo, implementMethodInfo,
 							new Class<?>[] { Integer.class, Integer.class }));
-		}
-
-		// primitive parameter types and null params
-		{
-			ImplementInfo implementInfo = implementation
-					.getImplementInfo(implementeeMethod);
-
-			ImplementMethodInfo implementMethodInfo = implementInfo
-					.getImplementMethodInfo(
-							IsImplementMethodParamValidTest.Implementor2.class,
-							getMethodByName(
-							IsImplementMethodParamValidTest.Implementor2.class,
-							"plus"));
-
-			assertFalse(this.mockAbstractImplementeeMethodInvocationFactory
-					.isImplementMethodParamTypeValid(implementation,
-							implementInfo, implementMethodInfo,
-							new Class<?>[] { null, Integer.class }));
-		}
-
-		// generic method in super class
-		{
-			Implementation<?> myImplementation = this.implementationResolver
-					.resolve(IsImplementMethodParamValidTest.GImplementee.class,
-							IsImplementMethodParamValidTest.GImplementor.class);
-
-			Method myImplementeeMethod = getMethodByName(
-					IsImplementMethodParamValidTest.GImplementee.class,
-					"handle");
-
-			ImplementInfo myImplementInfo = myImplementation
-					.getImplementInfo(myImplementeeMethod);
-
-			ImplementMethodInfo implementMethodInfo = myImplementInfo
-					.getImplementMethodInfo(
-							IsImplementMethodParamValidTest.GImplementor.class,
-							getMethodByName(
-							IsImplementMethodParamValidTest.GImplementor.class,
-							"handle"));
-
-			assertTrue(this.mockAbstractImplementeeMethodInvocationFactory
-					.isImplementMethodParamTypeValid(myImplementation,
-							myImplementInfo, implementMethodInfo,
-							new Class<?>[] { Integer.class }));
-
-			assertFalse(this.mockAbstractImplementeeMethodInvocationFactory
-					.isImplementMethodParamTypeValid(myImplementation,
-							myImplementInfo, implementMethodInfo,
-							new Class<?>[] { Double.class }));
 		}
 	}
 
