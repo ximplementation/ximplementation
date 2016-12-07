@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>
  * The <i>implement method</i> evaluating rule is the same as
  * {@linkplain SimpleImplementeeMethodInvocationFactory} except caching some
- * static process info for performance (eg. <i>implementor method</i> parameter
+ * static process info for performance (eg. <i>implement method</i> parameter
  * type validity checking and priority evaluation).
  * 
  * @author earthangry@gmail.com
@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CachedImplementeeMethodInvocationFactory
 		extends AbstractImplementeeMethodInvocationFactory
 {
-	private ConcurrentHashMap<InvocationCacheKey, InvocationCacheValue> cachedStaticValidAndDescPrioritizeds = new ConcurrentHashMap<InvocationCacheKey, InvocationCacheValue>();
+	private ConcurrentHashMap<StaticInvocationInputInfo, StaticInvocationProcessInfo> cachedStaticValidAndDescPrioritizeds = new ConcurrentHashMap<StaticInvocationInputInfo, StaticInvocationProcessInfo>();
 
 	public CachedImplementeeMethodInvocationFactory()
 	{
@@ -58,9 +58,9 @@ public class CachedImplementeeMethodInvocationFactory
 	
 		Class<?>[] invocationParamTypes = extractTypes(invocationParams);
 
-		InvocationCacheKey invocationCacheKey = new InvocationCacheKey(implementation, implementInfo,
+		StaticInvocationInputInfo invocationCacheKey = new StaticInvocationInputInfo(implementation, implementInfo,
 				invocationParamTypes);
-		InvocationCacheValue invocationCacheValue = getCachedStaticValidAndDescPrioritizeds(
+		StaticInvocationProcessInfo invocationCacheValue = getCachedStaticValidAndDescPrioritizeds(
 				invocationCacheKey);
 
 		if (invocationCacheValue == null)
@@ -95,14 +95,14 @@ public class CachedImplementeeMethodInvocationFactory
 	}
 
 	/**
-	 * Evaluate {@linkplain InvocationCacheValue}.
+	 * Evaluate {@linkplain StaticInvocationProcessInfo}.
 	 * 
 	 * @param implementation
 	 * @param implementInfo
 	 * @param invocationParamTypes
 	 * @return
 	 */
-	protected InvocationCacheValue evalInvocationCacheValue(Implementation<?> implementation,
+	protected StaticInvocationProcessInfo evalInvocationCacheValue(Implementation<?> implementation,
 			ImplementInfo implementInfo,
 			Class<?>[] invocationParamTypes)
 	{
@@ -142,7 +142,7 @@ public class CachedImplementeeMethodInvocationFactory
 		sortByStaticPriority(implementation, implementInfo,
 				invocationParamTypes, staticValidAndDescPrioritizedAry);
 	
-		return new InvocationCacheValue(staticValidAndDescPrioritizedAry,
+		return new StaticInvocationProcessInfo(staticValidAndDescPrioritizedAry,
 				validityMethodPresents, priorityMethodPresents);
 	}
 
@@ -319,16 +319,30 @@ public class CachedImplementeeMethodInvocationFactory
 		return null;
 	}
 
-	protected InvocationCacheValue getCachedStaticValidAndDescPrioritizeds(
-			InvocationCacheKey cacheKey)
+	/**
+	 * Get cached {@linkplain StaticInvocationProcessInfo} for given
+	 * {@linkplain StaticInvocationInputInfo}, {@code null} if none.
+	 * 
+	 * @param key
+	 * @return
+	 */
+	protected StaticInvocationProcessInfo getCachedStaticValidAndDescPrioritizeds(
+			StaticInvocationInputInfo key)
 	{
-		return this.cachedStaticValidAndDescPrioritizeds.get(cacheKey);
+		return this.cachedStaticValidAndDescPrioritizeds.get(key);
 	}
 
+	/**
+	 * Cache {@linkplain StaticInvocationProcessInfo} with
+	 * {@linkplain StaticInvocationInputInfo} as key.
+	 * 
+	 * @param key
+	 * @param value
+	 */
 	protected void cacheStaticValidAndDescPrioritizeds(
-			InvocationCacheKey cacheKey, InvocationCacheValue cacheValue)
+			StaticInvocationInputInfo key, StaticInvocationProcessInfo value)
 	{
-		this.cachedStaticValidAndDescPrioritizeds.put(cacheKey, cacheValue);
+		this.cachedStaticValidAndDescPrioritizeds.put(key, value);
 	}
 
 	/**
@@ -373,17 +387,18 @@ public class CachedImplementeeMethodInvocationFactory
 	}
 
 	/**
-	 * Invocation cache key.
+	 * Static invocation input info.
 	 * <p>
 	 * It encapsulates the static input info of an <i>implementee method</i>
-	 * invocation and be used as the cache key.
+	 * invocation and is used with {@linkplain StaticInvocationProcessInfo} as a
+	 * pair for caching static info of an <i>implementee method</i> invocation.
 	 * </p>
 	 * 
 	 * @author earthangry@gmail.com
 	 * @date 2016-12-6
 	 *
 	 */
-	protected static class InvocationCacheKey
+	protected static class StaticInvocationInputInfo
 	{
 		/** the Implementation of the invocation */
 		private Implementation<?> implementation;
@@ -394,12 +409,12 @@ public class CachedImplementeeMethodInvocationFactory
 		/** the invocation parameter types */
 		private Class<?>[] invocationParamTypes;
 
-		public InvocationCacheKey()
+		public StaticInvocationInputInfo()
 		{
 			super();
 		}
 
-		public InvocationCacheKey(Implementation<?> implementation,
+		public StaticInvocationInputInfo(Implementation<?> implementation,
 				ImplementInfo implementInfo,
 				Class<?>[] invocationParamTypes)
 		{
@@ -450,7 +465,7 @@ public class CachedImplementeeMethodInvocationFactory
 		}
 
 		/**
-		 * Get the invocation parameter types.
+		 * Get the <i>implementee method</i> invocation parameter types.
 		 * 
 		 * @return
 		 */
@@ -460,7 +475,7 @@ public class CachedImplementeeMethodInvocationFactory
 		}
 
 		/**
-		 * Set the invocation parameter types.
+		 * Set the <i>implementee method</i> invocation parameter types.
 		 * 
 		 * @param invocationParamTypes
 		 */
@@ -492,7 +507,7 @@ public class CachedImplementeeMethodInvocationFactory
 				return false;
 			if (getClass() != obj.getClass())
 				return false;
-			InvocationCacheKey other = (InvocationCacheKey) obj;
+			StaticInvocationInputInfo other = (StaticInvocationInputInfo) obj;
 			if (implementInfo == null)
 			{
 				if (other.implementInfo != null)
@@ -515,23 +530,23 @@ public class CachedImplementeeMethodInvocationFactory
 	}
 
 	/**
-	 * Invocation cache value.
+	 * Static invocation process info.
 	 * <p>
 	 * It encapsulates the static process info of an <i>implementee method</i>
-	 * invocation and be used as the cache value.
+	 * invocation and is used with {@linkplain StaticInvocationInputInfo} as a
+	 * pair for caching static info of an <i>implementee method</i> invocation.
 	 * </p>
 	 * <p>
-	 * Each element in
-	 * {@linkplain InvocationCacheValue#getStaticValidAndDescPrioritizeds()} 's
+	 * Each element in {@linkplain #getStaticValidAndDescPrioritizeds()} 's
 	 * {@linkplain ImplementMethodInfo#getImplementMethod()} parameter types are
-	 * valid to corresponding
-	 * {@linkplain InvocationCacheKey#getInvocationParamTypes()}.
+	 * valid to the corresponding
+	 * {@linkplain StaticInvocationInputInfo#getInvocationParamTypes()}.
 	 * </p>
 	 * <p>
 	 * The preceding element in
-	 * {@linkplain InvocationCacheValue#getStaticValidAndDescPrioritizeds()} 's
-	 * static priority is higher than subsequent element to corresponding
-	 * {@linkplain InvocationCacheKey#getInvocationParamTypes()} (eg.
+	 * {@linkplain #getStaticValidAndDescPrioritizeds()} 's static priority is
+	 * higher than subsequent element to the corresponding
+	 * {@linkplain StaticInvocationInputInfo#getInvocationParamTypes()} (eg.
 	 * {@linkplain ImplementMethodInfo#getPriorityValue()} is higher or
 	 * {@linkplain ImplementMethodInfo#getImplementMethod()} parameter types are
 	 * closer).
@@ -541,7 +556,7 @@ public class CachedImplementeeMethodInvocationFactory
 	 * @date 2016-12-6
 	 *
 	 */
-	protected static class InvocationCacheValue
+	protected static class StaticInvocationProcessInfo
 	{
 		/** the static valid and descendent prioritized ImplementMethodInfo */
 		private ImplementMethodInfo[] staticValidAndDescPrioritizeds;
@@ -558,12 +573,12 @@ public class CachedImplementeeMethodInvocationFactory
 		 */
 		private boolean priorityMethodPresents;
 
-		public InvocationCacheValue()
+		public StaticInvocationProcessInfo()
 		{
 			super();
 		}
 
-		public InvocationCacheValue(
+		public StaticInvocationProcessInfo(
 				ImplementMethodInfo[] staticValidAndDescPrioritizeds,
 				boolean validityMethodPresents,
 				boolean priorityMethodPresents)
