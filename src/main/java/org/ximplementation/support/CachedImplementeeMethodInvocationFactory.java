@@ -65,7 +65,7 @@ public class CachedImplementeeMethodInvocationFactory
 
 		if (invocationCacheValue == null)
 		{
-			invocationCacheValue = evalInvocationCacheValue(implementation, implementInfo,
+			invocationCacheValue = evalStaticInvocationProcessInfo(implementation, implementInfo,
 					invocationParamTypes);
 			cacheStaticValidAndDescPrioritizeds(invocationCacheKey, invocationCacheValue);
 		}
@@ -102,7 +102,7 @@ public class CachedImplementeeMethodInvocationFactory
 	 * @param invocationParamTypes
 	 * @return
 	 */
-	protected StaticInvocationProcessInfo evalInvocationCacheValue(Implementation<?> implementation,
+	protected StaticInvocationProcessInfo evalStaticInvocationProcessInfo(Implementation<?> implementation,
 			ImplementInfo implementInfo,
 			Class<?>[] invocationParamTypes)
 	{

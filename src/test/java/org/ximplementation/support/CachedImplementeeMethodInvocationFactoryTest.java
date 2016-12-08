@@ -326,7 +326,7 @@ public class CachedImplementeeMethodInvocationFactoryTest
 	}
 
 	@Test
-	public void evalInvocationCacheValueTest() throws Throwable
+	public void evalStaticInvocationProcessInfoTest() throws Throwable
 	{
 		// !implementInfo.hasImplementMethodInfo()
 		{
@@ -338,7 +338,7 @@ public class CachedImplementeeMethodInvocationFactoryTest
 					.getImplementInfo(implementeeMethod);
 
 			StaticInvocationProcessInfo processInfo = this.cachedImplementeeMethodInvocationFactory
-					.evalInvocationCacheValue(implementation, implementInfo,
+					.evalStaticInvocationProcessInfo(implementation, implementInfo,
 							new Class<?>[] { Integer.class, Integer.class });
 
 			assertEquals(0,
@@ -359,7 +359,7 @@ public class CachedImplementeeMethodInvocationFactoryTest
 					.getImplementInfo(implementeeMethod);
 
 			StaticInvocationProcessInfo processInfo = this.cachedImplementeeMethodInvocationFactory
-					.evalInvocationCacheValue(implementation, implementInfo,
+					.evalStaticInvocationProcessInfo(implementation, implementInfo,
 							new Class<?>[] { Integer.class, Integer.class });
 			
 			assertFalse(processInfo.isValidityMethodPresents());
@@ -392,7 +392,7 @@ public class CachedImplementeeMethodInvocationFactoryTest
 					.getImplementInfo(implementeeMethod);
 
 			StaticInvocationProcessInfo processInfo = this.cachedImplementeeMethodInvocationFactory
-					.evalInvocationCacheValue(implementation, implementInfo,
+					.evalStaticInvocationProcessInfo(implementation, implementInfo,
 							new Class<?>[] { Integer.class, Integer.class });
 
 			assertTrue(processInfo.isValidityMethodPresents());
@@ -425,7 +425,7 @@ public class CachedImplementeeMethodInvocationFactoryTest
 					.getImplementInfo(implementeeMethod);
 
 			StaticInvocationProcessInfo processInfo = this.cachedImplementeeMethodInvocationFactory
-					.evalInvocationCacheValue(implementation, implementInfo,
+					.evalStaticInvocationProcessInfo(implementation, implementInfo,
 							new Class<?>[] { Integer.class, Integer.class });
 
 			assertTrue(processInfo.isValidityMethodPresents());
@@ -554,7 +554,7 @@ public class CachedImplementeeMethodInvocationFactoryTest
 					Integer.class };
 
 			StaticInvocationProcessInfo processInfo = this.cachedImplementeeMethodInvocationFactory
-					.evalInvocationCacheValue(implementation, implementInfo,
+					.evalStaticInvocationProcessInfo(implementation, implementInfo,
 							invocationParamTypes);
 			ImplementMethodInfo[] validAndDescPrioritizeds = processInfo
 					.getStaticValidAndDescPrioritizeds();
@@ -598,7 +598,7 @@ public class CachedImplementeeMethodInvocationFactoryTest
 					Integer.class };
 
 			StaticInvocationProcessInfo processInfo = this.cachedImplementeeMethodInvocationFactory
-					.evalInvocationCacheValue(implementation, implementInfo,
+					.evalStaticInvocationProcessInfo(implementation, implementInfo,
 							invocationParamTypes);
 			ImplementMethodInfo[] validAndDescPrioritizeds = processInfo
 					.getStaticValidAndDescPrioritizeds();
@@ -640,7 +640,7 @@ public class CachedImplementeeMethodInvocationFactoryTest
 					Integer.class };
 
 			StaticInvocationProcessInfo processInfo = this.cachedImplementeeMethodInvocationFactory
-					.evalInvocationCacheValue(implementation, implementInfo,
+					.evalStaticInvocationProcessInfo(implementation, implementInfo,
 							invocationParamTypes);
 			ImplementMethodInfo[] validAndDescPrioritizeds = processInfo
 					.getStaticValidAndDescPrioritizeds();
@@ -673,7 +673,7 @@ public class CachedImplementeeMethodInvocationFactoryTest
 					Integer.class };
 
 			StaticInvocationProcessInfo processInfo = this.cachedImplementeeMethodInvocationFactory
-					.evalInvocationCacheValue(implementation, implementInfo,
+					.evalStaticInvocationProcessInfo(implementation, implementInfo,
 							invocationParamTypes);
 			ImplementMethodInfo[] validAndDescPrioritizeds = processInfo
 					.getStaticValidAndDescPrioritizeds();
@@ -763,7 +763,7 @@ public class CachedImplementeeMethodInvocationFactoryTest
 					Integer.class };
 
 			StaticInvocationProcessInfo processInfo = this.cachedImplementeeMethodInvocationFactory
-					.evalInvocationCacheValue(implementation, implementInfo,
+					.evalStaticInvocationProcessInfo(implementation, implementInfo,
 							invocationParamTypes);
 			ImplementMethodInfo[] validAndDescPrioritizeds = processInfo
 					.getStaticValidAndDescPrioritizeds();
@@ -797,7 +797,7 @@ public class CachedImplementeeMethodInvocationFactoryTest
 					Integer.class };
 
 			StaticInvocationProcessInfo processInfo = this.cachedImplementeeMethodInvocationFactory
-					.evalInvocationCacheValue(implementation, implementInfo,
+					.evalStaticInvocationProcessInfo(implementation, implementInfo,
 							invocationParamTypes);
 			ImplementMethodInfo[] validAndDescPrioritizeds = processInfo
 					.getStaticValidAndDescPrioritizeds();
@@ -860,7 +860,7 @@ public class CachedImplementeeMethodInvocationFactoryTest
 					Integer.class };
 
 			StaticInvocationProcessInfo processInfo = this.cachedImplementeeMethodInvocationFactory
-					.evalInvocationCacheValue(implementation, implementInfo,
+					.evalStaticInvocationProcessInfo(implementation, implementInfo,
 							invocationParamTypes);
 			ImplementMethodInfo[] validAndDescPrioritizeds = processInfo
 					.getStaticValidAndDescPrioritizeds();
