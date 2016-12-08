@@ -16,6 +16,9 @@ package org.ximplementation.support;
 
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Method;
+import java.text.NumberFormat;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,430 +55,505 @@ public class ImplementeeMethodInvocationFactoryPerformanceTest
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
-	public void test_fewImplementors_noValidityAndPriorityMethodPresents()
+	public void test_noValidityAndPriorityMethodPresents()
 	{
-		ProxyImplementeeBeanBuilder simpleProxyImplementeeBeanBuilder = new ProxyImplementeeBeanBuilder();
-		simpleProxyImplementeeBeanBuilder.setImplementeeMethodInvocationFactory(
-				new SimpleImplementeeMethodInvocationFactory());
-
-		ProxyImplementeeBeanBuilder cachedProxyImplementeeBeanBuilder = new ProxyImplementeeBeanBuilder();
-		cachedProxyImplementeeBeanBuilder.setImplementeeMethodInvocationFactory(
-				new CachedImplementeeMethodInvocationFactory());
-
-		Implementation<Implementee> implementation = this.implementationResolver
-				.resolve(Implementee.class, Implementor0.class,
-						Implementor1.class, Implementor2.class);
-		
-		ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory
-				.valueOf(new Implementor0<Number>(), new Implementor0(),
-						new Implementor1(), new Implementor2());
-	
-		Implementee<Number> simple = simpleProxyImplementeeBeanBuilder
-				.build(implementation, implementorBeanFactory);
-		
-		long simpleTime = System.currentTimeMillis();
-		
-		for (int i = 0; i < TEST_COUNT; i++)
 		{
-			simple.compare(i, i + 1);
+			ProxyImplementeeBeanBuilder simpleProxyImplementeeBeanBuilder = new ProxyImplementeeBeanBuilder();
+			simpleProxyImplementeeBeanBuilder.setImplementeeMethodInvocationFactory(
+					new SimpleImplementeeMethodInvocationFactory());
+	
+			ProxyImplementeeBeanBuilder cachedProxyImplementeeBeanBuilder = new ProxyImplementeeBeanBuilder();
+			cachedProxyImplementeeBeanBuilder.setImplementeeMethodInvocationFactory(
+					new CachedImplementeeMethodInvocationFactory());
+	
+			Implementation<Implementee> implementation = this.implementationResolver
+					.resolve(Implementee.class, Implementor0.class,
+							Implementor1.class, Implementor2.class);
+			
+			ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory
+					.valueOf(new Implementor0<Number>(), new Implementor0(),
+							new Implementor1(), new Implementor2());
+		
+			Implementee<Number> simple = simpleProxyImplementeeBeanBuilder
+					.build(implementation, implementorBeanFactory);
+			
+			long simpleTime = System.currentTimeMillis();
+			for (int i = 0; i < TEST_COUNT; i++)
+			{
+				simple.compare(i, i + 1);
+			}
+			simpleTime = System.currentTimeMillis() - simpleTime;
+		
+			Implementee<Number> cached = cachedProxyImplementeeBeanBuilder
+					.build(implementation, implementorBeanFactory);
+		
+			long cachedTime = System.currentTimeMillis();
+			for (int i = 0; i < TEST_COUNT; i++)
+			{
+				cached.compare(i, i + 1);
+			}
+			cachedTime = System.currentTimeMillis() - cachedTime;
+			
+			Implementee<Number> raw = createRawJdkProxy();
+			
+			long rawTime = System.currentTimeMillis();
+			for (int i = 0; i < TEST_COUNT; i++)
+			{
+				raw.compare(i, i + 1);
+			}
+			rawTime = System.currentTimeMillis() - rawTime;
+		
+			System.out.println(
+					"["+ TEST_COUNT + " count] [noValidityAndPriorityMethodPresents] [fewImplementors]");
+			System.out.println("simpleTime : " + simpleTime);
+			System.out.println("cachedTime : " + cachedTime);
+			System.out.println("rawTime : " + rawTime);
+			System.out.println(
+					"cachedTime / simpleTime : "
+							+ format(cachedTime / (float) simpleTime)
+							);
+			System.out.println(
+					"simpleTime / rawTime : "
+							+ format(simpleTime / (float) rawTime)
+							);
+			System.out.println(
+					"cachedTime / rawTime : "
+							+ format(cachedTime / (float) rawTime)
+							);
+			System.out.println();
+		
+			// result is not sure for few implementors
+			// assertTrue(cachedTime < simpleTime);
 		}
-	
-		simpleTime = System.currentTimeMillis() - simpleTime;
-	
-		Implementee<Number> cached = cachedProxyImplementeeBeanBuilder
-				.build(implementation, implementorBeanFactory);
-	
-		long cachedTime = System.currentTimeMillis();
-	
-		for (int i = 0; i < TEST_COUNT; i++)
 		{
-			cached.compare(i, i + 1);
+			ProxyImplementeeBeanBuilder simpleProxyImplementeeBeanBuilder = new ProxyImplementeeBeanBuilder();
+			simpleProxyImplementeeBeanBuilder.setImplementeeMethodInvocationFactory(
+					new SimpleImplementeeMethodInvocationFactory());
+		
+			ProxyImplementeeBeanBuilder cachedProxyImplementeeBeanBuilder = new ProxyImplementeeBeanBuilder();
+			cachedProxyImplementeeBeanBuilder.setImplementeeMethodInvocationFactory(
+					new CachedImplementeeMethodInvocationFactory());
+		
+			Implementation<Implementee> implementation = this.implementationResolver
+					.resolve(Implementee.class, Implementor0.class,
+							Implementor1.class, Implementor2.class,
+							Implementor3.class, Implementor4.class,
+							Implementor5.class, Implementor6.class,
+							Implementor7.class, Implementor8.class,
+							Implementor9.class, Implementor10.class,
+							Implementor11.class, Implementor12.class,
+							Implementor13.class, Implementor14.class,
+							Implementor15.class, Implementor16.class,
+							Implementor17.class, Implementor18.class,
+							Implementor19.class, Implementor20.class,
+							Implementor21.class, Implementor22.class,
+							Implementor23.class, Implementor24.class,
+							Implementor25.class, Implementor26.class,
+							Implementor27.class, Implementor28.class,
+							Implementor29.class, Implementor30.class,
+							Implementor31.class, Implementor32.class,
+							Implementor33.class, Implementor34.class,
+							Implementor35.class, Implementor36.class,
+							Implementor37.class, Implementor38.class,
+							Implementor39.class, Implementor40.class,
+							Implementor41.class, Implementor42.class,
+							Implementor43.class, Implementor44.class,
+							Implementor45.class, Implementor46.class,
+							Implementor47.class, Implementor48.class,
+							Implementor49.class, Implementor50.class,
+							Implementor51.class, Implementor52.class,
+							Implementor53.class, Implementor54.class,
+							Implementor55.class, Implementor56.class,
+							Implementor57.class, Implementor58.class,
+							Implementor59.class, Implementor60.class,
+							Implementor61.class, Implementor62.class,
+							Implementor63.class, Implementor64.class,
+							Implementor65.class, Implementor66.class,
+							Implementor67.class, Implementor68.class,
+							Implementor69.class, Implementor70.class,
+							Implementor71.class, Implementor72.class,
+							Implementor73.class, Implementor74.class,
+							Implementor75.class, Implementor76.class,
+							Implementor77.class, Implementor78.class,
+							Implementor79.class, Implementor80.class,
+							Implementor81.class, Implementor82.class,
+							Implementor83.class, Implementor84.class,
+							Implementor85.class, Implementor86.class,
+							Implementor87.class, Implementor88.class,
+							Implementor89.class, Implementor90.class,
+							Implementor91.class, Implementor92.class,
+							Implementor93.class, Implementor94.class,
+							Implementor95.class, Implementor96.class,
+							Implementor97.class, Implementor98.class,
+							Implementor99.class);
+			
+			ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory
+					.valueOf(new Implementor0<Number>(), new Implementor0(),
+							new Implementor1(), new Implementor2(),
+							new Implementor3(), new Implementor4(),
+							new Implementor5(), new Implementor6(),
+							new Implementor7(), new Implementor8(),
+							new Implementor9(), new Implementor10(),
+							new Implementor11(), new Implementor12(),
+							new Implementor13(), new Implementor14(),
+							new Implementor15(), new Implementor16(),
+							new Implementor17(), new Implementor18(),
+							new Implementor19(), new Implementor20(),
+							new Implementor21(), new Implementor22(),
+							new Implementor23(), new Implementor24(),
+							new Implementor25(), new Implementor26(),
+							new Implementor27(), new Implementor28(),
+							new Implementor29(), new Implementor30(),
+							new Implementor31(), new Implementor32(),
+							new Implementor33(), new Implementor34(),
+							new Implementor35(), new Implementor36(),
+							new Implementor37(), new Implementor38(),
+							new Implementor39(), new Implementor40(),
+							new Implementor41(), new Implementor42(),
+							new Implementor43(), new Implementor44(),
+							new Implementor45(), new Implementor46(),
+							new Implementor47(), new Implementor48(),
+							new Implementor49(), new Implementor50(),
+							new Implementor51(), new Implementor52(),
+							new Implementor53(), new Implementor54(),
+							new Implementor55(), new Implementor56(),
+							new Implementor57(), new Implementor58(),
+							new Implementor59(), new Implementor60(),
+							new Implementor61(), new Implementor62(),
+							new Implementor63(), new Implementor64(),
+							new Implementor65(), new Implementor66(),
+							new Implementor67(), new Implementor68(),
+							new Implementor69(), new Implementor70(),
+							new Implementor71(), new Implementor72(),
+							new Implementor73(), new Implementor74(),
+							new Implementor75(), new Implementor76(),
+							new Implementor77(), new Implementor78(),
+							new Implementor79(), new Implementor80(),
+							new Implementor81(), new Implementor82(),
+							new Implementor83(), new Implementor84(),
+							new Implementor85(), new Implementor86(),
+							new Implementor87(), new Implementor88(),
+							new Implementor89(), new Implementor90(),
+							new Implementor91(), new Implementor92(),
+							new Implementor93(), new Implementor94(),
+							new Implementor95(), new Implementor96(),
+							new Implementor97(), new Implementor98(),
+							new Implementor99());
+		
+			Implementee<Number> simple = simpleProxyImplementeeBeanBuilder
+					.build(implementation, implementorBeanFactory);
+		
+			long simpleTime = System.currentTimeMillis();
+			for (int i = 0; i < TEST_COUNT; i++)
+			{
+				simple.compare(i, i + 1);
+			}
+			simpleTime = System.currentTimeMillis() - simpleTime;
+		
+			Implementee<Number> cached = cachedProxyImplementeeBeanBuilder
+					.build(implementation, implementorBeanFactory);
+		
+			long cachedTime = System.currentTimeMillis();
+			for (int i = 0; i < TEST_COUNT; i++)
+			{
+				cached.compare(i, i + 1);
+			}
+			cachedTime = System.currentTimeMillis() - cachedTime;
+			
+			Implementee<Number> raw = createRawJdkProxy();
+			
+			long rawTime = System.currentTimeMillis();
+			for (int i = 0; i < TEST_COUNT; i++)
+			{
+				raw.compare(i, i + 1);
+			}
+			rawTime = System.currentTimeMillis() - rawTime;
+
+			System.out.println(
+					"["+ TEST_COUNT + " count] [noValidityAndPriorityMethodPresents] [lotsImplementors]");
+			System.out.println("simpleTime : " + simpleTime);
+			System.out.println("cachedTime : " + cachedTime);
+			System.out.println("rawTime : " + rawTime);
+			System.out.println(
+					"cachedTime / simpleTime : "
+							+ format(cachedTime / (float) simpleTime)
+							);
+			System.out.println(
+					"simpleTime / rawTime : "
+							+ format(simpleTime / (float) rawTime)
+							);
+			System.out.println(
+					"cachedTime / rawTime : "
+							+ format(cachedTime / (float) rawTime)
+							);
+			System.out.println();
+		
+		
+			assertTrue(cachedTime < simpleTime);
 		}
-	
-		cachedTime = System.currentTimeMillis() - cachedTime;
-	
-		System.out.println(
-				"[fewImplementors_noValidityAndPriorityMethodPresents] ["
-						+ TEST_COUNT + " times]");
-		System.out.println("simpleTime : " + simpleTime);
-		System.out.println("cachedTime : " + cachedTime);
-		System.out.println(
-				"cachedTime / simpleTime : "
-						+ (int) ((cachedTime / (float) simpleTime) * 100)
-						+ "%");
-		System.out.println();
-	
-		// result is not sure for few implementors
-		// assertTrue(cachedTime < simpleTime);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
-	public void test_fewImplementors_withValidityAndPriorityMethodPresents()
+	public void test_withValidityAndPriorityMethodPresents()
 	{
-		ProxyImplementeeBeanBuilder simpleProxyImplementeeBeanBuilder = new ProxyImplementeeBeanBuilder();
-		simpleProxyImplementeeBeanBuilder.setImplementeeMethodInvocationFactory(
-				new SimpleImplementeeMethodInvocationFactory());
-
-		ProxyImplementeeBeanBuilder cachedProxyImplementeeBeanBuilder = new ProxyImplementeeBeanBuilder();
-		cachedProxyImplementeeBeanBuilder.setImplementeeMethodInvocationFactory(
-				new CachedImplementeeMethodInvocationFactory());
-
-		Implementation<Implementee> implementation = this.implementationResolver
-				.resolve(Implementee.class, Implementor0.class,
-						Implementor1.class,
-						Implementor100.class);
-	
-		ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory
-				.valueOf(new Implementor0<Number>(), new Implementor0(),
-						new Implementor1(),
-						new Implementor100());
-	
-		Implementee<Number> simple = simpleProxyImplementeeBeanBuilder
-				.build(implementation, implementorBeanFactory);
-	
-		long simpleTime = System.currentTimeMillis();
-	
-		for (int i = 0; i < TEST_COUNT; i++)
 		{
-			simple.compare(i, i + 1);
+			ProxyImplementeeBeanBuilder simpleProxyImplementeeBeanBuilder = new ProxyImplementeeBeanBuilder();
+			simpleProxyImplementeeBeanBuilder.setImplementeeMethodInvocationFactory(
+					new SimpleImplementeeMethodInvocationFactory());
+	
+			ProxyImplementeeBeanBuilder cachedProxyImplementeeBeanBuilder = new ProxyImplementeeBeanBuilder();
+			cachedProxyImplementeeBeanBuilder.setImplementeeMethodInvocationFactory(
+					new CachedImplementeeMethodInvocationFactory());
+	
+			Implementation<Implementee> implementation = this.implementationResolver
+					.resolve(Implementee.class, Implementor0.class,
+							Implementor1.class,
+							Implementor100.class);
+		
+			ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory
+					.valueOf(new Implementor0<Number>(), new Implementor0(),
+							new Implementor1(),
+							new Implementor100());
+		
+			Implementee<Number> simple = simpleProxyImplementeeBeanBuilder
+					.build(implementation, implementorBeanFactory);
+	
+			long simpleTime = System.currentTimeMillis();
+			for (int i = 0; i < TEST_COUNT; i++)
+			{
+				simple.compare(i, i + 1);
+			}
+			simpleTime = System.currentTimeMillis() - simpleTime;
+		
+			Implementee<Number> cached = cachedProxyImplementeeBeanBuilder
+					.build(implementation, implementorBeanFactory);
+		
+			long cachedTime = System.currentTimeMillis();
+			for (int i = 0; i < TEST_COUNT; i++)
+			{
+				cached.compare(i, i + 1);
+			}
+			cachedTime = System.currentTimeMillis() - cachedTime;
+			
+			Implementee<Number> raw = createRawJdkProxy();
+			
+			long rawTime = System.currentTimeMillis();
+			for (int i = 0; i < TEST_COUNT; i++)
+			{
+				raw.compare(i, i + 1);
+			}
+			rawTime = System.currentTimeMillis() - rawTime;
+		
+
+			System.out.println(
+					"["+ TEST_COUNT + " count] [withValidityAndPriorityMethodPresents] [fewImplementors]");
+			System.out.println("simpleTime : " + simpleTime);
+			System.out.println("cachedTime : " + cachedTime);
+			System.out.println("rawTime : " + rawTime);
+			System.out.println(
+					"cachedTime / simpleTime : "
+							+ format(cachedTime / (float) simpleTime)
+							);
+			System.out.println(
+					"simpleTime / rawTime : "
+							+ format(simpleTime / (float) rawTime)
+							);
+			System.out.println(
+					"cachedTime / rawTime : "
+							+ format(cachedTime / (float) rawTime)
+							);
+			System.out.println();
+		
+			// result is not sure for few implementors
+			// assertTrue(cachedTime < simpleTime);
 		}
-	
-		simpleTime = System.currentTimeMillis() - simpleTime;
-	
-		Implementee<Number> cached = cachedProxyImplementeeBeanBuilder
-				.build(implementation, implementorBeanFactory);
-	
-		long cachedTime = System.currentTimeMillis();
-	
-		for (int i = 0; i < TEST_COUNT; i++)
+
 		{
-			cached.compare(i, i + 1);
+			ProxyImplementeeBeanBuilder simpleProxyImplementeeBeanBuilder = new ProxyImplementeeBeanBuilder();
+			simpleProxyImplementeeBeanBuilder.setImplementeeMethodInvocationFactory(
+					new SimpleImplementeeMethodInvocationFactory());
+	
+			ProxyImplementeeBeanBuilder cachedProxyImplementeeBeanBuilder = new ProxyImplementeeBeanBuilder();
+			cachedProxyImplementeeBeanBuilder.setImplementeeMethodInvocationFactory(
+					new CachedImplementeeMethodInvocationFactory());
+	
+			Implementation<Implementee> implementation = this.implementationResolver
+					.resolve(Implementee.class, Implementor0.class,
+							Implementor1.class, Implementor2.class,
+							Implementor3.class, Implementor4.class,
+							Implementor5.class, Implementor6.class,
+							Implementor7.class, Implementor8.class,
+							Implementor9.class, Implementor10.class,
+							Implementor11.class, Implementor12.class,
+							Implementor13.class, Implementor14.class,
+							Implementor15.class, Implementor16.class,
+							Implementor17.class, Implementor18.class,
+							Implementor19.class, Implementor20.class,
+							Implementor21.class, Implementor22.class,
+							Implementor23.class, Implementor24.class,
+							Implementor25.class, Implementor26.class,
+							Implementor27.class, Implementor28.class,
+							Implementor29.class, Implementor30.class,
+							Implementor31.class, Implementor32.class,
+							Implementor33.class, Implementor34.class,
+							Implementor35.class, Implementor36.class,
+							Implementor37.class, Implementor38.class,
+							Implementor39.class, Implementor40.class,
+							Implementor41.class, Implementor42.class,
+							Implementor43.class, Implementor44.class,
+							Implementor45.class, Implementor46.class,
+							Implementor47.class, Implementor48.class,
+							Implementor49.class, Implementor50.class,
+							Implementor51.class, Implementor52.class,
+							Implementor53.class, Implementor54.class,
+							Implementor55.class, Implementor56.class,
+							Implementor57.class, Implementor58.class,
+							Implementor59.class, Implementor60.class,
+							Implementor61.class, Implementor62.class,
+							Implementor63.class, Implementor64.class,
+							Implementor65.class, Implementor66.class,
+							Implementor67.class, Implementor68.class,
+							Implementor69.class, Implementor70.class,
+							Implementor71.class, Implementor72.class,
+							Implementor73.class, Implementor74.class,
+							Implementor75.class, Implementor76.class,
+							Implementor77.class, Implementor78.class,
+							Implementor79.class, Implementor80.class,
+							Implementor81.class, Implementor82.class,
+							Implementor83.class, Implementor84.class,
+							Implementor85.class, Implementor86.class,
+							Implementor87.class, Implementor88.class,
+							Implementor89.class, Implementor90.class,
+							Implementor91.class, Implementor92.class,
+							Implementor93.class, Implementor94.class,
+							Implementor95.class, Implementor96.class,
+							Implementor97.class, Implementor98.class,
+							Implementor100.class);
+	
+			ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory
+					.valueOf(new Implementor0<Number>(), new Implementor0(),
+							new Implementor1(), new Implementor2(),
+							new Implementor3(), new Implementor4(),
+							new Implementor5(), new Implementor6(),
+							new Implementor7(), new Implementor8(),
+							new Implementor9(), new Implementor10(),
+							new Implementor11(), new Implementor12(),
+							new Implementor13(), new Implementor14(),
+							new Implementor15(), new Implementor16(),
+							new Implementor17(), new Implementor18(),
+							new Implementor19(), new Implementor20(),
+							new Implementor21(), new Implementor22(),
+							new Implementor23(), new Implementor24(),
+							new Implementor25(), new Implementor26(),
+							new Implementor27(), new Implementor28(),
+							new Implementor29(), new Implementor30(),
+							new Implementor31(), new Implementor32(),
+							new Implementor33(), new Implementor34(),
+							new Implementor35(), new Implementor36(),
+							new Implementor37(), new Implementor38(),
+							new Implementor39(), new Implementor40(),
+							new Implementor41(), new Implementor42(),
+							new Implementor43(), new Implementor44(),
+							new Implementor45(), new Implementor46(),
+							new Implementor47(), new Implementor48(),
+							new Implementor49(), new Implementor50(),
+							new Implementor51(), new Implementor52(),
+							new Implementor53(), new Implementor54(),
+							new Implementor55(), new Implementor56(),
+							new Implementor57(), new Implementor58(),
+							new Implementor59(), new Implementor60(),
+							new Implementor61(), new Implementor62(),
+							new Implementor63(), new Implementor64(),
+							new Implementor65(), new Implementor66(),
+							new Implementor67(), new Implementor68(),
+							new Implementor69(), new Implementor70(),
+							new Implementor71(), new Implementor72(),
+							new Implementor73(), new Implementor74(),
+							new Implementor75(), new Implementor76(),
+							new Implementor77(), new Implementor78(),
+							new Implementor79(), new Implementor80(),
+							new Implementor81(), new Implementor82(),
+							new Implementor83(), new Implementor84(),
+							new Implementor85(), new Implementor86(),
+							new Implementor87(), new Implementor88(),
+							new Implementor89(), new Implementor90(),
+							new Implementor91(), new Implementor92(),
+							new Implementor93(), new Implementor94(),
+							new Implementor95(), new Implementor96(),
+							new Implementor97(), new Implementor98(),
+							new Implementor100());
+	
+			Implementee<Number> simple = simpleProxyImplementeeBeanBuilder
+					.build(implementation, implementorBeanFactory);
+	
+			long simpleTime = System.currentTimeMillis();
+			for (int i = 0; i < TEST_COUNT; i++)
+			{
+				simple.compare(i, i + 1);
+			}
+			simpleTime = System.currentTimeMillis() - simpleTime;
+		
+			Implementee<Number> cached = cachedProxyImplementeeBeanBuilder
+					.build(implementation, implementorBeanFactory);
+		
+			long cachedTime = System.currentTimeMillis();
+			for (int i = 0; i < TEST_COUNT; i++)
+			{
+				cached.compare(i, i + 1);
+			}
+			cachedTime = System.currentTimeMillis() - cachedTime;
+			
+			Implementee<Number> raw = createRawJdkProxy();
+			
+			long rawTime = System.currentTimeMillis();
+			for (int i = 0; i < TEST_COUNT; i++)
+			{
+				raw.compare(i, i + 1);
+			}
+			rawTime = System.currentTimeMillis() - rawTime;
+		
+			System.out.println(
+					"["+ TEST_COUNT + " count] [withValidityAndPriorityMethodPresents] [lotsImplementors]");
+			System.out.println("simpleTime : " + simpleTime);
+			System.out.println("cachedTime : " + cachedTime);
+			System.out.println("rawTime : " + rawTime);
+			System.out.println(
+					"cachedTime / simpleTime : "
+							+ format(cachedTime / (float) simpleTime)
+							);
+			System.out.println(
+					"simpleTime / rawTime : "
+							+ format(simpleTime / (float) rawTime)
+							);
+			System.out.println(
+					"cachedTime / rawTime : "
+							+ format(cachedTime / (float) rawTime)
+							);
+			System.out.println();
+		
+			assertTrue(cachedTime < simpleTime);
 		}
-	
-		cachedTime = System.currentTimeMillis() - cachedTime;
-	
-		System.out.println(
-				"[fewImplementors_withValidityAndPriorityMethodPresents] ["
-						+ TEST_COUNT + " times]");
-		System.out.println("simpleTime : " + simpleTime);
-		System.out.println("cachedTime : " + cachedTime);
-		System.out.println("cachedTime / simpleTime : "
-				+ (int) ((cachedTime / (float) simpleTime) * 100) + "%");
-		System.out.println();
-	
-		// result is not sure for few implementors
-		// assertTrue(cachedTime < simpleTime);
 	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Test
-	public void test_lotsImplementors_noValidityAndPriorityMethodPresents()
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	protected Implementee<Number> createRawJdkProxy()
 	{
-		ProxyImplementeeBeanBuilder simpleProxyImplementeeBeanBuilder = new ProxyImplementeeBeanBuilder();
-		simpleProxyImplementeeBeanBuilder.setImplementeeMethodInvocationFactory(
-				new SimpleImplementeeMethodInvocationFactory());
-
-		ProxyImplementeeBeanBuilder cachedProxyImplementeeBeanBuilder = new ProxyImplementeeBeanBuilder();
-		cachedProxyImplementeeBeanBuilder.setImplementeeMethodInvocationFactory(
-				new CachedImplementeeMethodInvocationFactory());
-
-		Implementation<Implementee> implementation = this.implementationResolver
-				.resolve(Implementee.class, Implementor0.class,
-						Implementor1.class, Implementor2.class,
-						Implementor3.class, Implementor4.class,
-						Implementor5.class, Implementor6.class,
-						Implementor7.class, Implementor8.class,
-						Implementor9.class, Implementor10.class,
-						Implementor11.class, Implementor12.class,
-						Implementor13.class, Implementor14.class,
-						Implementor15.class, Implementor16.class,
-						Implementor17.class, Implementor18.class,
-						Implementor19.class, Implementor20.class,
-						Implementor21.class, Implementor22.class,
-						Implementor23.class, Implementor24.class,
-						Implementor25.class, Implementor26.class,
-						Implementor27.class, Implementor28.class,
-						Implementor29.class, Implementor30.class,
-						Implementor31.class, Implementor32.class,
-						Implementor33.class, Implementor34.class,
-						Implementor35.class, Implementor36.class,
-						Implementor37.class, Implementor38.class,
-						Implementor39.class, Implementor40.class,
-						Implementor41.class, Implementor42.class,
-						Implementor43.class, Implementor44.class,
-						Implementor45.class, Implementor46.class,
-						Implementor47.class, Implementor48.class,
-						Implementor49.class, Implementor50.class,
-						Implementor51.class, Implementor52.class,
-						Implementor53.class, Implementor54.class,
-						Implementor55.class, Implementor56.class,
-						Implementor57.class, Implementor58.class,
-						Implementor59.class, Implementor60.class,
-						Implementor61.class, Implementor62.class,
-						Implementor63.class, Implementor64.class,
-						Implementor65.class, Implementor66.class,
-						Implementor67.class, Implementor68.class,
-						Implementor69.class, Implementor70.class,
-						Implementor71.class, Implementor72.class,
-						Implementor73.class, Implementor74.class,
-						Implementor75.class, Implementor76.class,
-						Implementor77.class, Implementor78.class,
-						Implementor79.class, Implementor80.class,
-						Implementor81.class, Implementor82.class,
-						Implementor83.class, Implementor84.class,
-						Implementor85.class, Implementor86.class,
-						Implementor87.class, Implementor88.class,
-						Implementor89.class, Implementor90.class,
-						Implementor91.class, Implementor92.class,
-						Implementor93.class, Implementor94.class,
-						Implementor95.class, Implementor96.class,
-						Implementor97.class, Implementor98.class,
-						Implementor99.class);
-		
-		ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory
-				.valueOf(new Implementor0<Number>(), new Implementor0(),
-						new Implementor1(), new Implementor2(),
-						new Implementor3(), new Implementor4(),
-						new Implementor5(), new Implementor6(),
-						new Implementor7(), new Implementor8(),
-						new Implementor9(), new Implementor10(),
-						new Implementor11(), new Implementor12(),
-						new Implementor13(), new Implementor14(),
-						new Implementor15(), new Implementor16(),
-						new Implementor17(), new Implementor18(),
-						new Implementor19(), new Implementor20(),
-						new Implementor21(), new Implementor22(),
-						new Implementor23(), new Implementor24(),
-						new Implementor25(), new Implementor26(),
-						new Implementor27(), new Implementor28(),
-						new Implementor29(), new Implementor30(),
-						new Implementor31(), new Implementor32(),
-						new Implementor33(), new Implementor34(),
-						new Implementor35(), new Implementor36(),
-						new Implementor37(), new Implementor38(),
-						new Implementor39(), new Implementor40(),
-						new Implementor41(), new Implementor42(),
-						new Implementor43(), new Implementor44(),
-						new Implementor45(), new Implementor46(),
-						new Implementor47(), new Implementor48(),
-						new Implementor49(), new Implementor50(),
-						new Implementor51(), new Implementor52(),
-						new Implementor53(), new Implementor54(),
-						new Implementor55(), new Implementor56(),
-						new Implementor57(), new Implementor58(),
-						new Implementor59(), new Implementor60(),
-						new Implementor61(), new Implementor62(),
-						new Implementor63(), new Implementor64(),
-						new Implementor65(), new Implementor66(),
-						new Implementor67(), new Implementor68(),
-						new Implementor69(), new Implementor70(),
-						new Implementor71(), new Implementor72(),
-						new Implementor73(), new Implementor74(),
-						new Implementor75(), new Implementor76(),
-						new Implementor77(), new Implementor78(),
-						new Implementor79(), new Implementor80(),
-						new Implementor81(), new Implementor82(),
-						new Implementor83(), new Implementor84(),
-						new Implementor85(), new Implementor86(),
-						new Implementor87(), new Implementor88(),
-						new Implementor89(), new Implementor90(),
-						new Implementor91(), new Implementor92(),
-						new Implementor93(), new Implementor94(),
-						new Implementor95(), new Implementor96(),
-						new Implementor97(), new Implementor98(),
-						new Implementor99());
-
-		Implementee<Number> simple = simpleProxyImplementeeBeanBuilder
-				.build(implementation, implementorBeanFactory);
-		
-		long simpleTime = System.currentTimeMillis();
-		
-		for (int i = 0; i < TEST_COUNT; i++)
+		return (Implementee)java.lang.reflect.Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[]{Implementee.class}, new java.lang.reflect.InvocationHandler()
 		{
-			simple.compare(i, i + 1);
-		}
-
-		simpleTime = System.currentTimeMillis() - simpleTime;
-
-		Implementee<Number> cached = cachedProxyImplementeeBeanBuilder
-				.build(implementation, implementorBeanFactory);
-
-		long cachedTime = System.currentTimeMillis();
-
-		for (int i = 0; i < TEST_COUNT; i++)
-		{
-			cached.compare(i, i + 1);
-		}
-
-		cachedTime = System.currentTimeMillis() - cachedTime;
-
-		System.out.println(
-				"[lotsImplementors_noValidityAndPriorityMethodPresents] ["
-						+ TEST_COUNT + " times]");
-		System.out.println("simpleTime : " + simpleTime);
-		System.out.println("cachedTime : " + cachedTime);
-		System.out.println(
-				"cachedTime / simpleTime : "
-						+ (int) ((cachedTime / (float) simpleTime) * 100)
-						+ "%");
-		System.out.println();
-
-		assertTrue(cachedTime < simpleTime);
+			private Implementor0<Number> implementor0 = new Implementor0<Number>();
+			
+			@Override
+			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+			{
+				return method.invoke(this.implementor0, args);
+			}
+		});
 	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Test
-	public void test_lotsImplementors_withValidityAndPriorityMethodPresents()
+	
+	protected String format(double f)
 	{
-		ProxyImplementeeBeanBuilder simpleProxyImplementeeBeanBuilder = new ProxyImplementeeBeanBuilder();
-		simpleProxyImplementeeBeanBuilder.setImplementeeMethodInvocationFactory(
-				new SimpleImplementeeMethodInvocationFactory());
-
-		ProxyImplementeeBeanBuilder cachedProxyImplementeeBeanBuilder = new ProxyImplementeeBeanBuilder();
-		cachedProxyImplementeeBeanBuilder.setImplementeeMethodInvocationFactory(
-				new CachedImplementeeMethodInvocationFactory());
-
-		Implementation<Implementee> implementation = this.implementationResolver
-				.resolve(Implementee.class, Implementor0.class,
-						Implementor1.class, Implementor2.class,
-						Implementor3.class, Implementor4.class,
-						Implementor5.class, Implementor6.class,
-						Implementor7.class, Implementor8.class,
-						Implementor9.class, Implementor10.class,
-						Implementor11.class, Implementor12.class,
-						Implementor13.class, Implementor14.class,
-						Implementor15.class, Implementor16.class,
-						Implementor17.class, Implementor18.class,
-						Implementor19.class, Implementor20.class,
-						Implementor21.class, Implementor22.class,
-						Implementor23.class, Implementor24.class,
-						Implementor25.class, Implementor26.class,
-						Implementor27.class, Implementor28.class,
-						Implementor29.class, Implementor30.class,
-						Implementor31.class, Implementor32.class,
-						Implementor33.class, Implementor34.class,
-						Implementor35.class, Implementor36.class,
-						Implementor37.class, Implementor38.class,
-						Implementor39.class, Implementor40.class,
-						Implementor41.class, Implementor42.class,
-						Implementor43.class, Implementor44.class,
-						Implementor45.class, Implementor46.class,
-						Implementor47.class, Implementor48.class,
-						Implementor49.class, Implementor50.class,
-						Implementor51.class, Implementor52.class,
-						Implementor53.class, Implementor54.class,
-						Implementor55.class, Implementor56.class,
-						Implementor57.class, Implementor58.class,
-						Implementor59.class, Implementor60.class,
-						Implementor61.class, Implementor62.class,
-						Implementor63.class, Implementor64.class,
-						Implementor65.class, Implementor66.class,
-						Implementor67.class, Implementor68.class,
-						Implementor69.class, Implementor70.class,
-						Implementor71.class, Implementor72.class,
-						Implementor73.class, Implementor74.class,
-						Implementor75.class, Implementor76.class,
-						Implementor77.class, Implementor78.class,
-						Implementor79.class, Implementor80.class,
-						Implementor81.class, Implementor82.class,
-						Implementor83.class, Implementor84.class,
-						Implementor85.class, Implementor86.class,
-						Implementor87.class, Implementor88.class,
-						Implementor89.class, Implementor90.class,
-						Implementor91.class, Implementor92.class,
-						Implementor93.class, Implementor94.class,
-						Implementor95.class, Implementor96.class,
-						Implementor97.class, Implementor98.class,
-						Implementor100.class);
-
-		ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory
-				.valueOf(new Implementor0<Number>(), new Implementor0(),
-						new Implementor1(), new Implementor2(),
-						new Implementor3(), new Implementor4(),
-						new Implementor5(), new Implementor6(),
-						new Implementor7(), new Implementor8(),
-						new Implementor9(), new Implementor10(),
-						new Implementor11(), new Implementor12(),
-						new Implementor13(), new Implementor14(),
-						new Implementor15(), new Implementor16(),
-						new Implementor17(), new Implementor18(),
-						new Implementor19(), new Implementor20(),
-						new Implementor21(), new Implementor22(),
-						new Implementor23(), new Implementor24(),
-						new Implementor25(), new Implementor26(),
-						new Implementor27(), new Implementor28(),
-						new Implementor29(), new Implementor30(),
-						new Implementor31(), new Implementor32(),
-						new Implementor33(), new Implementor34(),
-						new Implementor35(), new Implementor36(),
-						new Implementor37(), new Implementor38(),
-						new Implementor39(), new Implementor40(),
-						new Implementor41(), new Implementor42(),
-						new Implementor43(), new Implementor44(),
-						new Implementor45(), new Implementor46(),
-						new Implementor47(), new Implementor48(),
-						new Implementor49(), new Implementor50(),
-						new Implementor51(), new Implementor52(),
-						new Implementor53(), new Implementor54(),
-						new Implementor55(), new Implementor56(),
-						new Implementor57(), new Implementor58(),
-						new Implementor59(), new Implementor60(),
-						new Implementor61(), new Implementor62(),
-						new Implementor63(), new Implementor64(),
-						new Implementor65(), new Implementor66(),
-						new Implementor67(), new Implementor68(),
-						new Implementor69(), new Implementor70(),
-						new Implementor71(), new Implementor72(),
-						new Implementor73(), new Implementor74(),
-						new Implementor75(), new Implementor76(),
-						new Implementor77(), new Implementor78(),
-						new Implementor79(), new Implementor80(),
-						new Implementor81(), new Implementor82(),
-						new Implementor83(), new Implementor84(),
-						new Implementor85(), new Implementor86(),
-						new Implementor87(), new Implementor88(),
-						new Implementor89(), new Implementor90(),
-						new Implementor91(), new Implementor92(),
-						new Implementor93(), new Implementor94(),
-						new Implementor95(), new Implementor96(),
-						new Implementor97(), new Implementor98(),
-						new Implementor100());
-
-		Implementee<Number> simple = simpleProxyImplementeeBeanBuilder
-				.build(implementation, implementorBeanFactory);
-
-		long simpleTime = System.currentTimeMillis();
-
-		for (int i = 0; i < TEST_COUNT; i++)
-		{
-			simple.compare(i, i + 1);
-		}
-
-		simpleTime = System.currentTimeMillis() - simpleTime;
-
-		Implementee<Number> cached = cachedProxyImplementeeBeanBuilder
-				.build(implementation, implementorBeanFactory);
-
-		long cachedTime = System.currentTimeMillis();
-
-		for (int i = 0; i < TEST_COUNT; i++)
-		{
-			cached.compare(i, i + 1);
-		}
-
-		cachedTime = System.currentTimeMillis() - cachedTime;
-
-		System.out.println(
-				"[lotsImplementors_withValidityAndPriorityMethodPresents] ["
-						+ TEST_COUNT + " times]");
-		System.out.println("simpleTime : " + simpleTime);
-		System.out.println("cachedTime : " + cachedTime);
-		System.out.println("cachedTime / simpleTime : "
-				+ (int) ((cachedTime / (float) simpleTime) * 100) + "%");
-		System.out.println();
-
-		assertTrue(cachedTime < simpleTime);
+		return new java.text.DecimalFormat("#.##").format(f);
 	}
 
 	public static interface Implementee<T extends Number>
