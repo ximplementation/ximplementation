@@ -87,7 +87,7 @@ public class CachedImplementeeMethodInvocationFactory
 		}
 		else
 		{
-			return createByEvalingFromValidAndDescPrioritizeds(implementation,
+			return createByEvaluatingFromValidAndDescPrioritizeds(implementation,
 					implementInfo, invocationParams,
 					invocationParamTypes, staticValidAndDescPrioritizeds,
 					implementorBeanFactory);
@@ -206,7 +206,7 @@ public class CachedImplementeeMethodInvocationFactory
 	 * @return
 	 * @throws Throwable
 	 */
-	protected ImplementeeMethodInvocation createByEvalingFromValidAndDescPrioritizeds(
+	protected ImplementeeMethodInvocation createByEvaluatingFromValidAndDescPrioritizeds(
 			Implementation<?> implementation, ImplementInfo implementInfo,
 			Object[] invocationParams,
 			Class<?>[] invocationParamTypes,
@@ -261,9 +261,7 @@ public class CachedImplementeeMethodInvocationFactory
 				if (implementMethodInfo == null)
 					replace = true;
 				else
-				{
 					replace = (myPriority > priority);
-				}
 	
 				if (replace)
 				{
@@ -307,7 +305,7 @@ public class CachedImplementeeMethodInvocationFactory
 	 */
 	protected Object getRandomElement(Collection<?> objs)
 	{
-		if (objs == null || objs.size() == 0)
+		if (objs == null || objs.isEmpty())
 			return null;
 
 		if (objs instanceof List<?>)
