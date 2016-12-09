@@ -487,10 +487,17 @@ public class CachedImplementeeMethodInvocationFactory
 		{
 			final int prime = 31;
 			int result = 1;
-			result = prime * result
-					+ ((implementInfo == null) ? 0 : implementInfo.hashCode());
-			result = prime * result + ((implementation == null) ? 0
-					: implementation.hashCode());
+
+			// result = prime * result
+			// + ((implementInfo == null) ? 0 : implementInfo.hashCode());
+			// result = prime * result + ((implementation == null) ? 0
+			// : implementation.hashCode());
+
+			// XXX DO NOT use generated hash code logic above, bad performance
+
+			result = prime * result + ((implementInfo == null) ? 0
+					: implementInfo.getImplementeeMethod().hashCode());
+
 			result = prime * result
 					+ Arrays.hashCode(invocationParamTypes);
 			return result;
