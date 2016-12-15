@@ -18,10 +18,19 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +65,44 @@ public class AbstractImplementeeMethodInvocationFactoryTest
 	{
 		this.mockAbstractImplementeeMethodInvocationFactory = null;
 		this.implementationResolver = null;
+	}
+
+	@SuppressWarnings(
+	{ "rawtypes", "unchecked" })
+	@Test
+	public void getImplementorBeansWithCacheTest()
+	{
+		//cachedImplementorBeans.get(implementor) != null
+		{
+			List<Integer> cached = new ArrayList<Integer>();
+			cached.add(1);
+			
+			Map<Class<?>, Collection<?>> cachedImplementorBeans = new HashMap<Class<?>, Collection<?>>();
+			cachedImplementorBeans.put(Integer.class, cached);
+
+			ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory
+					.valueOf(Arrays.asList(new Integer(2)));
+
+			Collection<?> implementorBeans = this.mockAbstractImplementeeMethodInvocationFactory
+					.getImplementorBeansWithCache(cachedImplementorBeans, implementorBeanFactory, Integer.class);
+
+			assertTrue(implementorBeans == cached);
+		}
+
+		// implementorBeans =
+		// implementorBeanFactory.getImplementorBeans(implementor);
+		{
+			Map<Class<?>, Collection<?>> cachedImplementorBeans = new HashMap<Class<?>, Collection<?>>();
+
+			ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory.valueOf(new Integer(1));
+
+			assertNull(cachedImplementorBeans.get(Integer.class));
+			assertThat(
+					this.mockAbstractImplementeeMethodInvocationFactory.getImplementorBeansWithCache(
+							cachedImplementorBeans, implementorBeanFactory, Integer.class),
+					(Matcher) Matchers.contains(new Integer(1)));
+			assertThat(cachedImplementorBeans.get(Integer.class), (Matcher) Matchers.contains(new Integer(1)));
+		}
 	}
 
 	@Test

@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -51,6 +52,34 @@ public abstract class AbstractImplementeeMethodInvocationFactory
 			Method implementeeMethod)
 	{
 		return implementation.getImplementInfo(implementeeMethod);
+	}
+	
+	/**
+	 * Get <i>implementor</i> beans for given <i>implementor</i> with cache support.
+	 * <p>
+	 * It first gets <i>implementor</i> beans from {@code cachedImplementorBeans}, if {@code null} got,
+	 * it then gets from the {@code implementorBeanFactory} and cache the got.
+	 * </p>
+	 * 
+	 * @param cachedImplementorBeans
+	 * @param implementorBeanFactory
+	 * @param implementor
+	 * @return
+	 */
+	protected Collection<?> getImplementorBeansWithCache(Map<Class<?>, Collection<?>> cachedImplementorBeans,
+			ImplementorBeanFactory implementorBeanFactory, Class<?> implementor)
+	{
+		Collection<?> implementorBeans = (cachedImplementorBeans != null ? cachedImplementorBeans.get(implementor) : null);
+		
+		if(implementorBeans != null)
+			return implementorBeans;
+		
+		implementorBeans = implementorBeanFactory.getImplementorBeans(implementor);
+		
+		if(implementorBeans != null)
+			cachedImplementorBeans.put(implementor, implementorBeans);
+		
+		return implementorBeans;
 	}
 
 	/**

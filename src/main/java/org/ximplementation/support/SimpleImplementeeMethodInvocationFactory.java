@@ -16,6 +16,8 @@ package org.ximplementation.support;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.ximplementation.Priority;
 import org.ximplementation.Validity;
@@ -72,6 +74,9 @@ public class SimpleImplementeeMethodInvocationFactory
 		
 		Class<?>[] invocationParamTypes = extractTypes(invocationParams);
 
+		// make sure get only once for the same implementor
+		Map<Class<?>, Collection<?>> cachedImplementorBeans = new HashMap<Class<?>, Collection<?>>();
+
 		for (ImplementMethodInfo myImplementMethodInfo : implementInfo
 				.getImplementMethodInfos())
 		{
@@ -81,9 +86,8 @@ public class SimpleImplementeeMethodInvocationFactory
 					invocationParamTypes))
 				continue;
 
-			Collection<?> implementorBeans = implementorBeanFactory
-					.getImplementorBeans(
-							myImplementMethodInfo.getImplementor());
+			Collection<?> implementorBeans = getImplementorBeansWithCache(cachedImplementorBeans,
+					implementorBeanFactory, myImplementMethodInfo.getImplementor());
 
 			if (implementorBeans == null || implementorBeans.isEmpty())
 				continue;

@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -168,11 +170,14 @@ public class CachedImplementeeMethodInvocationFactory
 		ImplementMethodInfo finalMethodInfo = null;
 		Collection<?> finalBeans = null;
 
+		// make sure get only once for the same implementor
+		Map<Class<?>, Collection<?>> cachedImplementorBeans = new HashMap<Class<?>, Collection<?>>();
+
 		for (int i = 0; i < validAndDescPrioritizeds.length; i++)
 		{
 			ImplementMethodInfo myMethodInfo = validAndDescPrioritizeds[i];
-			Collection<?> myBeans = implementorBeanFactory
-					.getImplementorBeans(myMethodInfo.getImplementor());
+			Collection<?> myBeans = getImplementorBeansWithCache(cachedImplementorBeans, implementorBeanFactory,
+					myMethodInfo.getImplementor());
 
 			if (myBeans != null && !myBeans.isEmpty())
 			{
@@ -216,12 +221,14 @@ public class CachedImplementeeMethodInvocationFactory
 		ImplementMethodInfo implementMethodInfo = null;
 		Object implementorBean = null;
 		int priority = Integer.MIN_VALUE;
+		
+		// make sure get only once for the same implementor
+		Map<Class<?>, Collection<?>> cachedImplementorBeans = new HashMap<Class<?>, Collection<?>>();
 	
 		for (ImplementMethodInfo myImplementMethodInfo : validAndDescPrioritizeds)
 		{
-			Collection<?> implementorBeans = implementorBeanFactory
-					.getImplementorBeans(
-							myImplementMethodInfo.getImplementor());
+			Collection<?> implementorBeans = getImplementorBeansWithCache(cachedImplementorBeans,
+					implementorBeanFactory, myImplementMethodInfo.getImplementor());
 	
 			if (implementorBeans == null || implementorBeans.isEmpty())
 				continue;
