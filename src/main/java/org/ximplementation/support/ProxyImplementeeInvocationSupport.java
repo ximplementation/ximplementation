@@ -125,6 +125,35 @@ public class ProxyImplementeeInvocationSupport
 				method, parameters, this.implementorBeanFactory);
 	}
 
+	/**
+	 * Returns if the given {@linkplain Method} is {@code equals(Object)}
+	 * method.
+	 * 
+	 * @param method
+	 * @return
+	 */
+	protected boolean isEqualsMethod(Method method)
+	{
+		if (method == null || !method.getName().equals("equals"))
+			return false;
+
+		Class<?>[] paramTypes = method.getParameterTypes();
+
+		return (paramTypes.length == 1 && paramTypes[0] == Object.class);
+	}
+
+	/**
+	 * Returns if the given {@linkplain Method} is {@code hashCode()} method.
+	 * 
+	 * @param method
+	 * @return
+	 */
+	protected boolean isHashCodeMethod(Method method)
+	{
+		return (method != null && method.getName().equals("hashCode")
+				&& method.getParameterTypes().length == 0);
+	}
+
 	@Override
 	public String toString()
 	{
