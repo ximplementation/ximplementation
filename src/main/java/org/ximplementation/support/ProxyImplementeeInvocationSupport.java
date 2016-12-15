@@ -126,8 +126,8 @@ public class ProxyImplementeeInvocationSupport
 	}
 
 	/**
-	 * Returns if the given method is {@code equals(Object)} method.
-	 * 
+	 * Returns if the given {@linkplain Method} is {@code equals(Object)}
+	 * method.
 	 * @param method
 	 * @return
 	 */
@@ -142,7 +142,7 @@ public class ProxyImplementeeInvocationSupport
 	}
 
 	/**
-	 * Returns if the given method is {@code hashCode()} method.
+	 * Returns if the given {@linkplain Method} is {@code hashCode()} method.
 	 * 
 	 * @param method
 	 * @return
@@ -154,7 +154,7 @@ public class ProxyImplementeeInvocationSupport
 	}
 
 	/**
-	 * Returns if the given method is {@code toString()} method.
+	 * Returns if the given {@linkplain Method} is {@code toString()} method.
 	 * 
 	 * @param method
 	 * @return
