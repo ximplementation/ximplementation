@@ -155,7 +155,6 @@ public class Implementation<T> implements Serializable
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Arrays.hashCode(implementInfos);
 		result = prime * result
 				+ ((implementee == null) ? 0 : implementee.hashCode());
 		return result;

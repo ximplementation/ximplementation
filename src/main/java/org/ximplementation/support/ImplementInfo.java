@@ -154,7 +154,6 @@ public class ImplementInfo implements Serializable
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Arrays.hashCode(implementMethodInfos);
 		result = prime * result + ((implementeeMethod == null) ? 0
 				: implementeeMethod.hashCode());
 		return result;
