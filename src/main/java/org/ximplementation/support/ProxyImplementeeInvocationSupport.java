@@ -125,13 +125,44 @@ public class ProxyImplementeeInvocationSupport
 				method, parameters, this.implementorBeanFactory);
 	}
 
-	@Override
-	public String toString()
+	/**
+	 * Returns if the given method is {@code equals(Object)} method.
+	 * 
+	 * @param method
+	 * @return
+	 */
+	protected boolean isEqualsMethod(Method method)
 	{
-		return getClass().getSimpleName() + " [implementation=" + implementation
-				+ ", implementorBeanFactory=" + implementorBeanFactory
-				+ ", implementeeMethodInvocationFactory="
-				+ implementeeMethodInvocationFactory + "]";
+		if (method == null || !method.getName().equals("equals"))
+			return false;
+
+		Class<?>[] paramTypes = method.getParameterTypes();
+
+		return (paramTypes.length == 1 && paramTypes[0] == Object.class);
+	}
+
+	/**
+	 * Returns if the given method is {@code hashCode()} method.
+	 * 
+	 * @param method
+	 * @return
+	 */
+	protected boolean isHashCodeMethod(Method method)
+	{
+		return (method != null && method.getName().equals("hashCode")
+				&& method.getParameterTypes().length == 0);
+	}
+
+	/**
+	 * Returns if the given method is {@code toString()} method.
+	 * 
+	 * @param method
+	 * @return
+	 */
+	protected boolean isToStringMethod(Method method)
+	{
+		return (method != null && method.getName().equals("toString")
+				&& method.getParameterTypes().length == 0);
 	}
 
 	@Override
@@ -141,10 +172,6 @@ public class ProxyImplementeeInvocationSupport
 		int result = 1;
 		result = prime * result
 				+ ((implementation == null) ? 0 : implementation.hashCode());
-		result = prime * result + ((implementeeMethodInvocationFactory == null)
-				? 0 : implementeeMethodInvocationFactory.hashCode());
-		result = prime * result + ((implementorBeanFactory == null) ? 0
-				: implementorBeanFactory.hashCode());
 		return result;
 	}
 
@@ -181,5 +208,12 @@ public class ProxyImplementeeInvocationSupport
 		else if (!implementorBeanFactory.equals(other.implementorBeanFactory))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " [implementee="
+				+ implementation.getImplementee() + "]";
 	}
 }

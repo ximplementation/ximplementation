@@ -16,10 +16,8 @@ package org.ximplementation.support;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,7 +28,6 @@ import org.ximplementation.Implementor;
 import org.ximplementation.Index;
 import org.ximplementation.NotImplement;
 import org.ximplementation.Validity;
-import org.ximplementation.support.ProxyImplementeeBeanBuilder.ProxyImplementeeInvocationHandler;
 
 /**
  * {@linkplain ProxyImplementeeBeanBuilder} unit tests.
@@ -117,9 +114,6 @@ public class ProxyImplementeeBeanBuilderTest extends AbstractTestSupport
 		assertEquals(152, implementee1.plus(150, 2));
 		assertEquals(BuildTest.Implementor1.MY_RE, implementee1.plus(1, 2));
 		assertEquals(9, implementee1.plus(250, 9));
-		assertThat(implementee1.toString(), Matchers.containsString(
-				ProxyImplementeeInvocationHandler.class.getSimpleName()
-						+ " [implementation="));
 	}
 
 	@Test

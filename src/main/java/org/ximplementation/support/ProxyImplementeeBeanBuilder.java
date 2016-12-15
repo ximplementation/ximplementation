@@ -89,8 +89,8 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 	 * The {@linkplain InvocationHandler} for JDK {@linkplain Proxy}
 	 * <i>implementee</i> bean.
 	 * <p>
-	 * Note that for all invocation on <i>implementee method</i>s which declared
-	 * in {@linkplain Object}, it will call the handler itself's methods.
+	 * Note that for {@code equals(Object)}, {@code hashCode()} and
+	 * {@code toString()} methods, it will call the handler itself's methods.
 	 * </p>
 	 * 
 	 * @author earthangry@gmail.com
@@ -118,10 +118,54 @@ public class ProxyImplementeeBeanBuilder implements ImplementeeBeanBuilder
 		@Override
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
 		{
-			if (Object.class.equals(method.getDeclaringClass()))
-				return method.invoke(this, args);
+			if (isEqualsMethod(method))
+				return equals(args[0]);
+
+			if (isHashCodeMethod(method))
+				return hashCode();
+
+			if (isToStringMethod(method))
+				return toString();
 
 			return invoke(method, args);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return ProxyImplementeeInvocationHandler.class.hashCode() * 13
+					+ super.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+
+			ProxyImplementeeInvocationHandler otherHandler = null;
+
+			if (obj instanceof ProxyImplementeeInvocationHandler)
+			{
+				otherHandler = (ProxyImplementeeInvocationHandler) obj;
+			}
+			else if (Proxy.isProxyClass(obj.getClass()))
+			{
+				InvocationHandler ih = Proxy.getInvocationHandler(obj);
+
+				if (!(ih instanceof ProxyImplementeeInvocationHandler))
+					return false;
+
+				otherHandler = (ProxyImplementeeInvocationHandler) ih;
+			}
+			else
+			{
+				return false;
+			}
+
+			return super.equals(otherHandler);
 		}
 	}
 }
