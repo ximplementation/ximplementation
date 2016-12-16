@@ -744,6 +744,61 @@ public class CachedImplementeeMethodInvocationFactoryTest
 	public void createByEvaluatingFromValidAndDescPrioritizedsTest()
 			throws Throwable
 	{
+		// Collection<?> implementorBeans = getImplementorBeansWithCache
+		{
+			Class<?> implementee = CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementee.class;
+			Implementation<?> implementation = this.implementationResolver
+					.resolve(implementee,
+							CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor0.class,
+							CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor1.class,
+							CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor2.class,
+							CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor3.class,
+							CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor4.class);
+			Method implementeeMethod = getMethodByName(implementee, "plus");
+			ImplementInfo implementInfo = implementation
+					.getImplementInfo(implementeeMethod);
+
+			Object[] invocationParams = new Integer[] { 1, 2 };
+			Class<?>[] invocationParamTypes = new Class<?>[] { Integer.class,
+					Integer.class };
+
+			StaticInvocationProcessInfo processInfo = this.cachedImplementeeMethodInvocationFactory
+					.evalStaticInvocationProcessInfo(implementation,
+							implementInfo, invocationParamTypes);
+			ImplementMethodInfo[] validAndDescPrioritizeds = processInfo
+					.getStaticValidAndDescPrioritizeds();
+
+			CountImplementorBeanFactory implementorBeanFactory = CountImplementorBeanFactory
+					.valueOf(
+							new CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor0(),
+							new CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor1(),
+							new CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor2(),
+							new CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor3(),
+							new CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor4());
+
+			DefaultImplementeeMethodInvocation invocation = (DefaultImplementeeMethodInvocation) this.cachedImplementeeMethodInvocationFactory
+					.createByEvaluatingFromValidAndDescPrioritizeds(
+							implementation, implementInfo, invocationParams,
+							invocationParamTypes, validAndDescPrioritizeds,
+							implementorBeanFactory);
+
+			assertNotNull(invocation);
+			assertEquals(1, implementorBeanFactory
+					.getCount(
+							CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor0.class));
+			assertEquals(1, implementorBeanFactory.getCount(
+					CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor1.class));
+			assertEquals(0, implementorBeanFactory
+					.getCount(
+							CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor2.class));
+			assertEquals(1, implementorBeanFactory
+					.getCount(
+							CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor3.class));
+			assertEquals(1, implementorBeanFactory
+					.getCount(
+							CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor4.class));
+		}
+
 		// implementorBeans == null || implementorBeans.isEmpty()
 		{
 			Class<?> implementee = CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementee.class;
@@ -930,6 +985,12 @@ public class CachedImplementeeMethodInvocationFactoryTest
 			public int plus(Integer a, Integer b)
 			{
 				return 0;
+			}
+
+			@Implement("plus")
+			public Number plus1(Number a, Number b)
+			{
+				return null;
 			}
 		}
 

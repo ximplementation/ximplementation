@@ -227,8 +227,9 @@ public class CachedImplementeeMethodInvocationFactory
 	
 		for (ImplementMethodInfo myImplementMethodInfo : validAndDescPrioritizeds)
 		{
-			Collection<?> implementorBeans = getImplementorBeansWithCache(cachedImplementorBeans,
-					implementorBeanFactory, myImplementMethodInfo.getImplementor());
+			Collection<?> implementorBeans = getImplementorBeansWithCache(
+					cachedImplementorBeans, implementorBeanFactory,
+					myImplementMethodInfo.getImplementor());
 	
 			if (implementorBeans == null || implementorBeans.isEmpty())
 				continue;
