@@ -41,7 +41,10 @@ import org.ximplementation.Validity;
  * {@linkplain Implementation} resolver.
  * <p>
  * It resolves all methods including inherited in the given <i>implementee</i>
- * and its <i>implementor</i>s which are not {@code static}.
+ * excluding all {@code static} methods, also excluding {@code final} methods in
+ * {@linkplain Object} (
+ * {@code getClass(), notify(), notifyAll(), wait(long), wait(long, int), wait()}
+ * ).
  * </p>
  * <p>
  * Note that this class is thread-safe and can be accessed by multiple threads.
@@ -515,6 +518,11 @@ public class ImplementationResolver
 		// exclude synthetic methods, compiler may generate odd methods
 		// especially when extending generic type
 		if (implementeeMethod.isSynthetic())
+			return false;
+
+		// exclude Object.getClass(), notify(), notifyAll(), wait(long),
+		// wait(long, int), wait() methods
+		if (Object.class.equals(implementee) && Modifier.isFinal(modifier))
 			return false;
 	
 		return true;

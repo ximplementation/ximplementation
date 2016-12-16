@@ -78,7 +78,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 
 		assertEquals(ResolveTestArray.Implementee.class,
 				implementation.getImplementee());
-		assertEquals(12, implementation.getImplementInfos().length);
+		assertEquals(6, implementation.getImplementInfos().length);
 
 		Set<Class<?>> expectedImplementors = new HashSet<Class<?>>();
 		expectedImplementors.add(ResolveTestArray.Implementor0.class);
@@ -109,7 +109,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 
 		assertEquals(ResolveTestArray.Implementee.class,
 				implementation.getImplementee());
-		assertEquals(12, implementation.getImplementInfos().length);
+		assertEquals(6, implementation.getImplementInfos().length);
 
 		Set<Class<?>> actualImplementors = new HashSet<Class<?>>();
 		for (ImplementMethodInfo implementMethodInfo : implementation
@@ -159,7 +159,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		
 		assertEquals(DoResolveTest.Implementee.class,
 				implementation.getImplementee());
-		assertEquals(12, implementation.getImplementInfos().length);
+		assertEquals(6, implementation.getImplementInfos().length);
 		assertEquals("handle", implementation.getImplementInfos()[0]
 				.getImplementeeMethod().getName());
 	}
@@ -889,19 +889,13 @@ public class ImplementationResolverTest extends AbstractTestSupport
 			Collection<Method> methods = this.implementationResolver
 					.getImplementeeMethods(implementee);
 
-			assertEquals(12, methods.size());
+			assertEquals(6, methods.size());
 
 			assertThat(methods, Matchers.containsInAnyOrder(
 					Matchers.hasToString(Matchers.containsString(
 							"DoGetImplementeeMethodsTest$ImplementeeClass.m0()")),
 					Matchers.hasToString(Matchers
 							.containsString("java.lang.Object.finalize()")),
-					Matchers.hasToString(
-							Matchers.containsString("java.lang.Object.wait()")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.wait(long,int)")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.wait(long)")),
 					Matchers.hasToString(Matchers.containsString(
 							"java.lang.Object.equals(java.lang.Object)")),
 					Matchers.hasToString(Matchers
@@ -909,13 +903,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 					Matchers.hasToString(Matchers
 							.containsString("java.lang.Object.hashCode()")),
 					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.getClass()")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.clone()")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.notify()")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.notifyAll()"))));
+							.containsString("java.lang.Object.clone()"))));
 		}
 
 		// simple interface
@@ -956,7 +944,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 			Collection<Method> methods = this.implementationResolver
 					.getImplementeeMethods(implementee);
 
-			assertEquals(15, methods.size());
+			assertEquals(9, methods.size());
 
 			assertThat(methods, Matchers.containsInAnyOrder(
 					Matchers.hasToString(Matchers.containsString(
@@ -969,12 +957,6 @@ public class ImplementationResolverTest extends AbstractTestSupport
 							"DoGetImplementeeMethodsTest$ImplementeeClass1.m3()")),
 					Matchers.hasToString(Matchers
 							.containsString("java.lang.Object.finalize()")),
-					Matchers.hasToString(
-							Matchers.containsString("java.lang.Object.wait()")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.wait(long,int)")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.wait(long)")),
 					Matchers.hasToString(Matchers.containsString(
 							"java.lang.Object.equals(java.lang.Object)")),
 					Matchers.hasToString(Matchers
@@ -982,13 +964,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 					Matchers.hasToString(Matchers
 							.containsString("java.lang.Object.hashCode()")),
 					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.getClass()")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.clone()")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.notify()")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.notifyAll()"))));
+							.containsString("java.lang.Object.clone()"))));
 		}
 	}
 
@@ -1118,19 +1094,13 @@ public class ImplementationResolverTest extends AbstractTestSupport
 			Collection<Method> methods = this.implementationResolver
 					.getCandidateImplementMethods(implementor);
 
-			assertEquals(12, methods.size());
+			assertEquals(6, methods.size());
 
 			assertThat(methods, Matchers.containsInAnyOrder(
 					Matchers.hasToString(Matchers.containsString(
 							"DoGetCandidateImplementMethodsTest$ImplementorClass.m0()")),
 					Matchers.hasToString(Matchers
 							.containsString("java.lang.Object.finalize()")),
-					Matchers.hasToString(
-							Matchers.containsString("java.lang.Object.wait()")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.wait(long,int)")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.wait(long)")),
 					Matchers.hasToString(Matchers.containsString(
 							"java.lang.Object.equals(java.lang.Object)")),
 					Matchers.hasToString(Matchers
@@ -1138,13 +1108,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 					Matchers.hasToString(Matchers
 							.containsString("java.lang.Object.hashCode()")),
 					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.getClass()")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.clone()")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.notify()")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.notifyAll()"))));
+							.containsString("java.lang.Object.clone()"))));
 		}
 
 		// simple interface
@@ -1184,7 +1148,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 			Collection<Method> methods = this.implementationResolver
 					.getCandidateImplementMethods(implementee);
 
-			assertEquals(15, methods.size());
+			assertEquals(9, methods.size());
 
 			assertThat(methods, Matchers.containsInAnyOrder(
 					Matchers.hasToString(Matchers.containsString(
@@ -1197,12 +1161,6 @@ public class ImplementationResolverTest extends AbstractTestSupport
 							"DoGetCandidateImplementMethodsTest$ImplementorClass1.m3()")),
 					Matchers.hasToString(Matchers
 							.containsString("java.lang.Object.finalize()")),
-					Matchers.hasToString(
-							Matchers.containsString("java.lang.Object.wait()")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.wait(long,int)")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.wait(long)")),
 					Matchers.hasToString(Matchers.containsString(
 							"java.lang.Object.equals(java.lang.Object)")),
 					Matchers.hasToString(Matchers
@@ -1210,13 +1168,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 					Matchers.hasToString(Matchers
 							.containsString("java.lang.Object.hashCode()")),
 					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.getClass()")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.clone()")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.notify()")),
-					Matchers.hasToString(Matchers
-							.containsString("java.lang.Object.notifyAll()"))));
+							.containsString("java.lang.Object.clone()"))));
 		}
 	}
 
