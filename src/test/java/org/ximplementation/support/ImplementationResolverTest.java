@@ -1246,6 +1246,12 @@ public class ImplementationResolverTest extends AbstractTestSupport
 
 		assertTrue(this.implementationResolver.isCandidateImplementMethod(
 				implementor, getMethodByName(implementor, "notImplementAnno")));
+
+		assertFalse(this.implementationResolver.isCandidateImplementMethod(
+				Object.class, getMethodByName(Object.class, "getClass")));
+
+		assertFalse(this.implementationResolver.isCandidateImplementMethod(
+				Object.class, getMethodByName(Object.class, "wait")));
 	}
 
 	public static class IsCandidateImplementMethodTest

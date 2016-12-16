@@ -621,6 +621,11 @@ public class ImplementationResolver
 		// especially when extending generic type
 		if (implementMethod.isSynthetic())
 			return false;
+
+		// exclude Object.getClass(), notify(), notifyAll(), wait(long),
+		// wait(long, int), wait() methods
+		if (Object.class.equals(implementor) && Modifier.isFinal(modifier))
+			return false;
 	
 		return true;
 	}
