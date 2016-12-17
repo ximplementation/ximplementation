@@ -41,10 +41,10 @@ import org.ximplementation.Validity;
  * {@linkplain Implementation} resolver.
  * <p>
  * It resolves all methods including inherited in the given <i>implementee</i>
- * excluding all {@code static} methods, also excluding {@code final} methods in
+ * excluding {@code static} methods, also excluding {@code final} methods in
  * {@linkplain Object} (
  * {@code getClass(), notify(), notifyAll(), wait(long), wait(long, int), wait()}
- * ).
+ * ). And, {@code static} methods in <i>implementor</i> is allowed.
  * </p>
  * <p>
  * Note that this class is thread-safe and can be accessed by multiple threads.
@@ -343,6 +343,12 @@ public class ImplementationResolver
 				throw new ImplementationResolveException("Class [" + implementor
 						+ "] : No method is found for [@Validity(\"" + validityMethodMatcher + "\")] reference");
 			
+			if (Modifier.isStatic(implementMethodInfo.getImplementMethod().getModifiers())
+					&& !Modifier.isStatic(validityMethod.getModifiers()))
+				throw new ImplementationResolveException("Class [" + implementor.getName() + "] : Validity method ["
+						+ validityMethod + "] must be static, because the implement method ["
+						+ implementMethodInfo.getImplementMethod() + "] is static");
+			
 			Class<?> returnType = toWrapperType(validityMethod.getReturnType());
 			
 			if (!Boolean.class.equals(returnType))
@@ -402,6 +408,12 @@ public class ImplementationResolver
 					throw new ImplementationResolveException(
 							"Class [" + implementor.getName()
 							+ "] : No method is found for [@Priority(\"" + priorityMethodMatcher + "\")] reference");
+
+				if (Modifier.isStatic(implementMethodInfo.getImplementMethod().getModifiers())
+						&& !Modifier.isStatic(priorityMethod.getModifiers()))
+					throw new ImplementationResolveException("Class [" + implementor.getName() + "] : Priority method ["
+							+ priorityMethod + "] must be static, because the implement method ["
+							+ implementMethodInfo.getImplementMethod() + "] is static");
 
 				Class<?> returnType = toWrapperType(
 						priorityMethod.getReturnType());
@@ -613,9 +625,9 @@ public class ImplementationResolver
 	{
 		int modifier = implementMethod.getModifiers();
 	
-		// exclude static method
-		if (Modifier.isStatic(modifier))
-			return false;
+		// static method is legal as implement method
+		// if (Modifier.isStatic(modifier))
+		// return false;
 	
 		// exclude synthetic methods, compiler may generate odd methods
 		// especially when extending generic type

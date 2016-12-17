@@ -567,6 +567,48 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	}
 
 	@Test
+	public void resolveImplementMethodInfoValidityTest_notStatic()
+	{
+		Class<?> implementee = ResolveImplementMethodInfoValidity_notStatic.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "handle");
+		Class<?> implementor = ResolveImplementMethodInfoValidity_notStatic.Implementor.class;
+		Method implementMethod = getMethodByName(implementor, "handle");
+
+		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(implementor, implementMethod);
+
+		expectedException.expect(ImplementationResolveException.class);
+		expectedException.expectMessage("must be static");
+
+		this.implementationResolver.resolveImplementMethodInfoValidity(implementee, implementeeMethod,
+				implementMethodInfo);
+	}
+
+	public static class ResolveImplementMethodInfoValidity_notStatic
+	{
+		public static class Implementee
+		{
+			public void handle(int a)
+			{
+			}
+		}
+
+		@org.ximplementation.Implementor(Implementee.class)
+		public static class Implementor
+		{
+			@Implement
+			@Validity("isValid")
+			public static void handle(int a)
+			{
+			}
+
+			public boolean isValid()
+			{
+				return true;
+			}
+		}
+	}
+
+	@Test
 	public void resolveImplementMethodInfoValidityTest_notIegalReturnType()
 	{
 		Class<?> implementee = ResolveImplementMethodInfoValidity_notIegalReturnType.Implementee.class;
@@ -767,6 +809,48 @@ public class ImplementationResolverTest extends AbstractTestSupport
 			@Priority("getPriority")
 			public void handle(int a)
 			{
+			}
+		}
+	}
+
+	@Test
+	public void resolveImplementMethodInfoPriorityTest_notStatic()
+	{
+		Class<?> implementee = ResolveImplementMethodInfoPriority_notStatic.Implementee.class;
+		Method implementeeMethod = getMethodByName(implementee, "handle");
+		Class<?> implementor = ResolveImplementMethodInfoPriority_notStatic.Implementor.class;
+		Method implementMethod = getMethodByName(implementor, "handle");
+
+		ImplementMethodInfo implementMethodInfo = new ImplementMethodInfo(implementor, implementMethod);
+
+		expectedException.expect(ImplementationResolveException.class);
+		expectedException.expectMessage("must be static");
+
+		this.implementationResolver.resolveImplementMethodInfoPriority(implementee, implementeeMethod,
+				implementMethodInfo);
+	}
+
+	public static class ResolveImplementMethodInfoPriority_notStatic
+	{
+		public static class Implementee
+		{
+			public void handle(int a)
+			{
+			}
+		}
+
+		@org.ximplementation.Implementor(Implementee.class)
+		public static class Implementor
+		{
+			@Implement
+			@Priority("getPriority")
+			public static void handle(int a)
+			{
+			}
+
+			public int getPriority()
+			{
+				return 0;
 			}
 		}
 	}
@@ -1094,10 +1178,13 @@ public class ImplementationResolverTest extends AbstractTestSupport
 			Collection<Method> methods = this.implementationResolver
 					.getCandidateImplementMethods(implementor);
 
-			assertEquals(6, methods.size());
+			assertEquals(7, methods.size());
 
 			assertThat(methods, Matchers.containsInAnyOrder(
 					Matchers.hasToString(Matchers.containsString(
+									"DoGetCandidateImplementMethodsTest$ImplementorClass.staticImplementMethod()")),
+					Matchers.hasToString(
+							Matchers.containsString(
 							"DoGetCandidateImplementMethodsTest$ImplementorClass.m0()")),
 					Matchers.hasToString(Matchers
 							.containsString("java.lang.Object.finalize()")),
@@ -1148,10 +1235,13 @@ public class ImplementationResolverTest extends AbstractTestSupport
 			Collection<Method> methods = this.implementationResolver
 					.getCandidateImplementMethods(implementee);
 
-			assertEquals(9, methods.size());
+			assertEquals(10, methods.size());
 
 			assertThat(methods, Matchers.containsInAnyOrder(
 					Matchers.hasToString(Matchers.containsString(
+									"DoGetCandidateImplementMethodsTest$ImplementorClass.staticImplementMethod()")),
+					Matchers.hasToString(
+							Matchers.containsString(
 							"DoGetCandidateImplementMethodsTest$ImplementorClass.m0()")),
 					Matchers.hasToString(Matchers.containsString(
 							"DoGetCandidateImplementMethodsTest$ImplementorClass1.m1()")),
@@ -1176,7 +1266,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	{
 		public static class ImplementorClass
 		{
-			public static void staticNotImplementMethod()
+			public void staticImplementMethod()
 			{
 
 			}
@@ -1221,10 +1311,9 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	{
 		Class<?> implementor = IsCandidateImplementMethodTest.class;
 
-		assertFalse(this.implementationResolver.isCandidateImplementMethod(
+		assertTrue(this.implementationResolver.isCandidateImplementMethod(
 				implementor,
-				getMethodByName(implementor,
-						"notCandidateImplementMethodStatic")));
+				getMethodByName(implementor, "candidateImplementMethodStatic")));
 
 		assertTrue(this.implementationResolver.isCandidateImplementMethod(
 				implementor, getMethodByName(implementor, "implementMethod")));
@@ -1256,7 +1345,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 
 	public static class IsCandidateImplementMethodTest
 	{
-		public static void notCandidateImplementMethodStatic()
+		public static void candidateImplementMethodStatic()
 		{
 		}
 
