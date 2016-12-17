@@ -68,21 +68,21 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	}
 
 	@Test
-	public void resolveTestArray()
+	public void resolveTest_array()
 	{
-		Class<?> implementee = ResolveTestArray.Implementee.class;
+		Class<?> implementee = ResolveTest_array.Implementee.class;
 
 		Implementation<?> implementation = this.implementationResolver
-				.resolve(implementee, ResolveTestArray.Implementor0.class,
-						ResolveTestArray.Implementor1.class);
+.resolve(implementee,
+				ResolveTest_array.Implementor0.class, ResolveTest_array.Implementor1.class);
 
-		assertEquals(ResolveTestArray.Implementee.class,
+		assertEquals(ResolveTest_array.Implementee.class,
 				implementation.getImplementee());
 		assertEquals(6, implementation.getImplementInfos().length);
 
 		Set<Class<?>> expectedImplementors = new HashSet<Class<?>>();
-		expectedImplementors.add(ResolveTestArray.Implementor0.class);
-		expectedImplementors.add(ResolveTestArray.Implementor1.class);
+		expectedImplementors.add(ResolveTest_array.Implementor0.class);
+		expectedImplementors.add(ResolveTest_array.Implementor1.class);
 
 		Set<Class<?>> actualImplementors = new HashSet<Class<?>>();
 		for (ImplementMethodInfo implementMethodInfo : implementation
@@ -95,19 +95,19 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	}
 
 	@Test
-	public void resolveTestSet()
+	public void resolveTest_set()
 	{
-		Class<?> implementee = ResolveTestArray.Implementee.class;
+		Class<?> implementee = ResolveTest_array.Implementee.class;
 
 		Set<Class<?>> implementors = new HashSet<Class<?>>();
-		implementors.add(ResolveTestArray.Implementor0.class);
-		implementors.add(ResolveTestArray.Implementor1.class);
+		implementors.add(ResolveTest_array.Implementor0.class);
+		implementors.add(ResolveTest_array.Implementor1.class);
 
 		Implementation<?> implementation = this.implementationResolver
 				.resolve(
 				implementee, implementors);
 
-		assertEquals(ResolveTestArray.Implementee.class,
+		assertEquals(ResolveTest_array.Implementee.class,
 				implementation.getImplementee());
 		assertEquals(6, implementation.getImplementInfos().length);
 
@@ -121,7 +121,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 		assertEquals(implementors, actualImplementors);
 	}
 
-	public static class ResolveTestArray
+	public static class ResolveTest_array
 	{
 		public static class Implementee
 		{
@@ -265,11 +265,12 @@ public class ImplementationResolverTest extends AbstractTestSupport
 				.resolveImplementMethodInfo(implementee, implementeeMethods,
 						implementeeMethod, implementor);
 
-		assertEquals(2, implementMethodInfos.size());
+		assertEquals(3, implementMethodInfos.size());
 
 		Set<Method> expectMethods = new HashSet<Method>();
 		expectMethods.add(getMethodByName(implementor, "handle"));
 		expectMethods.add(getMethodByName(implementor, "handleAnother"));
+		expectMethods.add(getMethodByName(implementor, "handleStatic"));
 
 		Set<Method> actualMethods = new HashSet<Method>();
 		for (ImplementMethodInfo implementMethodInfo : implementMethodInfos)
@@ -302,6 +303,11 @@ public class ImplementationResolverTest extends AbstractTestSupport
 			}
 
 			public void notImplementHandle()
+			{
+			}
+
+			@Implement("handle")
+			public static void handleStatic()
 			{
 			}
 		}
@@ -1560,8 +1566,8 @@ public class ImplementationResolverTest extends AbstractTestSupport
 	{
 		Class<?> implement = MaybeImplementMethodTest.class;
 	
-		assertFalse(this.implementationResolver.maybeImplementMethod(implement,
-				getMethodByName(implement, "notImplementMethodStatic")));
+		assertTrue(this.implementationResolver.maybeImplementMethod(implement,
+				getMethodByName(implement, "implementMethodStatic")));
 	
 		assertTrue(this.implementationResolver.maybeImplementMethod(implement,
 				getMethodByName(implement, "implementMethod")));
@@ -1584,7 +1590,7 @@ public class ImplementationResolverTest extends AbstractTestSupport
 
 	public static class MaybeImplementMethodTest
 	{
-		public static void notImplementMethodStatic()
+		public static void implementMethodStatic()
 		{
 		}
 	

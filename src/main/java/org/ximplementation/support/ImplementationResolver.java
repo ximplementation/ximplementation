@@ -726,11 +726,9 @@ public class ImplementationResolver
 	 */
 	protected boolean maybeImplementMethod(Class<?> implementor, Method implementMethod)
 	{
-		int modifier = implementMethod.getModifiers();
-	
-		// exclude static method
-		if (Modifier.isStatic(modifier))
-			return false;
+		// static method is legal as implement method
+		// if (Modifier.isStatic(modifier))
+		// return false;
 	
 		// exclude synthetic methods, compiler may generate odd methods
 		// especially when extending generic type
