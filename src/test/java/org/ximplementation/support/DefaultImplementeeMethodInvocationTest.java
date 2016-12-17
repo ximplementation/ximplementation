@@ -148,6 +148,24 @@ public class DefaultImplementeeMethodInvocationTest extends AbstractTestSupport
 			assertEquals(InvokeTest.Implementor3.class.getSimpleName(),
 					invocation.invoke());
 		}
+
+		// static method
+		{
+			Implementation<InvokeTest.Implementee> implementation = this.implementationResolver
+					.resolve(InvokeTest.Implementee.class, InvokeTest.Implementor4.class);
+
+			Method implementeeMethod = getMethodByName(InvokeTest.Implementee.class, "handle");
+
+			ImplementInfo implementInfo = implementation.getImplementInfo(implementeeMethod);
+
+			ImplementMethodInfo implementMethodInfo = implementInfo.getImplementMethodInfos()[0];
+			Object[] invocationParams = {};
+
+			DefaultImplementeeMethodInvocation invocation = new DefaultImplementeeMethodInvocation(implementation,
+					implementInfo, invocationParams, implementMethodInfo, null);
+
+			assertEquals(InvokeTest.Implementor4.class.getSimpleName(), invocation.invoke());
+		}
 	}
 
 	protected static class InvokeTest
@@ -197,6 +215,16 @@ public class DefaultImplementeeMethodInvocationTest extends AbstractTestSupport
 			private String handle()
 			{
 				return Implementor3.class.getSimpleName();
+			}
+		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor4
+		{
+			@Implement
+			public static String handle()
+			{
+				return Implementor4.class.getSimpleName();
 			}
 		}
 	}

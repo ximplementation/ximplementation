@@ -85,28 +85,29 @@ public class SimpleImplementeeMethodInvocationFactory
 					myImplementMethodInfo,
 					invocationParamTypes))
 				continue;
+			
+			Collection<?> implementorBeans = null;
 
-			Collection<?> implementorBeans = getImplementorBeansWithCache(cachedImplementorBeans,
-					implementorBeanFactory, myImplementMethodInfo.getImplementor());
+			if (isStaticImplementMethod(myImplementMethodInfo))
+				implementorBeans = ONE_NULL_IMPLEMENTOR_FOR_LOOP;
+			else
+				implementorBeans = getImplementorBeansWithCache(cachedImplementorBeans, implementorBeanFactory,
+						myImplementMethodInfo.getImplementor());
 
-			if (implementorBeans == null || implementorBeans.isEmpty())
+			if ((implementorBeans == null || implementorBeans.isEmpty()))
 				continue;
 
 			Method validityMethod = myImplementMethodInfo.getValidityMethod();
-			Object[] validityMethodParams = myImplementMethodInfo
-					.getValidityParams(invocationParams);
+			Object[] validityMethodParams = myImplementMethodInfo.getValidityParams(invocationParams);
 			Method priorityMethod = myImplementMethodInfo.getPriorityMethod();
-			Object[] priorityMethodParams = myImplementMethodInfo
-					.getPriorityParams(invocationParams);
+			Object[] priorityMethodParams = myImplementMethodInfo.getPriorityParams(invocationParams);
 
 			for (Object myImplementorBean : implementorBeans)
 			{
 				if (validityMethod != null)
 				{
-					boolean isValid = invokeValidityMethod(implementation,
-							implementInfo, myImplementMethodInfo,
-							validityMethod, validityMethodParams,
-							myImplementorBean);
+					boolean isValid = invokeValidityMethod(implementation, implementInfo, myImplementMethodInfo,
+							validityMethod, validityMethodParams, myImplementorBean);
 
 					if (!isValid)
 						continue;
@@ -116,11 +117,8 @@ public class SimpleImplementeeMethodInvocationFactory
 
 				if (priorityMethod != null)
 				{
-					myPriority = invokePriorityMethod(implementation,
-							implementInfo, myImplementMethodInfo,
-							myImplementMethodInfo.getPriorityMethod(),
-							priorityMethodParams,
-							myImplementorBean);
+					myPriority = invokePriorityMethod(implementation, implementInfo, myImplementMethodInfo,
+							myImplementMethodInfo.getPriorityMethod(), priorityMethodParams, myImplementorBean);
 				}
 
 				boolean replace = false;
@@ -131,11 +129,8 @@ public class SimpleImplementeeMethodInvocationFactory
 				{
 					if (myPriority == priority)
 					{
-						int methodInfoPriority = compareImplementMethodInfoPriority(
-								implementation, implementInfo,
-								invocationParamTypes,
-								implementMethodInfo,
-								myImplementMethodInfo);
+						int methodInfoPriority = compareImplementMethodInfoPriority(implementation, implementInfo,
+								invocationParamTypes, implementMethodInfo, myImplementMethodInfo);
 
 						replace = (methodInfoPriority <= 0);
 					}

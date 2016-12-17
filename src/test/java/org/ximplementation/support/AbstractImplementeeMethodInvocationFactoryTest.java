@@ -106,6 +106,65 @@ public class AbstractImplementeeMethodInvocationFactoryTest
 	}
 
 	@Test
+	public void isStaticImplementMethodTest()
+	{
+		// static method
+		{
+			Implementation<IsStaticImplementMethodTest.Implementee> implementation = this.implementationResolver
+					.resolve(IsStaticImplementMethodTest.Implementee.class,
+							IsStaticImplementMethodTest.Implementor0.class);
+
+			Method implementeeMethod = getMethodByName(IsStaticImplementMethodTest.Implementee.class, "handle");
+
+			ImplementInfo implementInfo = implementation.getImplementInfo(implementeeMethod);
+			ImplementMethodInfo implementMethodInfo = implementInfo.getImplementMethodInfos()[0];
+
+			assertTrue(
+					this.mockAbstractImplementeeMethodInvocationFactory.isStaticImplementMethod(implementMethodInfo));
+		}
+
+		// not static method
+		{
+			Implementation<IsStaticImplementMethodTest.Implementee> implementation = this.implementationResolver
+					.resolve(IsStaticImplementMethodTest.Implementee.class,
+							IsStaticImplementMethodTest.Implementor1.class);
+
+			Method implementeeMethod = getMethodByName(IsStaticImplementMethodTest.Implementee.class, "handle");
+
+			ImplementInfo implementInfo = implementation.getImplementInfo(implementeeMethod);
+			ImplementMethodInfo implementMethodInfo = implementInfo.getImplementMethodInfos()[0];
+
+			assertFalse(
+					this.mockAbstractImplementeeMethodInvocationFactory.isStaticImplementMethod(implementMethodInfo));
+		}
+	}
+
+	public static class IsStaticImplementMethodTest
+	{
+		public static interface Implementee
+		{
+			void handle();
+		}
+
+		@org.ximplementation.Implementor(Implementee.class)
+		public static class Implementor0
+		{
+			@Implement
+			public static void handle()
+			{
+			}
+		}
+
+		public static class Implementor1 implements Implementee
+		{
+			@Override
+			public void handle()
+			{
+			}
+		}
+	}
+
+	@Test
 	public void invokeValidityMethodTest() throws Throwable
 	{
 		// public validity method

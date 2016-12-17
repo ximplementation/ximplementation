@@ -176,10 +176,17 @@ public class CachedImplementeeMethodInvocationFactory
 		for (int i = 0; i < validAndDescPrioritizeds.length; i++)
 		{
 			ImplementMethodInfo myMethodInfo = validAndDescPrioritizeds[i];
+			
+			if(isStaticImplementMethod(myMethodInfo))
+			{
+				finalMethodInfo = myMethodInfo;
+				break;
+			}
+			
 			Collection<?> myBeans = getImplementorBeansWithCache(cachedImplementorBeans, implementorBeanFactory,
 					myMethodInfo.getImplementor());
 
-			if (myBeans != null && !myBeans.isEmpty())
+			if ((myBeans != null && !myBeans.isEmpty()))
 			{
 				finalMethodInfo = myMethodInfo;
 				finalBeans = myBeans;
@@ -191,7 +198,7 @@ public class CachedImplementeeMethodInvocationFactory
 		if (finalMethodInfo == null)
 			return null;
 
-		Object finalBean = getRandomElement(finalBeans);
+		Object finalBean = (finalBeans == null ? null : getRandomElement(finalBeans));
 
 		return new DefaultImplementeeMethodInvocation(implementation,
 				implementInfo, invocationParams, finalMethodInfo,
@@ -227,10 +234,14 @@ public class CachedImplementeeMethodInvocationFactory
 	
 		for (ImplementMethodInfo myImplementMethodInfo : validAndDescPrioritizeds)
 		{
-			Collection<?> implementorBeans = getImplementorBeansWithCache(
-					cachedImplementorBeans, implementorBeanFactory,
-					myImplementMethodInfo.getImplementor());
-	
+			Collection<?> implementorBeans = null;
+
+			if (isStaticImplementMethod(myImplementMethodInfo))
+				implementorBeans = ONE_NULL_IMPLEMENTOR_FOR_LOOP;
+			else
+				implementorBeans = getImplementorBeansWithCache(cachedImplementorBeans, implementorBeanFactory,
+						myImplementMethodInfo.getImplementor());
+
 			if (implementorBeans == null || implementorBeans.isEmpty())
 				continue;
 	

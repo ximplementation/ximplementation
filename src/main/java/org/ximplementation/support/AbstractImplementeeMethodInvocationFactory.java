@@ -15,10 +15,12 @@
 package org.ximplementation.support;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -33,6 +35,8 @@ public abstract class AbstractImplementeeMethodInvocationFactory
 		implements ImplementeeMethodInvocationFactory
 {
 	protected static final Class<?>[] EMPTY_CLASS_ARRAY = {};
+
+	protected static final List<Object> ONE_NULL_IMPLEMENTOR_FOR_LOOP = Arrays.asList(new Object[] { null });
 
 	protected ConcurrentHashMap<ImplementMethodInfo, Class<?>[]> implementMethodParamTypes = new ConcurrentHashMap<ImplementMethodInfo, Class<?>[]>();
 
@@ -80,6 +84,18 @@ public abstract class AbstractImplementeeMethodInvocationFactory
 			cachedImplementorBeans.put(implementor, implementorBeans);
 		
 		return implementorBeans;
+	}
+
+	/**
+	 * Return if {@linkplain ImplementMethodInfo#getImplementMethod()} is
+	 * {@code static} method.
+	 * 
+	 * @param implementMethodInfo
+	 * @return
+	 */
+	protected boolean isStaticImplementMethod(ImplementMethodInfo implementMethodInfo)
+	{
+		return Modifier.isStatic(implementMethodInfo.getImplementMethod().getModifiers());
 	}
 
 	/**

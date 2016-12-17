@@ -83,6 +83,21 @@ public class SimpleImplementeeMethodInvocationFactoryTest
 									implementorBeansMap)));
 		}
 
+		// isStaticImplementMethod(myImplementMethodInfo)
+		{
+			Class<?> implementee = GetTest.Implementee.class;
+			Method implementeeMethod = getMethodByName(implementee, "plus");
+
+			DefaultImplementeeMethodInvocation invocation = (DefaultImplementeeMethodInvocation) this.simpleImplementeeMethodInvocationFactory
+					.get(
+					this.implementationResolver.resolve(implementee, GetTest.Implementor0.class,
+							GetTest.Implementor6.class),
+					implementeeMethod, new Object[] { 1, 2 }, SimpleImplementorBeanFactory.valueOf());
+
+			assertEquals(GetTest.Implementor6.class, invocation.getImplementMethodInfo().getImplementor());
+			assertNull(invocation.getImplementorBean());
+		}
+
 		// implementorBeans == null
 		{
 			Class<?> implementee = GetTest.Implementee.class;
@@ -317,6 +332,22 @@ public class SimpleImplementeeMethodInvocationFactoryTest
 			public int getPriority()
 			{
 				return Integer.MAX_VALUE;
+			}
+		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor6
+		{
+			@Implement
+			@Priority("getPriority")
+			public static Number plus(Number a, Number b)
+			{
+				return 0;
+			}
+
+			public static int getPriority()
+			{
+				return Priority.DEFAULT - 1;
 			}
 		}
 	}

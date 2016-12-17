@@ -537,6 +537,34 @@ public class CachedImplementeeMethodInvocationFactoryTest
 	@Test
 	public void createBySelectingFromValidAndDescPrioritizedsTest()
 	{
+		// isStaticImplementMethod(myMethodInfo)
+		{
+			Class<?> implementee = CreateBySelectingFromValidAndDescPrioritizedsTest.Implementee.class;
+			Implementation<?> implementation = this.implementationResolver.resolve(implementee,
+					CreateBySelectingFromValidAndDescPrioritizedsTest.Implementor0.class,
+					CreateBySelectingFromValidAndDescPrioritizedsTest.Implementor3.class);
+			Method implementeeMethod = getMethodByName(implementee, "plus");
+			ImplementInfo implementInfo = implementation.getImplementInfo(implementeeMethod);
+
+			Object[] invocationParams = new Integer[] { 1, 2 };
+			Class<?>[] invocationParamTypes = new Class<?>[] { Integer.class, Integer.class };
+
+			StaticInvocationProcessInfo processInfo = this.cachedImplementeeMethodInvocationFactory
+					.evalStaticInvocationProcessInfo(implementation, implementInfo, invocationParamTypes);
+			ImplementMethodInfo[] validAndDescPrioritizeds = processInfo.getStaticValidAndDescPrioritizeds();
+
+			ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory
+					.valueOf(new CreateBySelectingFromValidAndDescPrioritizedsTest.Implementor0());
+
+			DefaultImplementeeMethodInvocation invocation = (DefaultImplementeeMethodInvocation) this.cachedImplementeeMethodInvocationFactory
+					.createBySelectingFromValidAndDescPrioritizeds(implementation, implementInfo, invocationParams,
+							invocationParamTypes, validAndDescPrioritizeds, implementorBeanFactory);
+
+			assertEquals(CreateBySelectingFromValidAndDescPrioritizedsTest.Implementor3.class,
+					invocation.getImplementMethodInfo().getImplementor());
+			assertNull(invocation.getImplementorBean());
+		}
+
 		// myBeans != null && !myBeans.isEmpty()
 		{
 			Class<?> implementee = CreateBySelectingFromValidAndDescPrioritizedsTest.Implementee.class;
@@ -738,13 +766,56 @@ public class CachedImplementeeMethodInvocationFactoryTest
 				return 0;
 			}
 		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor3
+		{
+			@Implement
+			public static int plus(Integer a, Integer b)
+			{
+				return 0;
+			}
+		}
 	}
 
 	@Test
 	public void createByEvaluatingFromValidAndDescPrioritizedsTest()
 			throws Throwable
 	{
-		// Collection<?> implementorBeans = getImplementorBeansWithCache
+		// TODO isStaticImplementMethod(myImplementMethodInfo)
+		{
+			Class<?> implementee = CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementee.class;
+			Implementation<?> implementation = this.implementationResolver.resolve(implementee,
+					CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor0.class,
+					CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor1.class,
+					CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor2.class,
+					CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor6.class);
+			Method implementeeMethod = getMethodByName(implementee, "plus");
+			ImplementInfo implementInfo = implementation.getImplementInfo(implementeeMethod);
+
+			Class<?>[] invocationParamTypes = new Class<?>[] { Integer.class, Integer.class };
+
+			StaticInvocationProcessInfo processInfo = this.cachedImplementeeMethodInvocationFactory
+					.evalStaticInvocationProcessInfo(implementation, implementInfo, invocationParamTypes);
+			ImplementMethodInfo[] validAndDescPrioritizeds = processInfo.getStaticValidAndDescPrioritizeds();
+
+			ImplementorBeanFactory implementorBeanFactory = SimpleImplementorBeanFactory.valueOf(
+					new CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor0(),
+					new CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor1(),
+					new CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor2());
+
+			Object[] invocationParams = new Integer[] { 1, 2 };
+
+			DefaultImplementeeMethodInvocation invocation = (DefaultImplementeeMethodInvocation) this.cachedImplementeeMethodInvocationFactory
+					.createByEvaluatingFromValidAndDescPrioritizeds(implementation, implementInfo, invocationParams,
+							invocationParamTypes, validAndDescPrioritizeds, implementorBeanFactory);
+
+			assertEquals(CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementor6.class,
+					invocation.getImplementMethodInfo().getImplementor());
+			assertNull(invocation.getImplementorBean());
+		}
+
+		// implementorBeans = getImplementorBeansWithCache
 		{
 			Class<?> implementee = CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementee.class;
 			Implementation<?> implementation = this.implementationResolver
@@ -1044,6 +1115,22 @@ public class CachedImplementeeMethodInvocationFactoryTest
 			public int getPriority(Integer a)
 			{
 				return a;
+			}
+		}
+
+		@Implementor(Implementee.class)
+		public static class Implementor6
+		{
+			@Implement
+			@Priority("getPriority")
+			public static float plus(Integer a, Integer b)
+			{
+				return 0;
+			}
+
+			public static int getPriority(Integer a)
+			{
+				return Integer.MAX_VALUE;
 			}
 		}
 	}
