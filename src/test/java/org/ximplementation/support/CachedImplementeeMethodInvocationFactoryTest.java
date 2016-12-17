@@ -782,7 +782,7 @@ public class CachedImplementeeMethodInvocationFactoryTest
 	public void createByEvaluatingFromValidAndDescPrioritizedsTest()
 			throws Throwable
 	{
-		// TODO isStaticImplementMethod(myImplementMethodInfo)
+		// isStaticImplementMethod(myImplementMethodInfo)
 		{
 			Class<?> implementee = CreateByEvaluatingFromValidAndDescPrioritizedsTest.Implementee.class;
 			Implementation<?> implementation = this.implementationResolver.resolve(implementee,
