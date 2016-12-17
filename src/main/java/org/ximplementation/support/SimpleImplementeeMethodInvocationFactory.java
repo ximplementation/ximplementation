@@ -94,7 +94,7 @@ public class SimpleImplementeeMethodInvocationFactory
 				implementorBeans = getImplementorBeansWithCache(cachedImplementorBeans, implementorBeanFactory,
 						myImplementMethodInfo.getImplementor());
 
-			if ((implementorBeans == null || implementorBeans.isEmpty()))
+			if (implementorBeans == null || implementorBeans.isEmpty())
 				continue;
 
 			Method validityMethod = myImplementMethodInfo.getValidityMethod();

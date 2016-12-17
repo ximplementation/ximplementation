@@ -186,7 +186,7 @@ public class CachedImplementeeMethodInvocationFactory
 			Collection<?> myBeans = getImplementorBeansWithCache(cachedImplementorBeans, implementorBeanFactory,
 					myMethodInfo.getImplementor());
 
-			if ((myBeans != null && !myBeans.isEmpty()))
+			if (myBeans != null && !myBeans.isEmpty())
 			{
 				finalMethodInfo = myMethodInfo;
 				finalBeans = myBeans;
