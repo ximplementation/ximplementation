@@ -9,8 +9,9 @@
 	<name>ximplementation</name>
 	<description>
 		Ximplementation is a framework that lets you write implementation freely based on Java annotations and makes your program support runtime polymorphism.
+		Maven command : mvn clean package install site assembly:single
 	</description>
-	<url>https://github.com/earthangry/ximplementation</url>
+	<url>https://github.com/ximplementation/ximplementation</url>
 	
 	<dependencies>
 		<dependency>

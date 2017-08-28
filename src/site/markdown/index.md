@@ -7,6 +7,6 @@ Ximplementation is a framework that lets you write implementation freely based o
 
 [API](apidocs/index.html)
 
-You can get the source [Here](https://github.com/earthangry/ximplementation) in Github.
+You can get the source [Here](https://github.com/ximplementation/ximplementation) in Github.
 
-There is also an <i>ximplementation-spring</i> project [Here](https://github.com/earthangry/ximplementation-spring) in Github, it integrates <i>ximplementation</i> into Spring, makes Spring support multiple dependency injection and more <i>ximplementation</i> features.
+There is also an <i>ximplementation-spring</i> project [Here](https://github.com/ximplementation/ximplementation-spring) in Github, it integrates <i>ximplementation</i> into Spring, makes Spring support multiple dependency injection and more <i>ximplementation</i> features.
