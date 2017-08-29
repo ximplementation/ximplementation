@@ -1,5 +1,5 @@
 # ximplementation
-Ximplementation is a framework that lets you write implementation freely based on Java annotations and makes your program support runtime polymorphism.
+Ximplementation is a framework that lets you write implementation freely based on Java annotations and makes your program support invocation routing.
 
 It has two core annotations:
 
