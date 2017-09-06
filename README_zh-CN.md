@@ -1,19 +1,19 @@
-[English](README.md) | [Chinese](README_zh-CN.md)
+[英文](README.md) | [中文](README_zh-CN.md)
 
 # ximplementation
-Ximplementation is a framework that lets you write implementation freely based on Java annotations and makes your program support invocation routing.
+Ximplementation 是一个可以让你基于Java注解自由编写实现类的框架，同时能够使你的程序支持调用时路由。
 
-It has two core annotations:
+它包括两个核心注解：
 
 * `@Implementor`  
-This annotation is annotated on class, indicating that the class is an implementation of some classes, just as the `implements` and `extends` keywords.
+此注解标注于类，表明类是某个或者某些类的实现类，就像`implements`和`extends`关键字。
 
 * `@Implement`  
-This annotation is annotated on method in `@Implementor` class, indicating that the method is an implement method, just as the `@Overriden` annotation.
+此注解标注于`@Implementor`类的方法，表明方法是实现方法，就像`@Overriden`注解。
 
 
-## Example
-Suppose there is an interface:
+## 示例
+假设有一个接口类如下:
 
 ```java
 
@@ -24,7 +24,7 @@ Suppose there is an interface:
 	}
 ```
 
-You can write its implementation in a very free and different way:
+那么，你可以自由地编写它的实现类：
 
 ```java
 
@@ -53,10 +53,10 @@ You can write its implementation in a very free and different way:
 	
 ```
 
-> The `ServiceImplMinusInteger` is not necessary if you don't want.  
-> And, you can write more than one implementations for `plus` and/or `minus` methods in the same class or other `@Implementor` classes.
+> `ServiceImplMinusInteger`并不是必须的。  
+> 而且，你可以在同一个或者多个其他`@Implementor`实现类内为`plus`和/或`minus`编写多个实现方法。
 
-Then, you can get a `Service` instance by:
+之后，你可以通过如下方式获得`Service`的实例：
 
 ```java
 
@@ -69,4 +69,4 @@ Then, you can get a `Service` instance by:
 	Service<Number> service = new ProxyImplementeeBeanBuilder().build(implementation, implementorBeanFactory);
 ```
 
-The `serivce.plus` method invocation will be delegated to `ServiceImplPlusInteger.plus` method if the parameter type is `Integer`, to `ServiceImplDefault.plus` method otherwise; and the `serivce.minus` method will be delegated to `ServiceImplMinusInteger.minus` method if the parameter type is `Integer`, to `ServiceImplDefault.minus` method otherwise.
+对于`serivce.plus`方法的调用，如果参数类型是`Integer`，将被路由至`ServiceImplPlusInteger.plus`方法，否则，将被路由至`ServiceImplDefault.plus`方法；对于`serivce.minus`方法的调用，如果参数类型是`Integer`，将被路由至`ServiceImplMinusInteger.minus`方法，否则，将被路由至`ServiceImplDefault.minus`方法。
