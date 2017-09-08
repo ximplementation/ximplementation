@@ -1,5 +1,5 @@
 # About ximplementation
-Ximplementation is a framework that lets you write implementation freely based on Java annotations and makes your program support invocation routing.
+Ximplementation is an invocation routing framework based on Java annotations.
 
 [Getting Started](getting-started.html)
 

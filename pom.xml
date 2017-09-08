@@ -8,7 +8,7 @@
 	
 	<name>ximplementation</name>
 	<description>
-		Ximplementation is a framework that lets you write implementation freely based on Java annotations and makes your program support invocation routing.
+		Ximplementation is an invocation routing framework based on Java annotations.
 		Maven command : mvn clean package install site assembly:single
 	</description>
 	<url>https://github.com/ximplementation/ximplementation</url>

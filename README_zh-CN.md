@@ -1,7 +1,7 @@
 [英文](README.md) | [中文](README_zh-CN.md)
 
 # ximplementation
-Ximplementation是一个可以让你基于Java注解编写能够支持调用时路由程序的框架。
+Ximplementation是一个基于Java注解的调用时路由框架。
 
 它包括两个核心注解：
 
